@@ -8996,11 +8996,12 @@ YY_RULE_SETUP
 						yylval.ntest.nt = NT_PI0;
 						c1 = wcsrchr(yytext,'\'');
 						c2 = wcschr(yytext,'\'');
-						yylval.ntest.arg = (UCSChar *)malloc (sizeof(UCSChar)*(c1-c2-1));
+						yylval.ntest.arg = (UCSChar *)malloc (sizeof(UCSChar)*(c1-c2));
 						if (yylval.ntest.arg == NULL)
 							return ERROR;
 						addObj(yylval.ntest.arg);
 						wcsncpy(yylval.ntest.arg, c2+1, c1-c2-1);
+						yylval.ntest.arg[c1-c2-1]=0;
 						//yylval.ntest.arg = NULL;
 						return NTEST;
 					}
@@ -9018,12 +9019,12 @@ YY_RULE_SETUP
 						yylval.ntest.nt = NT_PI0;
 						c1 = wcsrchr(yytext,'"');
 						c2 = wcschr(yytext,'"');
-						yylval.ntest.arg = (UCSChar *)malloc (sizeof(UCSChar)*(c1-c2-1));
+						yylval.ntest.arg = (UCSChar *)malloc (sizeof(UCSChar)*(c1-c2));
 						if (yylval.ntest.arg == NULL)
 							return ERROR;
 						addObj(yylval.ntest.arg);
 						wcsncpy(yylval.ntest.arg, c2+1, c1-c2-1);
-						
+						yylval.ntest.arg[c1-c2-1]=0;
 						//yylval.ntest.arg = 
 						//yylval.ntest.arg = NULL;
 						return NTEST;
