@@ -29,6 +29,8 @@ using namespace std;
 /* Use prototypes in function declarations. */
 #define YY_USE_PROTOS
 
+#define YY_USER_ACTION  driver.num_of_chars += yyleng;
+
 /* The "const" storage-class-modifier is valid. */
 #define YY_USE_CONST
 
