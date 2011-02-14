@@ -8185,7 +8185,7 @@ static yyconst short int yy_rule_linenum[96] =
 #define INITIAL 0
 #line 2 "xpathLexer.ll"
 /* 
-* Copyright (C) 2002-2010 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2011 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
