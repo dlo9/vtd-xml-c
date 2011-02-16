@@ -213,7 +213,7 @@ static _thread YY_CHAR yy_hold_char;
 static _thread int yy_n_chars;		/* number of characters read into yy_ch_buf */
 
 
-int yyleng;
+_thread int yyleng;
 
 /* Points to current character in buffer. */
 static _thread YY_CHAR *yy_c_buf_p = (YY_CHAR *) 0;
@@ -8290,9 +8290,9 @@ static int input YY_PROTO(( void ));
 #endif
 
 #if YY_STACK_USED
-_thread static int yy_start_stack_ptr = 0;
-_thread static int yy_start_stack_depth = 0;
-_thread static int *yy_start_stack = 0;
+static _thread int yy_start_stack_ptr = 0;
+static _thread int yy_start_stack_depth = 0;
+static _thread int *yy_start_stack = 0;
 #ifndef YY_NO_PUSH_STATE
 static void yy_push_state YY_PROTO(( int new_state ));
 #endif
