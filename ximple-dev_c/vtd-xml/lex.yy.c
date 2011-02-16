@@ -8242,14 +8242,14 @@ nc2   ([^!-/:-@[-^ \n\r\t|0-9]|"#"|"&"|";"|"?"|_|"\\"|"^"|"%"|".")
 #undef  YY_INPUT
 #define YY_INPUT(b,r,ms)  r = my_yyinput(b,ms)
 #define YY_USER_ACTION num_chars += yyleng;
-_thread static wchar_t *tmpstring;
+static _thread wchar_t *tmpstring;
 
 int my_yyinput(unsigned short *buf, int s);
 //#define YY_USER_INIT  buf_state = yy_scan_string( name );
 
 //static YY_BUFFER_STATE buf_state;
 wchar_t *mydup(YY_CHAR *text, int len);
-_thread static int i;
+static _thread int i;
 _thread int isName;
 _thread int colonPosition;
 _thread int num_chars;
