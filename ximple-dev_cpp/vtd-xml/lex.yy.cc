@@ -9279,9 +9279,10 @@ YY_RULE_SETUP
 					yylval->name.prefix[yyleng-2] = 0;
 					//addObj(yylval->name.prefix);
 				}
-				delete(tmpstring);
-				tmpstring = NULL;
+				//delete(tmpstring);
+				//tmpstring = NULL;
 				yylval->name.localname = wcsdup(L"*");
+				yylval->name.qname = tmpstring;
 				//addObj(yylval->name.localname);
 				return token::NAME;
 			}
