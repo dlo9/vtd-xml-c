@@ -1,0 +1,405 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Project Homepage of VTD-XML</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><b><font face="Tahoma" size="6">&nbsp;VTD-XML: 
+    The Future of XML Processing</font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center"><b>
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Lucida Sans Unicode" color="#FFFFFF">Sourceforge Home</font></a></b></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF">Mailing Lists</font></a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><b><font face="Lucida Sans Unicode">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></b></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><b><font face="Lucida Sans Unicode">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></b></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="2639">
+  <tr>
+    <td width="260" height="34" align="left" bordercolor="#0000FF" valign="top" bgcolor="#FFFFFF">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td height="2639" rowspan="14" valign="top" width="873" bgcolor="#E1E2D6">
+    <h1><font face="Lucida Sans Unicode">&nbsp;&nbsp; <font size="5">VTD+XML Spec Version 1 
+    and 2</font></font></h1>
+    <blockquote>
+    <h2><font face="Lucida Sans Unicode">1. Introduction</font></h2>
+    <p><font face="Lucida Sans Unicode" size="2">In September 2003, XimpleWare described the 
+    concept of a human-readable binary XML format in its
+    <a href="http://www.w3.org/2003/08/binary-interchange-workshop/20-ximpleware-positionpaper-updated.htm" style="text-decoration: none">
+    position paper</a> submitted to W3C's binary XML workshop.&nbsp; The name of 
+    the format is VTD+XML.&nbsp; As VTD-XML's internal representation of XML 
+    infoset is inherently persistent, VTD+XML is the binary 
+    format that packages VTD records, LCs entries and XML into a single file. 
+    We also provide the option to store VTD as a separate file from the XML 
+    document. This document is the second draft of VTD+XML. We 
+    <a href="mailto:info@ximpleware.com">welcome </a>any suggestions 
+    and&nbsp; inputs.</font></p>
+    <h2><font face="Lucida Sans Unicode">2. Changes from Previous Draft Versions</font></h2>
+    <p><font face="Lucida Sans Unicode" size="2">This version moves the XML payload to the top. 
+    The motivation: when people use text editors to read the VTD+XML file, they 
+    don't have to scroll way down to read XML text.</font></p>
+    <p><font face="Lucida Sans Unicode" size="2">This version also includes a 
+    spec for separate XML document and VTD index.</font></p>
+    <p><font face="Lucida Sans Unicode" size="2">Also character encoding support in 
+    enlarged to have a total 256 types (a single byte).</font></p>
+    <h2 align="justify"><font face="Lucida Sans Unicode">3. How does it work?</font></h2>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">In the latest versions of VTD-XML, there will be 
+    methods (writeIndex, readIndex) in VTDGen and VTDNav that allows developers to save and load VTD+XML 
+    (both separate or integrated).</font><h2 align="justify">
+    <font face="Lucida Sans Unicode">4. Benefits</font></h2>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">XML indexing has been a heavily 
+    researched topic and but good solutions are still far and few between.&nbsp; 
+    Most existing XML indexes have a number of technical issues:</font><ul>
+      <li>
+    <p align="justify"><b><font face="Lucida Sans Unicode" size="2">Not Humanly Readable</font></b></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b>Not general purpose</b>: 
+    Developers have to choose what to index. For queries that are not indexed, 
+    XML parsing is still needed.</font></li>
+      <li>
+    <p align="justify"><b><font face="Lucida Sans Unicode" size="2">Difficult to understand:</font></b></li>
+      <li>
+    <p align="justify"><b><font face="Lucida Sans Unicode" size="2">Slow update</font></b></li>
+    </ul>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">VTD+XML breaks new grounds and  possesses a number of significant 
+    benefits:</font><ul>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>Simple and general 
+    prupose</i></b>: 
+    VTD+XML is an easy-to-understand and natural way to persist pre-parsed form 
+    of XML. 30 seconds is what it takes for most to understand it!</font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>No loss to view-source principle</b></i>:&nbsp; 
+    XML is kept intact.</font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>Ultra high performance index 
+    generation</b></i>: See our <a href="http://vtd-xml.sf.net/benchmark.html">
+    benchmark</a> report..</font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>Incremental update --</b></i> 
+    Make efficient changes to XML content </font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>Content extraction -- </i></b>
+    Extract XML content</font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>Small footprint --</b></i>30%~50% 
+    of the additional space</font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>Hardware acceleration -- </i></b>
+    Even higher performance&nbsp; possible with ASIC implementation.</font></li>
+      <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>Binary XML -- </i></b>An 
+    upgrade path that retains the benefits of XML</font></li>
+    </ul>
+    <h2 align="justify">
+    <font face="Lucida Sans Unicode">5. The Spec For Integrated VTD+XML</font></h2>
+    <h3 align="justify"><font face="Lucida Sans Unicode">First 4 bytes</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">First byte: version number 
+    (first one is version 1 corresponding to VTD-XML 2.0 release)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Second byte: Encoding 
+    type</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Third byte:</font><ul>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>b0</b></i>: 1 -&gt; last LC uses ints; 0-&gt; last LC uses longs
+    </font> </li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>b1</b></i>: 1 -&gt; ns true;&nbsp;&nbsp;&nbsp; 0 -&gt; ns false</font></li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>b2</b></i>: 1 -&gt; big endian; 0 -&gt; little endian (consistent for vtd buffer and LC buffer)</font></li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>b3&nbsp; </i>1 -&gt; 
+    standard/extend VTD; 0 -&gt; standard; 1-&gt; extended</b></font></li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>b4~b7</i></b> -&gt; 0</font></li>
+      </ul>
+        </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Fourth byte: Maximum 
+    document depth</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">Second 4 bytes</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">First and Second bytes: # of LCs&nbsp; (in big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Third and Fourth bytes: Root index (in big endian)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">3rd to 6th 4-byte words</font></h3>
+    <blockquote>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Reserved</font></blockquote>
+    <h3 align="justify"><font face="Lucida Sans Unicode">XML </font> </h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of bytes </font> </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append XML also padded with 
+    zero so overall XML payload length is integer multiple of 8 bytes</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">VTD Records </font> </h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of VTD records (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append VTD records</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">LC level 1</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of LC entries (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append LC entries (if uses ints, and entry count odd, 
+    append a 32 bit zero)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">LC level 2</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of LC entries (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append LC entries (if uses ints, and entry count odd, 
+    append a 32 bit zero)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">LC level 3</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of LC entries (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append LC entries (if uses ints, and entry count odd, 
+    append a 32 bit zero)</font></li>
+      </ul>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">... (more LCs)</font><p align="justify">&nbsp;<h2 align="justify">
+    <font face="Lucida Sans Unicode">6. The Spec For Separate VTD+XML </font></h2>
+    <h3 align="justify"><font face="Lucida Sans Unicode">First 4 bytes</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">First byte: version number 
+    (first one is version <font color="#FF0000"><b>2</b></font>)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Second byte: Encoding 
+    type</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Third byte:</font><ul>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>b0</b></i>: 1 -&gt; last LC uses ints; 0-&gt; last LC uses longs
+    </font> </li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>b1</b></i>: 1 -&gt; ns true;&nbsp;&nbsp;&nbsp; 0 -&gt; ns false</font></li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><i><b>b2</b></i>: 1 -&gt; big endian; 0 -&gt; little endian (consistent for vtd buffer and LC buffer)</font></li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>b3&nbsp; </i>1 -&gt; 
+    standard/extend VTD; 0 -&gt; standard; 1-&gt; extended</b></font></li>
+          <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2"><b><i>b4~b7</i></b> -&gt; 0</font></li>
+      </ul>
+        </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Fourth byte: Maximum 
+    document depth</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">Second 4 bytes</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">First and Second bytes: # of LCs&nbsp; (in big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Third and Fourth bytes: Root index (in big endian)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">3rd to 6th 4-byte words</font></h3>
+    <blockquote>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Reserved</font></blockquote>
+    <h3 align="justify"><font face="Lucida Sans Unicode">XML </font> </h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of bytes </font> </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">16 bytes 
+    reserved (undefined)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Notice that 
+    compare with integrated VTD+XML, XML document bytes are missing, users are 
+    responsible to take care that part manually (an inherent shortcoming of 
+    separate VTD index from XML documents)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">VTD Records </font> </h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of VTD records (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append VTD records</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">LC level 1</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of LC entries (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append LC entries (if uses ints, and entry count odd, 
+    append a 32 bit zero)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">LC level 2</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of LC entries (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append LC entries (if uses ints, and entry count odd, 
+    append a 32 bit zero)</font></li>
+      </ul>
+    <h3 align="justify"><font face="Lucida Sans Unicode">LC level 3</font></h3>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">8 bytes: # of LC entries (big endian)</font></li>
+        <li>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">Append LC entries (if uses ints, and entry count odd, 
+    append a 32 bit zero)</font></li>
+      </ul>
+    <p align="justify"><font face="Lucida Sans Unicode" size="2">... (more LCs)</font><p>&nbsp;</blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="16" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">VTD in 
+      30 seconds</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="16" align="left" bordercolor="#0000FF" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">VTD+XML Format (<font color="#FF0000">updated</font>)</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="25" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">User's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="13" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html" style="text-decoration: none">Developer's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="12" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b>
+      <font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">VTD: A Technical Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="14" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="4" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="3" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/involved.html" style="text-decoration: none">
+      Getting Involved</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="7" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/links.html" style="text-decoration: none">Articles and Presentations</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="29" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a style="text-decoration: none" href="http://vtd-xml.sourceforge.net/benchmark1.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="21" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="19" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="260" height="2426" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+</html>
