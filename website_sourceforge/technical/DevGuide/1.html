@@ -1,0 +1,413 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>New Page 1</title>
+</head>
+
+<body>
+
+<p>&nbsp;</p>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">Project 
+    Homepage of VTD-XML </font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=69358&amp;type=5"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center"><a href="http://www.sf.net/projects/vtd-xml">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber3" height="1293">
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="623" height="1293" rowspan="11" valign="top" bgcolor="#E1E2D6" style="border-style: none; border-width: medium">
+    <blockquote>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <h2 align="justify"><font face="Tahoma">1. VTD Records</font></h2>
+    <p align="justify"><font face="Tahoma">In this section, the sample XML file 
+    is tokenized according the VTD specification.</font></p>
+    <p align="justify"><font face="Tahoma">Before parsing, VTD-XML reads the 
+    following file into the buffer.</font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="90%" id="AutoNumber4" height="1">
+      <tr>
+        <td width="100%" height="1" bordercolor="#D3FAF1" bgcolor="#E6F9F1">
+    <p align="justify"><font face="Courier" size="2">&lt;?xml version=&quot;1.0&quot;?&gt;<br>
+    &lt;rdf:RDF <br>
+&nbsp; xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;<br>
+&nbsp; xmlns=&quot;http://purl.org/rss/1.0/&quot;&gt;<br>
+    <br>
+&nbsp; &lt;channel rdf:about=&quot;http://www.xml.com/xml/news.rss&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;title&gt;XML.com&lt;/title&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;description&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XML.com features a rich mix of information and 
+    services <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for the XML community.<br>
+&nbsp;&nbsp;&nbsp; &lt;/description&gt;<br>
+&nbsp; &lt;/channel&gt;<br>
+&nbsp; <br>
+&nbsp; &lt;item rdf:about=&quot;http://xml.com/pub/2000/08/09/xslt/xslt.html&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;title&gt;Processing Inclusions with XSLT&lt;/title&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;description&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; This article proposes a way of preserving inclusion <br>
+&nbsp;&nbsp;&nbsp;&nbsp; information through SAX-based processing.<br>
+&nbsp;&nbsp;&nbsp; &lt;/description&gt;<br>
+&nbsp; &lt;/item&gt;<br>
+&nbsp; <br>
+&nbsp; &lt;item rdf:about=&quot;http://xml.com/pub/2000/08/09/rdfdb/index.html&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;title&gt;Putting RDF to Work&lt;/title&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;link&gt;http://xml.com/pub/2000/08/09/rdfdb/index.html&lt;/link&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;description&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Tool and API support for the Resource Description 
+    Framework <br>
+&nbsp;&nbsp;&nbsp;&nbsp; is slowly coming of age.<br>
+&nbsp;&nbsp;&nbsp; &lt;/description&gt;<br>
+&nbsp; &lt;/item&gt;<br>
+    <br>
+    &lt;/rdf:RDF&gt;</font></p>
+        <p>&nbsp;</td>
+      </tr>
+    </table>
+    <p align="justify"><font face="Tahoma">After parsing, VTD records, shown in 
+    the table below, are produced. Notice that end tags' VTD records are 
+    discarded.</font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="90%" id="AutoNumber5" height="85">
+      <tr>
+        <td width="10%" height="68" align="center"><b>Index</b></td>
+        <td width="23%" height="68"><b>Token Value</b></td>
+        <td width="14%" height="68" align="center"><b>Token Type</b></td>
+        <td width="15%" height="68" align="center"><b>Nesting Depth</b></td>
+        <td width="38%" height="68" align="center"><b>Offset:Length</b><p><b>
+        Offset: prefix length: Qname length</b></td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">0</td>
+        <td width="23%" height="19"><b>Version</b></td>
+        <td width="14%" height="19" align="center">9</td>
+        <td width="15%" height="19" align="center">-1</td>
+        <td width="38%" height="19" align="center">6:7</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">1</td>
+        <td width="23%" height="19"><b>1.0</b></td>
+        <td width="14%" height="19" align="center">10</td>
+        <td width="15%" height="19" align="center">-1</td>
+        <td width="38%" height="19" align="center">15:3</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">2</td>
+        <td width="23%" height="19"><b>rdf:RDF</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">0</td>
+        <td width="38%" height="19" align="center">23:3:7</td>
+      </tr>
+      <tr>
+        <td width="10%" height="16" align="center">3</td>
+        <td width="23%" height="16"><b>xmlns:rdf</b></td>
+        <td width="14%" height="16" align="center">3</td>
+        <td width="15%" height="16" align="center">0</td>
+        <td width="38%" height="16" align="center">34:5:9</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">4</td>
+        <td width="23%" height="19"><b>
+        http://www.w3.org/1999/02/22-rdf-syntax-ns#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </b></td>
+        <td width="14%" height="19" align="center">4</td>
+        <td width="15%" height="19" align="center">0</td>
+        <td width="38%" height="19" align="center">45:43</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">5</td>
+        <td width="23%" height="19"><b>xmlns</b></td>
+        <td width="14%" height="19" align="center">3</td>
+        <td width="15%" height="19" align="center">0</td>
+        <td width="38%" height="19" align="center">92:0:5</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">6</td>
+        <td width="23%" height="19"><b>http://purl.org/rss/1.0/</b></td>
+        <td width="14%" height="19" align="center">4</td>
+        <td width="15%" height="19" align="center">0</td>
+        <td width="38%" height="19" align="center">99:24</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">7</td>
+        <td width="23%" height="19"><b>channel</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">130:0:7</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">8</td>
+        <td width="23%" height="19"><b>rdf:about</b></td>
+        <td width="14%" height="19" align="center">2</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">138:3:9</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">9</td>
+        <td width="23%" height="19"><b>http://www.xml.com/xml/news.rss</b></td>
+        <td width="14%" height="19" align="center">4</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">149:31</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">10</td>
+        <td width="23%" height="19"><b>title</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">188:0:5</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">11</td>
+        <td width="23%" height="19"><b>XML.com</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">194:7</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">12</td>
+        <td width="23%" height="19"><b>description</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">215:11</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">13</td>
+        <td width="23%" height="19"><b>XML.com features a rich mix of 
+        information and services for the XML community.</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">227:95</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">14</td>
+        <td width="23%" height="19"><b>item</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">358:0:4</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">15</td>
+        <td width="23%" height="19"><b>rdf:about</b></td>
+        <td width="14%" height="19" align="center">2</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">363:3:9</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">16</td>
+        <td width="23%" height="19"><b>http://xml.com/pub/2000/08/09/xslt/xslt.html</b></td>
+        <td width="14%" height="19" align="center">4</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">374:44</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">17</td>
+        <td width="23%" height="19"><b>title</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">426:0:5</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">18</td>
+        <td width="23%" height="19"><b>Processing Inclusions with XSLT</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">432:29</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">19</td>
+        <td width="23%" height="19"><b>description</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">477:0:11</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">20</td>
+        <td width="23%" height="19"><b>This article proposes a way of preserving 
+        inclusion information through SAX-based processing.</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">489:105</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">21</td>
+        <td width="23%" height="19"><b>item</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">630:0:4</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">22</td>
+        <td width="23%" height="19"><b>rdf:about</b></td>
+        <td width="14%" height="19" align="center">2</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">635:3:9</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">23</td>
+        <td width="23%" height="19"><b>http://xml.com/pub/2000/08/09/rdfdb/index.html</b></td>
+        <td width="14%" height="19" align="center">4</td>
+        <td width="15%" height="19" align="center">1</td>
+        <td width="38%" height="19" align="center">646:46</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">24</td>
+        <td width="23%" height="19"><b>title</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">700:0:5</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">25</td>
+        <td width="23%" height="19"><b>Putting RDF to Work</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">706:19</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">26</td>
+        <td width="23%" height="19"><b>link</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">739:0:4</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">27</td>
+        <td width="23%" height="19"><b>http://xml.com/pub/2000/08/09/rdfdb/index.html</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">744:42</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">28</td>
+        <td width="23%" height="19"><b>description</b></td>
+        <td width="14%" height="19" align="center">0</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">803:0:11</td>
+      </tr>
+      <tr>
+        <td width="10%" height="19" align="center">29</td>
+        <td width="23%" height="19"><b>Tool and API support for the Resource 
+        Description Framework is slowly coming of age.</b></td>
+        <td width="14%" height="19" align="center">5</td>
+        <td width="15%" height="19" align="center">2</td>
+        <td width="38%" height="19" align="center">815:94</td>
+      </tr>
+      </table>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma"><a href="http://vtd-xml.sf.net/VTD.html">
+      <font size="2">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html"><b><font size="2" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="1" align="left" bordercolor="#000000" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/userGuide/0.html">User's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" bgcolor="#E1E2D6" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      Developer's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp;<a href="http://vtd-xml.sf.net/devGuide/0.html">0. Objective</a></font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp;1. VTD Records </font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp;<a href="http://vtd-xml.sf.net/devGuide/2.html">2. LC entries</a></font></b></p>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/devGuide/3.html">&nbsp;3. Other outputs</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="51" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/technical/0.html">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">Tutorial</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/faq.html">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sourceforge.net/benchmark.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/javadoc/">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="1" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/demo.html">Demo</a> (</font><i><font color="#FF0000" face="Tahoma" size="4">New!!</font></i><font face="Tahoma" size="2"> 
+      with XPath</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="217" height="1130" bordercolor="#0000FF" style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+
+</html>

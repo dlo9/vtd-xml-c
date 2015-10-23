@@ -1,0 +1,190 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Project Homepage of VTD</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">Project 
+    Homepage of VTD-XML </font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=69358&amp;type=5"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center"><a href="http://www.sf.net/projects/vtd-xml">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://prdownloads.sourceforge.net/vtd-xml/ximpleware_0.5.zip?download">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber3" height="642">
+  <tr>
+    <td width="243" height="16" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td height="642" rowspan="9" valign="top" width="817" bgcolor="#E1E2D6">
+    <blockquote>
+      <h2 align="justify">&nbsp;</h2>
+      <h2 align="justify"><font face="Tahoma" color="#25461C">1. Introduction</font></h2>
+      <p align="justify"><font face="Book Antiqua">As an open and 
+      platform-independent data/document encoding format, XML is playing an 
+      increasingly important role in information exchange and storage. 
+      Application developers often find XML easy to learn because it is human 
+      readable. At the same time, enterprises are storing large amounts of 
+      business data permanently in XML format. Web services, the next generation 
+      middleware technology, also choose XML as the wire format for data in 
+      order to overcome interoperability issues associated with prior-generation 
+      middleware technologies, e.g. CORBA and DCOM. Although XML is being used 
+      in so many different ways, one thing remains the same: An XML document 
+      needs to be parsed before applications can do anything with it. Inheriting 
+      heavily from traditional text processing techniques, existing XML 
+      processors extracts tokens out of the source document into many discrete 
+      string objects. Subsequently, one can build data structure or class 
+      hierarchies on top of those tokens.</font></p>
+      <p class="p1a" align="justify"><font face="Book Antiqua">Nevertheless, 
+      we would like to observe that, to achieve the purpose of tokenization, one 
+      has another option, i.e. to <i>only</i> record the starting offset and 
+      token length, while leaving the token content &quot;as is&quot; in the source 
+      document. In other words, we can treat the source document as a large 
+      &quot;token&quot; bucket, while creating a map detailing the positions of tokens in 
+      the bucket.&nbsp;</font></p>
+      <p class="p1a" align="justify"><font face="Book Antiqua">To help 
+      illustrate how this &quot;non-extractive&quot; style of tokenization works, we 
+      compare it with traditional &quot;extractive&quot; tokens in some common usage 
+      scenarios:</font></p>
+      <ul>
+        <li>
+      <p align="justify"><font face="Book Antiqua"><b>String Comparison</b>- Under the traditional text-processing framework, one uses some 
+      flavors of C's &quot;<i>strcmp</i>&quot; function (in &lt;<i>string.h</i>&gt;) to compare 
+      an &quot;extractive&quot; token against a known string. In our approach, one simply 
+      uses C's &quot;<i>strncmp</i>&quot; function in &lt;<i>string.h</i>&gt;.</font></li>
+      <li>
+      <p align="justify"><font face="Book Antiqua"><b>String to numerical 
+      data conversion</b>- Other frequently used macros, such as &quot;<i>atoi</i>&quot; 
+      and &quot;atof,&quot; can be revised to work with non-extractive tokens. One of the 
+      possible changes is the signatures of the functions. For example, &quot;atoi&quot; 
+      takes a character string as the input. To make a non-extractive 
+      equivalent, one can create a &quot;<i>new-atoi</i>&quot; that accepts three 
+      variables: the source document (of the type char*), offset (of the type 
+      int), and length (of the type int). The difference in implementation is 
+      mostly to deal with the new string/token representation (e.g. end of 
+      string is no longer marked by \0).</font></li>
+    <li>
+      <p align="justify"><font face="Book Antiqua"><b>Trim</b>- Removing the 
+      leading and trailing white spaces of a &quot;non-extractive&quot; token only 
+      requires changes to the values of offset and length. This is usually 
+      simpler than extractive style of tokenization, which often involves the 
+      creation of new objects.</font></li>
+  </ul>
+      <p align="justify"><font face="Book Antiqua">Overall we feel that, 
+      apart from some implementation changes, the difference between traditional 
+      tokenization and the proposed &quot;non-extractive&quot; tokenization is largely a 
+      change in perspective. They are just two different ways to describe the 
+      same thing, i.e. a token.<br>
+      <br>
+      Going one step further, one can implement various &quot;non-extractive&quot; 
+      functions to directly deal with native character encoding. For XML 
+      processing, application developers are more used to UCS-2 strings within 
+      their code. Those functions need to be &quot;smart&quot; enough to understand 
+      different character encodings and, at the same time, export UCS-2 
+      compatible signatures to calling applications.</font></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="25" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/VTD.html">VTD in 
+      30 seconds</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="29" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/usersGuide.html">User's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="25" align="left" bordercolor="#0000FF" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">Developer's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp; </font><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/devGuide.html">0. Abstract</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;&nbsp;1. Introduction</font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp; </font>
+      <font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/devGuide2.html">2. A Processing Model Based on VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/devGuide3.html">3. Navigate XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/devGuide4.html">4. A Closer Look</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/devGuide5.html">5. Conclusion</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;<a href="http://vtd-xml.sf.net/devGuide6.html">References</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="22" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/faq.html">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="26" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sourceforge.net/benchmark.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="32" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/javadoc/">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="19" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/demo.html">
+      Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="448" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+
+</html>

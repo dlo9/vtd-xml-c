@@ -1,0 +1,243 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>New Page 1</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">Project 
+    Homepage of VTD-XML </font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=69358&amp;type=5"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center"><a href="http://www.sf.net/projects/vtd-xml">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://prdownloads.sourceforge.net/vtd-xml/ximpleware_0.5.zip?download">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber3" height="1264">
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="817" height="1264" rowspan="11" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">Users' 
+    Guide (6/10/2004 version 0.5)</font></h1>
+    <p align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font><font face="Tahoma" color="#003300"><a href="mailto:info@ximpleware.com">info@ximpleware.com</a></font></p>
+    <h2 align="justify"><font face="Tahoma" size="5" color="#003300">1. 
+    Introduction</font></h2>
+    <h3 align="justify"><i><font face="Tahoma" color="#003300">Basic concept of VTD</font></i></h3>
+    <p align="justify"><font face="Verdana" size="2">For XML files&nbsp; that don't declare entity 
+    in Document Type Declaration (e.g. SOAP), 
+    tokenization can be done by only recording starting offset and length. To 
+    make it work, one also needs to maintain XML in memory intact and 
+    un-decoded. This has led to the design of a binary encoding specification we 
+    called Virtual Token Descriptor (VTD). A VTD record is a 64-bit integer that 
+    encodes the starting offset, length, token type and nesting depth of a token 
+    as in the XML document. <br>
+    <br>
+    Specific to our current implementation, 
+    a VTD record is a 64-bit integer in network byte order (big endian) with the 
+    following bit-level layout:</font></p>
+    <ul>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Starting offset</b>--30 
+      bits (b29 ~ b0)</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Length</b>--20 bits 
+      (b51 ~ b32)</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2">For some token types<br>
+      * <i>Prefix length</i>: 9 bits (b51~ b43)<br>
+      * <i>Qname length</i>: 11 bits (b42 ~ b 32)</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Nesting Depth</b>--8 
+      bits (b59~b52) -- Maximum value is 2^8-2 = 254</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Token type</b>--4 bits 
+      (b63~b60): more details in appendix.</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Reserved bit</b>--2 
+      bits (b31: b30) are reserved for a tri-state variable marking namespaces.</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Unit</b>--Because the 
+      processing model internally stores XML un-decoded, the unit for offset and length are in 
+      raw character of the transformation format. For UTF-8 and ISO-8859, length 
+      and offset are in bytes. They are in 16-bit words for UTF-16.</font></li>
+    </ul>
+    <h3 align="justify"><i><font face="Tahoma" size="4" color="#003300">Pros and 
+    Cons of VTD</font></i></h3>
+    <p align="justify"><font face="Verdana" size="2">Because tokens represented 
+    in VTD are constant in length, XML processing based on VTD can potentially 
+    have the following benefits:</font></p>
+    <ul>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Conserving memory</b>: 
+      <b>(1)</b>Because a VTD record is not an object, it is not subject to per-object 
+      memory overhead. <b>(2)</b>VTD storage can be bulk-allocated (i.e., using large 
+      memory blocks): when one allocates a large memory block to store 1024 VTD 
+      tokens, he only incurs the per-array memory overhead once, essentially 
+      reducing the per-record overhead to almost nothing. </font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>High Performance</b>: 
+      <b>(1)</b> Using VTD we attempt to achieve high performance in parsing, which is a 
+      by-product of VTD's memory conserving features: Less memory usage means 
+      less amount of memory is allocated. <b>(2)</b> Large memory blocks are faster to 
+      generate and GC than many discrete objects. Please keep in mind that we 
+      are in the early stage of this technology. So further improvements on 
+      performance and usability should be expected.</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Inherent Persistence</b>: 
+      VTD records can be persisted on disk or transmitted along  XML to 
+      improve XML processing throughput.</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Incremental Update</b>: 
+      This feature is well-explained in a recently article <br>
+      </font><font face="Verdana" color="#003300" size="2">
+      <a href="http://www.xml.com/pub/a/2004/05/19/parsing.html">
+      http://www.xml.com/pub/a/2004/05/19/parsing.html</a></font></li>
+    </ul>
+    <p align="justify"><font face="Verdana" size="2">At the same time, one needs to be aware 
+    of the some of the limitations of VTD:</font></p>
+    <ul>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Upper limits of various 
+      fields</b>: (1) For starting tags (the max Qname length is 2048; the 
+      prefix 512), overflow conditions result in parse exceptions. For other 
+      tokens (upper limit is 1M), one can potentially break a long token into 
+      multiple shorter ones.(2) Depth field overflow condition results in parse 
+      exceptions. (3) Starting offset: Currently the biggest document supported 
+      is 1G characters (1G bytes or 2G bytes, depending on actual document 
+      encoding). </font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Limit of Bit-level 
+      layout</b>: It is possible that one needs to rearrange bit-level layout to 
+      meet actual processing requirement.</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>VTD Token length limit</b>: 
+      Currently a VTD record is 64-bit in length. One can add another 32 bit if 64 bits are not 
+      enough.</font></li>
+      <li>
+      <p align="justify"><font face="Verdana" size="2"><b>Entity support</b>: 
+      Current Implementation only supports built-in ones: <i>&amp;amps; &amp;gt; &amp;lt; 
+      &amp;apos; &amp;quot;</i></font></li>
+    </ul>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma"><a href="http://vtd-xml.sf.net/VTD.html">
+      <font size="2">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html"><b><font size="2" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="240" align="left" bordercolor="#000000" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">User's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 1. Introduction</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 2.
+      <a href="http://vtd-xml.sf.net/usersGuide2.html">Goals and Features</a>&nbsp;&nbsp;&nbsp; </font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 3.
+      <a href="http://vtd-xml.sf.net/usersGuide3.html">How to Process XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 4.
+      <a href="http://vtd-xml.sf.net/usersGuide4.html">Navigate VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 5.
+      <a href="http://vtd-xml.sf.net/usersGuide5.html">Classes/Interfaces and Methods</a></font></b></p>
+      <p>&nbsp;</p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      Developer's Guide</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="51" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/technical/0.html">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">Tutorial</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/faq.html">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sourceforge.net/benchmark.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/javadoc/">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/demo.html">
+      Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="693" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+
+</html>

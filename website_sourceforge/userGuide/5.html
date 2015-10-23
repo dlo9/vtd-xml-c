@@ -1,0 +1,306 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>VTD-XML User's Guide</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">VTD-XML: 
+    The Future of XML Processing</font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center">
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF">Mailing Lists</font></a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="878">
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="817" height="878" rowspan="14" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <h2 align="justify"><font face="Tahoma" size="5" color="#003300">5. 
+    Comparison with </font><i><font face="Tahoma" color="#003300">DOM, SAX and 
+    PULL</font></i></h2>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="87%" id="AutoNumber4" bgcolor="#FFFFFF" height="568">
+      <tr>
+        <td width="22%" height="21">&nbsp;</td>
+        <td width="21%" align="center" height="21">
+        <font face="Book Antiqua" color="#000066"><b>VTD-XML</b></font></td>
+        <td width="22%" align="center" height="21"><b>
+        <font face="Book Antiqua" color="#000066">DOM</font></b></td>
+        <td width="21%" align="center" height="21"><b>
+        <font face="Book Antiqua" color="#000066">SAX/PULL</font></b></td>
+      </tr>
+      <tr>
+        <td width="22%" height="110"><i><font face="Tahoma"><b>Processing Model 
+        Description</b></font></i><p>&nbsp;</td>
+        <td width="21%" height="110">
+        <font face="Book Antiqua" size="2" color="#FF0000">&nbsp; In memory 
+        cursor based on &quot;<b>non-extractive</b>&quot; VTD records (Virtual Token 
+        Descriptor)</font></td>
+        <td width="22%" height="110"><font face="Book Antiqua" size="2">&nbsp; 
+        In memory object model based on Node object and &quot;<b>extractive</b>&quot; 
+        tokens</font></td>
+        <td width="21%" height="110"><font face="Book Antiqua" size="2">&nbsp;Low-level 
+        tokenizer based on &quot;<b>extractive</b>&quot; tokens</font></td>
+      </tr>
+      <tr>
+        <td width="22%" bgcolor="#FFFFFF" height="87"><i><font face="Tahoma"><b>
+        Performance</b></font></i><p>&nbsp;</td>
+        <td width="21%" bgcolor="#FFFFFF" height="87">
+        <font face="Book Antiqua" size="2" color="#FF0000">&nbsp; <b>Fastest</b> 
+        (outperform SAX with Null Content handler)</font></td>
+        <td width="22%" bgcolor="#FFFFFF" height="87">
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp; <b>Slowest</b></font></td>
+        <td width="21%" bgcolor="#FFFFFF" height="87">
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp; Second fastest, 
+        Raw speed un-indicative of its real world performance</font></td>
+      </tr>
+      <tr>
+        <td width="22%" height="57">&nbsp;<p><i><font face="Tahoma"><b>Memory 
+        Usage</b></font></i></p>
+        <p>&nbsp;</td>
+        <td width="21%" height="57">
+        <font face="Book Antiqua" size="2" color="#FF0000">&nbsp;&nbsp; <b>&nbsp;1.3x 
+        ~1.5x</b> of the document size</font></td>
+        <td width="22%" height="57"><font face="Book Antiqua" size="2">&nbsp;&nbsp;
+        <b>5x~10x</b> of the document size</font></td>
+        <td width="21%" height="57"><font face="Book Antiqua" size="2">&nbsp;&nbsp; 
+        Doesn't grow with document size</font></td>
+      </tr>
+      <tr>
+        <td width="22%" bgcolor="#FFFFFF" height="57">&nbsp;<p><i>
+        <font face="Tahoma"><b>Random Access</b></font></i></p>
+        <p>&nbsp;</td>
+        <td width="21%" bgcolor="#FFFFFF" height="57"><b>
+        <font face="Book Antiqua" size="2" color="#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Yes</font></b></td>
+        <td width="22%" bgcolor="#FFFFFF" height="57"><b>
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Yes</font></b></td>
+        <td width="21%" bgcolor="#FFFFFF" height="57"><b>
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; No, 
+        Forward only </font></b></td>
+      </tr>
+      <tr>
+        <td width="22%" bgcolor="#FFFFFF" height="57"><b><i><font face="Tahoma">
+        Usability</font></i></b></td>
+        <td width="21%" bgcolor="#FFFFFF" height="57">
+        <font face="Book Antiqua" size="2" color="#FF0000"><b>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Excellent (</b>shortest code for most given tasks<b>)</b></font></td>
+        <td width="22%" bgcolor="#FFFFFF" height="57"><b>
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp; Very good
+        </font></b></td>
+        <td width="21%" bgcolor="#FFFFFF" height="57"><b>
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Poor</font></b></td>
+      </tr>
+      <tr>
+        <td width="22%" height="76">&nbsp;<p><i><font face="Tahoma"><b>
+        Incremental Modification</b></font></i></p>
+        <p>&nbsp;</td>
+        <td width="21%" height="76"><b>
+        <font face="Book Antiqua" size="2" color="#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Yes&nbsp;&nbsp;&nbsp;&nbsp; </font></b></td>
+        <td width="22%" height="76"><b><font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        No</font></b></td>
+        <td width="21%" height="76"><b><font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        No</font></b></td>
+      </tr>
+      <tr>
+        <td width="22%" bgcolor="#FFFFFF" height="77"><i><font face="Tahoma"><b>
+        Inherent Persistence (avoid parsing every time)</b></font></i><p>&nbsp;</td>
+        <td width="21%" bgcolor="#FFFFFF" height="77"><b>
+        <font face="Book Antiqua" size="2" color="#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Yes </font></b></td>
+        <td width="22%" bgcolor="#FFFFFF" height="77"><b>
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        No</font></b></td>
+        <td width="21%" bgcolor="#FFFFFF" height="77"><b>
+        <font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        No</font></b></td>
+      </tr>
+      <tr>
+        <td width="22%" height="76"><i><font face="Tahoma"><b>Hardware 
+        Implementation</b></font></i><p>&nbsp;</td>
+        <td width="21%" height="76"><b><font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        Yes</font></b></td>
+        <td width="22%" height="76"><b><font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        N/A</font></b></td>
+        <td width="21%" height="76"><b><font face="Book Antiqua" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        N/A</font></b></td>
+      </tr>
+    </table>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="18" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">
+      <font size="1">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none"><b>
+      <font size="1" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/persistence.html" style="text-decoration: none">VTD+XML Format</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="240" align="left" bordercolor="#000000" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">User's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">0. Introduction</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/1.html" style="text-decoration: none">1. Goals and Features</a>&nbsp;&nbsp;&nbsp; </font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/2.html" style="text-decoration: none">2. How to Process XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/3.html" style="text-decoration: none">3. Navigate VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/4.html" style="text-decoration: none">4. Classes/Interfaces and Methods</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 5. Comparison with DOM, SAX, and 
+      Pull</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/userGuide/6.html" style="text-decoration: none">6. Table for Token Types</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/userGuide/7.html" style="text-decoration: none">&nbsp;7. The C version 
+      VTD-XML</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html" style="text-decoration: none">Developer's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="1" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/involved.html" style="text-decoration: none">
+      Getting Involved</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/links.html" style="text-decoration: none">Articles and Presentations</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a style="text-decoration: none" href="http://vtd-xml.sourceforge.net/benchmark1.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="403" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+
+</html>

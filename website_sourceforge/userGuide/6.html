@@ -1,0 +1,510 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>VTD-XML User's Guide</title>
+<style>
+<!--
+table.MsoTableGrid
+	{border:1.0pt solid windowtext;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	text-indent:11.35pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	}
+-->
+</style>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">VTD-XML: 
+    The Future of XML Processing</font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center">
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF">Mailing Lists</font></a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="826">
+  <tr>
+    <td width="241" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="809" height="826" rowspan="14" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <h2 align="justify"><font face="Tahoma" color="#003300">6</font><font face="Tahoma" size="5" color="#003300">. </font>
+    <font face="Tahoma" color="#003300">Token Type Table</font></h2>
+    <hr>
+    <table class="MsoTableGrid" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: medium none">
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">
+        <font size="4" face="Lucida Sans">Type value</font></span></i></b></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">
+        <font size="4" face="Lucida Sans">Type Name</font></span></i></b></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">
+        <font size="4" face="Lucida Sans">Example</font></span></i></b></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">
+        <font size="4" face="Lucida Sans">Variable Name</font></span></i></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">0</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        Start Tag</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;</font></span><font size="5"><b><span style="font-family: TimesNewRomanPS-BoldMT">example</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_STARTING_TAG</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">1</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        End Tag</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;/</font></span><font size="5"><b><span style="font-family: TimesNewRomanPS-BoldMT">example</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_ENDING_TAG</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">2</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        Attribute Name</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;example
+        </font></span><font size="5"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">attrName1</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">=&quot;this&quot;&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_ATTR_NAME</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">3</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        Name Space</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;ns:example
+        </font></span><font size="5"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">xmlns:ns</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">=&quot;google&quot;&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_ATTR_NS</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">4</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        Attribute Value </font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;example 
+        property2=&quot;</font></span><font size="5"><b><span style="font-family: TimesNewRomanPS-BoldMT">that</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">&quot;&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_ATTR_VAL</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">5</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans"><i>Character Data</i></font></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;example&gt;</font></span><b><span style="font-family: TimesNewRomanPS-BoldMT"><font size="5">tasty 
+        fruit</font><font size="4"> </font></span></b>
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;/example&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <font face="Lucida Sans">
+        <b><span style="font-family: TimesNewRomanPS-BoldMT"><font size="4">
+        TOKEN_</font></span></b><font size="4"><b>CHARACTER_DATA</b></font></font></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">6</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><font size="4" face="Lucida Sans">Comment</font></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;!-- </font>
+        </span><font size="4"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">this is a comment
+        </span></b></font><span style="font-family: TimesNewRomanPSMT">
+        <font size="4">--&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_COMMENT</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">7</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        Processing Instruction name</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;?</font></span><b><span style="font-family: TimesNewRomanPS-BoldMT"><font size="5">target</font><font size="4">
+        </font></span></b><span style="font-family: TimesNewRomanPSMT">
+        <font size="4">street=&quot;mission&quot; ?&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <b><span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_PI_NAME</font></span></b></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">8</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        Processing Instruction value</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;?target
+        </font></span><span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4"><b>street=&quot;</b></font><b><font size="5">mission</font><font size="4">&quot;
+        </font></b></span><span style="font-family: TimesNewRomanPSMT">
+        <font size="4">?&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <b><span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_PI_VAL</font></span></b></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">9</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        XML declaration property name</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;?xml </font>
+        </span><font size="5"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">version</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">=&quot;1.0&quot; 
+        ?&gt;</font></span></font></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <b><span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_DEC_ATTR_NAME</font></span></b></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">10</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="center" style="text-align: center; text-indent: 0in; text-autospace: none">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        XML declaration&nbsp; property value</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;?xml 
+        version=&quot;</font></span><font size="5"><b><span style="font-family: TimesNewRomanPS-BoldMT">1.0</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">&quot; 
+        ?&gt;</font></span></font></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+        <b><span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_DEC_ATTR_VAL</font></span></b></p>
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">&nbsp;</font></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">11</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        CDATA value</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;![CDATA[</font></span><font size="5"><b><span style="font-family: TimesNewRomanPS-BoldMT">…data 
+        content…</span></b></font><span style="font-family: TimesNewRomanPSMT"><font size="4">]]&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_CDATA_VAL</font></span></b></td>
+      </tr>
+      <tr>
+        <td width="67" valign="top" style="width: 50.05pt; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <font size="4" face="Lucida Sans">12</font></td>
+        <td width="129" valign="top" style="width: 97.0pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" align="center" style="text-align: center; text-indent: 0in; margin-left: 0in">
+        <i><span style="font-family: TimesNewRomanPS-ItalicMT">
+        <font size="4" face="Lucida Sans">
+        DOCTYPE</font></span></i></td>
+        <td width="205" valign="top" style="width: 153.8pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in">
+        <font face="Lucida Sans">
+        <span style="font-family: TimesNewRomanPSMT"><font size="4">&lt;!DOCTYPE
+        </font></span><font size="6">
+        <span style="font-family: TimesNewRomanPS-BoldMT; font-weight: 700">…</span></font><span style="font-family: TimesNewRomanPSMT"><font size="4">&gt;</font></span></font></td>
+        <td width="189" valign="top" style="width: 141.95pt; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in">
+        <p class="BulletItem" style="text-indent: 0in; margin-left: 0in"><b>
+        <span style="font-family: TimesNewRomanPS-BoldMT">
+        <font size="4" face="Lucida Sans">
+        TOKEN_DTD_VAL</font></span></b></td>
+      </tr>
+    </table>
+    <p align="justify">&nbsp;</p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="18" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">
+      <font size="1">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none"><b>
+      <font size="1" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/persistence.html" style="text-decoration: none">VTD+XML Format</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="240" align="left" bordercolor="#000000" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">User's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">0. Introduction</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/1.html" style="text-decoration: none">1. Goals and Features</a>&nbsp;&nbsp;&nbsp; </font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/2.html" style="text-decoration: none">2. How to Process XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/3.html" style="text-decoration: none">3. Navigate VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/4.html" style="text-decoration: none">4.Classes/Interfaces and Methods</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/5.html" style="text-decoration: none">5. Comparison with DOM, SAX, and 
+      Pull</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 6. Table for Token Types </font>
+      </b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;<a href="http://vtd-xml.sf.net/userGuide/7.html" style="text-decoration: none"> 
+      7. The C version VTD-XML</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html" style="text-decoration: none">Developer's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="21" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/involved.html" style="text-decoration: none">
+      Getting Involved</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/links.html" style="text-decoration: none">Articles and Presentations</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a style="text-decoration: none" href="http://vtd-xml.sourceforge.net/benchmark1.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo </a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="241" height="285" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+
+</html>

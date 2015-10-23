@@ -1,0 +1,515 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>VTD-XML Developer's Guide</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">VTD-XML: 
+    The Future of XML Processing</font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center">
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF">Mailing Lists</font></a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="1300">
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="817" height="1300" rowspan="13" valign="top" bgcolor="#E1E2D6" style="border-style: none; border-width: medium">
+    <blockquote>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <h2 align="justify"><font face="Lucida Sans">2. LC Entries</font></h2>
+    <p align="justify"><font face="Lucida Sans">This section demonstrates how to 
+    derive LCs from VTD records.</font></p>
+    <p align="justify"><font face="Lucida Sans">Because VTD-XML bases the hierarchy 
+    entirely on elements. The VTD record table has been simplified by discarding 
+    all VTD records not describing starting tags. Then, the elements to be 
+    captured by LCs are highlighted.</font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="90%" id="AutoNumber6" height="293">
+      <tr>
+        <td width="7%" height="76" align="center"><font face="Book Antiqua"><b>
+        Index</b></font></td>
+        <td width="13%" height="76"><font face="Book Antiqua"><b>Token Value</b></font></td>
+        <td width="9%" height="76" align="center"><font face="Book Antiqua"><b>
+        Token Type</b></font></td>
+        <td width="9%" height="76" align="center"><font face="Book Antiqua"><b>
+        Nesting Depth</b></font></td>
+        <td width="31%" height="76" align="center"><font face="Book Antiqua"><b>
+        Offset:Length</b></font><p><font face="Book Antiqua"><b>Offset: prefix 
+        length: Qname length</b></font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center"><font face="Book Antiqua">2</font></td>
+        <td width="13%" height="19"><font face="Book Antiqua"><b>rdf:RDF</b></font></td>
+        <td width="9%" height="19" align="center"><font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center"><font face="Book Antiqua">0</font></td>
+        <td width="31%" height="19" align="center"><font face="Book Antiqua">
+        23:3:7</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">7</font></td>
+        <td width="13%" height="19" bgcolor="#C0C0C0"><font face="Book Antiqua">
+        <b>channel</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">1</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">130:0:7</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">10</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>title</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">188:0:5</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">12</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>description</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">215:11</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="16" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">14</font></td>
+        <td width="13%" height="16" bgcolor="#C0C0C0"><font face="Book Antiqua">
+        <b>item</b></font></td>
+        <td width="9%" height="16" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="16" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">1</font></td>
+        <td width="31%" height="16" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">358:0:4</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">17</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>title</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">426:0:5</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">19</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>description</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">477:0:11</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">21</font></td>
+        <td width="13%" height="19" bgcolor="#C0C0C0"><font face="Book Antiqua">
+        <b>item</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">1</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">630:0:4</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">24</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>title</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">700:0:5</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">26</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>link</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">739:0:4</font></td>
+      </tr>
+      <tr>
+        <td width="7%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">28</font></td>
+        <td width="13%" height="19" bgcolor="#D3FAF1"><font face="Book Antiqua">
+        <b>description</b></font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">0</font></td>
+        <td width="9%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">2</font></td>
+        <td width="31%" height="19" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">803:0:11</font></td>
+      </tr>
+    </table>
+    <p align="justify"><font face="Lucida Sans">Next, LC tables for element of 
+    depth value 1 and 2 are created respectively. The upper 32 bits are filled 
+    with the VTD index of the elements (equivalent starting tags).</font></p>
+    <p align="left"><font face="Lucida Sans">LC for elements of depth 1 is:</font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="50%" id="AutoNumber8">
+      <tr>
+        <td width="19%" align="center"><font face="Book Antiqua">Index</font></td>
+        <td width="46%" align="center"><font face="Book Antiqua">&nbsp;Global 
+        VTD index (upper 32 bits)</font></td>
+        <td width="85%" align="center"><font face="Book Antiqua">&nbsp; LC index 
+        of&nbsp; first child (lower 32 bits)</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">0</font></td>
+        <td width="46%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">7</font></td>
+        <td width="85%" bgcolor="#C0C0C0">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">1</font></td>
+        <td width="46%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">14</font></td>
+        <td width="85%" bgcolor="#C0C0C0">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">2</font></td>
+        <td width="46%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">21</font></td>
+        <td width="85%" bgcolor="#C0C0C0">&nbsp;</td>
+      </tr>
+    </table>
+    <p align="left"><font face="Lucida Sans">LC for elements of depth 2 is:</font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="50%" id="AutoNumber7">
+      <tr>
+        <td width="19%" align="center"><font face="Book Antiqua">Index</font></td>
+        <td width="43%" align="center"><font face="Book Antiqua">&nbsp;Global 
+        VTD index (upper 32 bits)</font></td>
+        <td width="88%" align="center"><font face="Book Antiqua">&nbsp; LC index 
+        of&nbsp; first child (lower 32 bits)</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">0</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">10</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">1</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">12</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">2</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">17</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">3</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">19</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">4</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">24</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">5</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">26</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">6</font></td>
+        <td width="43%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">28</font></td>
+        <td width="88%" align="center" bgcolor="#D3FAF1">&nbsp;</td>
+      </tr>
+    </table>
+    <p align="left"><font face="Lucida Sans">None of the element of depth 2 has 
+    any child elements, so all lower 32 bits are -1 (0xffffffff).</font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="50%" id="AutoNumber7">
+      <tr>
+        <td width="19%" align="center"><font face="Book Antiqua">Index</font></td>
+        <td width="44%" align="center"><font face="Book Antiqua">&nbsp;Global 
+        VTD index (upper 32 bits)</font></td>
+        <td width="70%" align="center"><font face="Book Antiqua">&nbsp; LC index 
+        of&nbsp; first child (lower 32 bits)</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">0</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">10</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">1</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">12</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">2</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">17</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">3</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">19</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">4</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">24</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">5</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">26</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">6</font></td>
+        <td width="44%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">28</font></td>
+        <td width="70%" align="center" bgcolor="#D3FAF1">
+        <font face="Book Antiqua">-1</font></td>
+      </tr>
+    </table>
+    <p align="left"><font face="Lucida Sans">Children of elements of depth 1 
+    are contained in LC table above. So the lower 32 bits of LC table (below)&nbsp; 
+    for elements of depth value 1 are filled with index value in LC table 
+    (above). </font></p>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="50%" id="AutoNumber8">
+      <tr>
+        <td width="19%" align="center"><font face="Book Antiqua">Index</font></td>
+        <td width="43%" align="center"><font face="Book Antiqua">&nbsp;Global 
+        VTD index (upper 32 bits)</font></td>
+        <td width="57%" align="center"><font face="Book Antiqua">&nbsp; LC index 
+        of&nbsp; first child (lower 32 bits)</font></td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">0</font></td>
+        <td width="43%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">7</font></td>
+        <td width="57%" bgcolor="#C0C0C0" align="center">0</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">1</font></td>
+        <td width="43%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">14</font></td>
+        <td width="57%" bgcolor="#C0C0C0" align="center">2</td>
+      </tr>
+      <tr>
+        <td width="19%" align="center" bgcolor="#FFFFFF">
+        <font face="Book Antiqua">2</font></td>
+        <td width="43%" align="center" bgcolor="#C0C0C0">
+        <font face="Book Antiqua">21</font></td>
+        <td width="57%" bgcolor="#C0C0C0" align="center">4</td>
+      </tr>
+    </table>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="18" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">
+      <font size="1">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none"><b>
+      <font size="1" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="17" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/persistence.html" style="text-decoration: none">VTD+XML Format</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="1" align="left" bordercolor="#000000" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">User's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top" bgcolor="#E1E2D6" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      Developer's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;<a style="text-decoration: none" href="http://vtd-xml.sf.net/DevGuide/0.html">0. Objective</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;<a style="text-decoration: none" href="http://vtd-xml.sf.net/DevGuide/1.html">1. VTD Records</a> </font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;2. LC entries</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;<a style="text-decoration: none" href="http://vtd-xml.sf.net/DevGuide/3.html">3. Other outputs</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="32" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="18" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="17" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/involved.html" style="text-decoration: none">
+      Getting Involved</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a style="text-decoration: none" href="http://vtd-xml.sourceforge.net/benchmark1.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="35" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="1" align="left" bordercolor="#0000FF" valign="top" style="border-right-style: none; border-right-width: medium">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="1156" bordercolor="#0000FF" style="border-right-style: none; border-right-width: medium">&nbsp;</td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+</html>

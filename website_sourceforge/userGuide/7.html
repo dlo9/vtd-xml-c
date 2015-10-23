@@ -1,0 +1,707 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>VTD-XML User's Guide</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><b><font face="Tahoma" size="6">&nbsp;VTD-XML: 
+    The Future of XML Processing</font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center">
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF">Mailing Lists</font></a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="6826">
+  <tr>
+    <td width="272" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="944" height="6826" rowspan="14" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <h2 align="justify"><font face="Lucida Sans" color="#006600">7.  C Version of VTD-XML</font></h2>
+    <hr>
+    <p align="justify"><font face="Lucida Console">(<b>A separate code-only 
+    VTD-XML tutorial in C is available at </b></font></p>
+    <div>
+      <b><font face="Lucida Console">
+      <a href="http://downloads.sourceforge.net/vtd-xml/c_tutorial_by_code_examples.zip?use_mirror=easynews">
+      http://downloads.sourceforge.net/vtd-xml/c_tutorial_by_code_examples.zip?use_mirror=easynews</a>)</font></b></div>
+    <p align="justify"><font face="Lucida Sans">Starting from Version 0.8, 
+    VTD-XML has a C port that delivers the same set of features as the Java version. In order to reduce 
+    porting effort, the VTD-XML project team made a conscious decision to make 
+    the C implmentation as close to the Java code as possible. However, there 
+    are still going to be a little different for the obvious reason: C is a 
+    different language than Java. </font>
+    <p align="justify"><font face="Lucida Sans">So the best way to describe the C implementation of 
+    VTD-XML is to first enumerate the differences between C and Java, and then 
+    describe how the C version deal with those differences.</font><h3 align="justify">
+    <font face="Lucida Sans">
+    The Notion of Class</font></h3>
+    <p align="justify"><font face="Lucida Sans">The notion of class is key to Java's OO programming 
+    concepts. In C, the closest thing to class is a struct. So the C version of 
+    VTD-XML makes use of struct pointers to emulate Java's objects. For 
+    instance, C's &quot;VTDGen *vg&quot; is equivalent to Java's &quot;VTDGen vg.&quot;</font><h3 align="justify">&nbsp;</h3>
+    <h3 align="justify"><font face="Lucida Sans">Constructors</font></h3>
+    <p align="justify"><font face="Lucida Sans">A Java object is instantiated by calling its 
+    constructors using &quot;new.&quot; Since C doesn't have the notion of class, the C 
+    version allocates and initializes a struct using functions. </font>
+    <p><font face="Lucida Sans">The following Java statement constructs an instance 
+    of VTDGen:</font><p><font face="System">VTDGen vg = new VTDGen();</font><p>
+    <font face="Lucida Sans">The C version accomplishes the same thing with this:</font><p>
+    <font face="System">VTDGen *vg = createVTDGen();</font><h3>&nbsp;</h3>
+    <h3><font face="Lucida Sans">Garbage Collectors</font></h3>
+    <p align="justify"><font face="Lucida Sans">Since C doesn't have automatic garbage collector, any 
+    allocated data strctures need to be manually freed. The C version of VTD-XML 
+    defines a set of &quot;garbage- collect&quot; functions. The following statement 
+    cleans the VTDGen *vg.</font><p><font face="System">freeVTDGen(vg);</font><h3>&nbsp;</h3>
+    <h3><font face="Lucida Sans">Methods/Functions Overloading</font></h3>
+    <p align="justify"><font face="Lucida Sans">C doesn't allow a function name to have multiple 
+    input variable sets. So VTD-XML's C version appends a number to the function 
+    name to disambiguate the names and meanings of those functions. See the 
+    example below.</font><p><i><font color="#b22222">// Set the XMLDoc 
+    container.<br>
+    </font></i><font face="System"><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">setDoc</font></b>(VTDGen *vg, UByte *byteArray, <b>
+    <font color="#228b22">int</font></b> arrayLen);<br>
+    </font><br>
+    <i><font color="#b22222">// Set the XMLDoc container.Also set the offset and 
+    len of the document in the buffer<br>
+    </font></i><font face="System"><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">setDoc2</font></b>(VTDGen *vg, UByte *byteArray, <b>
+    <font color="#228b22">int</font></b> arrayLen, <b><font color="#228b22">int</font></b> 
+    offset, <b><font color="#228b22">int</font></b> docLen);</font><h3>
+    &nbsp;</h3>
+    <h3>
+    <font face="Lucida Sans Unicode">Function Calling Convention</font></h3>
+    <p align="justify">
+    <font face="Lucida Sans">Virtually every method in Java of VTD-XML has an 
+    equivalent function in the C version. The general way to translate from Java 
+    to C is to use the first object name as the first variable of the C function 
+    call. </font><p align="justify">
+    <font face="Lucida Sans">The following statement calls the &quot;parse()&quot; in Java.</font><p>
+    <font face="System">vg.parse(true);</font><p>
+    <font face="Lucida Sans Unicode">The C version &quot;parse()&quot; has vg as its first parameter.</font><p>
+    <font face="System">parse(vg, TRUE);</font><h3>
+    &nbsp;</h3>
+    <h3>
+    <font face="Lucida Sans Unicode">Exception handling</font></h3>
+    <p>
+    <font face="Lucida Sans">The C version of VTD-XML uses the &quot;cexcept&quot; package that 
+    provides the basic Try Catch exception handling similar to that in Java.</font><p>
+    <font face="Tahoma"><a href="http://cexcept.sourceforge.net/">
+    http://cexcept.sourceforge.net/</a></font><p>
+    <font face="Tahoma">
+    <a href="http://www.nicemice.net/cexcept/src/latest/rationale">
+    http://www.nicemice.net/cexcept/src/latest/rationale</a></font><p>
+    &nbsp;<h3><font face="Lucida Sans Unicode">String Literal</font></h3>
+    <p><font face="Lucida Sans">The C version of VTD-XML uses &quot;wchar_t&quot; array as the 
+    string data type. When declaring a string literal, one needs to append an L 
+    at the beginning to denote that it is a UCS string.&nbsp; </font><h3>&nbsp;</h3>
+    <h3><font face="Lucida Sans Unicode">List of constructors/destructors</font></h3>
+    <p><font face="System"><i><font color="#b22222">// create VTDGen<br>
+    </font></i>VTDGen *<b><font color="#0000ff">createVTDGen</font></b>();<br>
+    <br>
+    <i><font color="#b22222">// free VTDGen<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">freeVTDGen</font></b>(VTDGen *vg);<br>
+    <br>
+    <i><font color="#b22222">//Free VTDNav object<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">freeVTDNav</font></b>(VTDNav *vn);</font><p>
+    <font face="System"><i><font color="#b22222">//create AutoPilot<br>
+    </font></i>AutoPilot *<b><font color="#0000ff">createAutoPilot</font></b>(VTDNav 
+    *v);<br>
+    AutoPilot *<b><font color="#0000ff">createAutoPilot2</font></b>();</font><p>
+    <font face="System"><i><font color="#b22222">//create AutoPilot<br>
+    </font></i>XMLModifier *<font color="#0000FF"><b>createXMLModifier</b></font>();<br>
+    XMLModifier *<b><font color="#0000ff">createXMLModifier2</font></b>(VTDNav 
+    *v);</font><p>
+    <font face="System"><i><font color="#b22222">// free XMLModifier<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">freeXMLModifier</font></b>(XMLModifer *xm);</font><p>
+    <font face="System"><i><font color="#b22222">// free AutoPilot<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">freeAutoPilot</font></b>(AutoPilot *ap);</font><h3>&nbsp;</h3>
+    <h3><font face="Lucida Sans Unicode">List of 
+    functions in VTDGen</font></h3>
+    <p><font face="System"><i><font color="#b22222">// clear the internal state 
+    of VTDGen so it can process <br>
+    // the next XML file<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">clear</font></b>(VTDGen *vg);<br>
+    <br>
+    <i><font color="#b22222">// Returns the VTDNav object after parsing, it also 
+    cleans <br>
+    // internal state so VTDGen can process the next file.<br>
+    </font></i>VTDNav *<b><font color="#0000ff">getNav</font></b>(VTDGen *vg);<br>
+    <br>
+    <i><font color="#b22222">// Generating VTD tokens and Location cache info.<br>
+    // One specifies whether the parsing is namespace aware or not.<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">parse</font></b>(VTDGen *vg, Boolean ns);</font><p><b>
+    <font color="#228B22">Boolean</font> <font color="#0000FF">
+    <span class="kwd">parseFile</span></font><span class="sym">(</span>VTDGen
+    <span class="sym">*</span>vg<span class="sym">,</span> Boolean ns<span class="sym">,</span><span class="kwb">char</span>
+    <span class="sym">*</span>fileName<span class="sym">);</span></b><br>
+    <font face="System">
+    <br>
+    <i><font color="#b22222">// Set the XMLDoc container.<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">setDoc</font></b>(VTDGen *vg, UByte *byteArray, <b>
+    <font color="#228b22">int</font></b> arrayLen);<br>
+    <br>
+    <i><font color="#b22222">// Set the XMLDoc container.Also set the offset and 
+    len of the document <br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">setDoc2</font></b>(VTDGen *vg, UByte *byteArray, <b>
+    <font color="#228b22">int</font></b> arrayLen, <b><font color="#228b22">int</font></b> 
+    offset, <b><font color="#228b22">int</font></b> docLen);<br>
+&nbsp;</font><p><b><i><span class="com">/* Load VTD+XML from a FILE pointer */</span><br>
+    </i><font color="#228B22">VTDNav</font><span class="sym">*</span>
+    <font color="#0000FF"><span class="kwd">loadIndex</span></font><span class="sym">(</span>VTDGen
+    <span class="sym">*</span>vg<span class="sym">,</span> <span class="kwb">
+    FILE</span> <span class="sym">*</span>f<span class="sym">);</span><br>
+    </b><br>
+    <i><b><span class="com">/* load VTD+XML from a byte array */</span><br>
+    </b></i><b><font color="#228B22">VTDNav</font><span class="sym">*</span>
+    <font color="#0000FF"><span class="kwd">loadIndex2</span></font><span class="sym">(</span>VTDGen
+    <span class="sym">*</span>vg<span class="sym">,</span> UByte<span class="sym">*</span> 
+    ba<span class="sym">,</span><span class="kwb">int</span> len<span class="sym">);</span><br>
+&nbsp;</b><p><i><b><span class="com">/* Write VTD+XML into a FILE pointer */</span><br>
+    </b></i><b><font color="#228B22">Boolean</font> <font color="#0000FF">
+    <span class="kwd">writeIndex</span></font><span class="sym">(</span>VTDGen
+    <span class="sym">*</span>vg<span class="sym">,</span> <span class="kwb">
+    FILE</span> <span class="sym">*</span>f<span class="sym">);</span><br>
+&nbsp;</b><h3><font face="Tahoma">List of functions in VTDNav</font></h3>
+    <p><br>
+    <font face="System"><i><font color="#b22222">//Return the attribute count of 
+    the element at the cursor position.<br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getAttrCount</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">//Get the token index of the attribute value given 
+    an attribute name.&nbsp;&nbsp;&nbsp;&nbsp; <br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getAttrVal</font></b>(VTDNav *vn, UCSChar *attrName);<br>
+    <br>
+    <i><font color="#b22222">//Get the token index of the attribute value of 
+    given URL and local name.<br>
+    //If ns is not enabled, the lookup will return -1, indicating a no-found.<br>
+    //Also namespace nodes are invisible using this method.<br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getAttrValNS</font></b>(VTDNav *vn, UCSChar* URL, UCSChar *localName);<br>
+    <br>
+    <br>
+    <i><font color="#b22222">//Get the depth (&gt;=0) of the current element.<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline <b>
+    <font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getCurrentDepth</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">// Get the index value of the current element.<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline <b>
+    <font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getCurrentIndex</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">// Get the starting offset and length of an element<br>
+    // encoded in a long, upper 32 bit is length; lower 32 bit is offset<br>
+    </font></i>Long <b><font color="#0000ff">getElementFragment</font></b>(VTDNav 
+    *vn);<br>
+    <br>
+    <i><font color="#b22222">/**<br>
+&nbsp;* Get the encoding of the XML document.<br>
+&nbsp;* &lt;pre&gt;&nbsp;&nbsp; 0&nbsp; ASCII&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;&nbsp;&nbsp; 1&nbsp; ISO-8859-1&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;&nbsp;&nbsp; 2&nbsp; UTF-8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;&nbsp;&nbsp; 3&nbsp; UTF-16BE&nbsp;&nbsp;&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;&nbsp;&nbsp; 4&nbsp; UTF-16LE&nbsp;&nbsp;&nbsp; &lt;/pre&gt;<br>
+&nbsp;*/</font></i><br>
+    <b><font color="#228b22">extern</font></b> inline encoding <b>
+    <font color="#0000ff">getEncoding</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">// Get the maximum nesting depth of the XML 
+    document (&gt;0).<br>
+    // max depth is nestingLevel -1<br>
+    </font></i><br>
+    <i><font color="#b22222">// max depth is nestingLevel -1<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline <b>
+    <font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getNestingLevel</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">// Get root index value.<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline <b>
+    <font color="#228b22">int</font></b> <b><font color="#0000ff">getRootIndex</font></b>(VTDNav 
+    *vn);<br>
+    <br>
+    <i><font color="#b22222">// This function returns of the token index of the 
+    type character data or CDATA.<br>
+    // Notice that it is intended to support data orient XML (not mixed-content 
+    XML).<br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getText</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">//Get total number of VTD tokens for the current 
+    XML document.<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline <b>
+    <font color="#228b22">int</font></b> <b><font color="#0000ff">getTokenCount</font></b>(VTDNav 
+    *vn);<br>
+    <br>
+    <i><font color="#b22222">//Get the depth value of a token (&gt;=0)<br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getTokenDepth</font></b>(VTDNav *vn, <b><font color="#228b22">int</font></b> 
+    index);<br>
+    <br>
+    <i><font color="#b22222">//Get the token length at the given index value<br>
+    //please refer to VTD spec for more details<br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    getTokenLength</font></b>(VTDNav *vn, <b><font color="#228b22">int</font></b> 
+    index);<br>
+    <br>
+    <i><font color="#b22222">//Get the starting offset of the token at the given 
+    index.<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline <b>
+    <font color="#228b22">int</font></b> <b><font color="#0000ff">getTokenOffset</font></b>(VTDNav 
+    *vn, <b><font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">// Get the XML document <br>
+    </font></i><b><font color="#228b22">extern</font></b> inline UByte* <b>
+    <font color="#0000ff">getXML</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">//Get the token type of the token at the given 
+    index value.<br>
+    </font></i><b><font color="#228b22">extern</font></b> inline	tokenType
+    <font color="#0000FF">getTokenType</font>(VTDNav *vn, <b>
+    <font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">//Test whether current element has an attribute 
+    with the matching name.<br>
+    </font></i>Boolean <b><font color="#0000ff">hasAttr</font></b>(VTDNav *vn, 
+    UCSChar *attrName);<br>
+    <br>
+    <i><font color="#b22222">//Test whether the current element has an attribute 
+    with <br>
+    //matching namespace URL and localname.<br>
+    </font></i>Boolean <b><font color="#0000ff">hasAttrNS</font></b>(VTDNav *vn, 
+    UCSChar *URL, UCSChar *localName);<br>
+    <br>
+    <i><font color="#b22222">//Test if the current element matches the given 
+    name.<br>
+    </font></i>Boolean <b><font color="#0000ff">matchElement</font></b>(VTDNav *vn, 
+    UCSChar *en);<br>
+    <br>
+    <i><font color="#b22222">//Test whether the current element matches the 
+    given namespace URL and localname.<br>
+    //URL, when set to &quot;*&quot;, matches any namespace (including null), when set to 
+    null, defines a &quot;always-no-match&quot;<br>
+    //ln is the localname that, when set to *, matches any localname<br>
+    </font></i>Boolean <b><font color="#0000ff">matchElementNS</font></b>(VTDNav 
+    *vn, UCSChar *URL, UCSChar *ln);<br>
+    <br>
+    <i><font color="#b22222">//Match the string against the token at the given 
+    index value. When a token<br>
+    //is an attribute name or starting tag, qualified name is what gets matched 
+    against<br>
+    </font></i>Boolean <b><font color="#0000ff">matchRawTokenString</font></b>(VTDNav 
+    *vn, <b><font color="#228b22">int</font></b> index, UCSChar *s);<br>
+    &nbsp;</font><p>
+    <font face="System">
+    <i><font color="#b22222">//This method matches two VTD tokens of 2 VTDNavs<br>
+    </font></i>Boolean <b><font color="#0000ff">matchTokens</font></b>(VTDNav *vn,
+    <b><font color="#228b22">int</font></b> i1, VTDNav *vn2, <b>
+    <font color="#228b22">int</font></b> i2);<br>
+    <br>
+    <i><font color="#b22222">//Match the string against the token at the given 
+    index value. When a token<br>
+    //is an attribute name or starting tag, qualified name is what gets matched 
+    against<br>
+    </font></i>Boolean <b><font color="#0000ff">matchTokenString</font></b>(VTDNav 
+    *vn, <b><font color="#228b22">int</font></b> index, UCSChar *s);</font><p>
+    <font face="System">int <font color="#0000FF"><b>compare</b></font><b><font color="#0000ff">RawTokenString</font></b>(VTDNav 
+    *vn, <b><font color="#228b22">int</font></b> index, UCSChar *s);<br>
+    &nbsp;</font><p>
+    <font face="System"><font color="#b22222">
+    <i>//This method&nbsp; lexically compares two VTD tokens <br>
+    </i>
+    </font>int <font color="#0000FF"><b>compare</b></font><b><font color="#0000ff">Tokens</font></b>(VTDNav *vn,
+    <b><font color="#228b22">int</font></b> i1, VTDNav *vn2, <b>
+    <font color="#228b22">int</font></b> i2);<br>
+    <br>
+    <font color="#b22222">
+    <i>//Compare the string against the token at the given 
+    index value. When a token<br>
+    //is an attribute name or starting tag, qualified name is what gets matched 
+    against<br>
+    </i>
+    </font>int <font color="#0000FF"><b>compare</b></font><b><font color="#0000ff">TokenString</font></b>(VTDNav 
+    *vn, <b><font color="#228b22">int</font></b> index, UCSChar *s);<br>
+    <br>
+    </font><b><font color="#228B22">Boolean</font> <font color="#0000FF">
+    <span class="kwd">overWrite</span></font><span class="sym">(</span>VTDNav
+    <span class="sym">*</span>vn<span class="sym">,</span> <font color="#228B22">
+    <span class="kwb">int</span></font> index<span class="sym">,</span> UByte<span class="sym">*</span> 
+    ba<span class="sym">,</span> <font color="#228B22"><span class="kwb">int</span></font> 
+    offset<span class="sym">,</span> <font color="#228B22"><span class="kwb">int</span></font> 
+    len<span class="sym">);</span></b><p>
+    <font face="System">
+    <br>
+    <i><font color="#b22222">//Convert a vtd token into a double.<br>
+    </font></i><b><font color="#228b22">double</font></b> <b>
+    <font color="#0000ff">parseDouble</font></b>(VTDNav *vn, <b>
+    <font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">//Convert a vtd token into a float.<br>
+    </font></i><b><font color="#228b22">float</font></b> <b>
+    <font color="#0000ff">parseFloat</font></b>(VTDNav *vn, <b>
+    <font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">//Convert a vtd token into an int<br>
+    </font></i><b><font color="#228b22">int</font></b> <b><font color="#0000ff">
+    parseInt</font></b>(VTDNav *vn, <b><font color="#228b22">int</font></b> 
+    index);<br>
+    <br>
+    <i><font color="#b22222">//Convert a vtd token into a long<br>
+    </font></i>Long <b><font color="#0000ff">parseLong</font></b>(VTDNav *vn, <b>
+    <font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">//Load the context info from ContextBuffer.<br>
+    //Info saved including LC and current state of the context <br>
+    </font></i>Boolean <b><font color="#0000ff">pop</font></b>(VTDNav *vn);<br>
+    <i><font color="#b22222">//Store the context info into the ContextBuffer.<br>
+    //Info saved including LC and current state of the context <br>
+    </font></i>Boolean <b><font color="#0000ff">push</font></b>(VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">// A generic navigation method.<br>
+    // Move the current to the element according to the direction constants<br>
+    // If no such element, no position change and return false (0).<br>
+    /* Legal direction constants are 	&lt;br&gt;<br>
+    	&nbsp;* &lt;pre&gt;		ROOT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    0&nbsp; &lt;/pre&gt;<br>
+    	&nbsp;* &lt;pre&gt;		PARENT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    1&nbsp; &lt;/pre&gt;<br>
+    	&nbsp;* &lt;pre&gt;		FIRST_CHILD&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; &lt;/pre&gt;<br>
+    	&nbsp;* &lt;pre&gt;		LAST_CHILD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp; 
+    &lt;/pre&gt;<br>
+    	&nbsp;* &lt;pre&gt;		NEXT_SIBLING&nbsp;&nbsp;&nbsp; 4&nbsp; &lt;/pre&gt;<br>
+    	&nbsp;* &lt;pre&gt;		PREV_SIBLING&nbsp;&nbsp;&nbsp; 5&nbsp; &lt;/pre&gt;<br>
+    	&nbsp;* &lt;br&gt;<br>
+    	&nbsp;*/</font></i><br>
+    Boolean <b><font color="#0000ff">toElement</font></b>(VTDNav *vn, navDir 
+    direction);<br>
+    <br>
+    <i><font color="#b22222">/**<br>
+&nbsp;* A generic navigation method.<br>
+&nbsp;* Move the current to the element according to the direction <br>
+&nbsp;* constants and the element name<br>
+&nbsp;* If no such element, no position change and return false (0).<br>
+&nbsp;* &quot;*&quot; matches any element<br>
+&nbsp;* Legal direction constants are 	&lt;br&gt;<br>
+&nbsp;* &lt;pre&gt;		ROOT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    0&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		PARENT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    1&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		FIRST_CHILD&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		LAST_CHILD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		NEXT_SIBLING&nbsp;&nbsp;&nbsp; 4&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		PREV_SIBLING&nbsp;&nbsp;&nbsp; 5&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;br&gt;<br>
+&nbsp;* for ROOT and PARENT, element name will be ignored.<br>
+&nbsp;*/</font></i><br>
+    Boolean <b><font color="#0000ff">toElement2</font></b>(VTDNav *vn, navDir 
+    direction, UCSChar *en);<br>
+    <i><font color="#b22222">/*	<br>
+&nbsp;* A generic navigation function with namespace support.<br>
+&nbsp;* Move the current to the element according to the direction constants and 
+    the prefix and local names<br>
+&nbsp;* If no such element, no position change and return false(0).<br>
+&nbsp;* URL * matches any namespace, including undefined namespaces<br>
+&nbsp;* a null URL means hte namespace prefix is undefined for the element<br>
+&nbsp;* ln *&nbsp; matches any localname<br>
+&nbsp;* Legal direction constants are&lt;br&gt;<br>
+&nbsp;* &lt;pre&gt;		ROOT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    0&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		PARENT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    1&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		FIRST_CHILD&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		LAST_CHILD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		NEXT_SIBLING&nbsp;&nbsp;&nbsp; 4&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;pre&gt;		PREV_SIBLING&nbsp;&nbsp;&nbsp; 5&nbsp; &lt;/pre&gt;<br>
+&nbsp;* &lt;br&gt;<br>
+&nbsp;* for ROOT and PARENT, element name will be ignored.<br>
+&nbsp;* If not ns enabled, return false immediately with no position change.<br>
+&nbsp;*/</font></i><br>
+    Boolean <b><font color="#0000ff">toElementNS</font></b>(VTDNav *vn, navDir 
+    direction, UCSChar *URL, UCSChar *ln);<br>
+    <br>
+    <i><font color="#b22222">//This method normalizes a token into a string in a 
+    way that resembles DOM.<br>
+    //The leading and trailing white space characters will be stripped.<br>
+    //The entity and character references will be resolved<br>
+    //Multiple whitespaces char will be collapsed into one.<br>
+    </font></i>UCSChar *<b><font color="#0000ff">toNormalizedString</font></b>(VTDNav 
+    *vn, <b><font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">//Convert a token at the given index to a String,
+    <br>
+    //(built-in entity and char references not resolved)<br>
+    //(entities and char references not expanded).<br>
+    </font></i>UCSChar *<b><font color="#0000ff">toRawString</font></b>(VTDNav *vn,
+    <b><font color="#228b22">int</font></b> index);<br>
+    <br>
+    <i><font color="#b22222">//Convert a token at the given index to a String, 
+    (entities and char <br>
+    //references resolved).<br>
+    // An attribute name or an element name will get the UCS2 string of 
+    qualified name <br>
+    </font></i>UCSChar *<b><font color="#0000ff">toString</font></b>(VTDNav *vn,
+    <b><font color="#228b22">int</font></b> index);<br>
+    <br>
+    &nbsp;</font><h3><font face="Tahoma">List of functions in AutoPilot</font></h3>
+    <p><font face="System"><i><font color="#b22222">// bind VTDNav to AutoPilot<br>
+    </font></i><b><font color="#228b22">void</font></b> <font color="#0000FF">
+    <b>bind</b></font>(AutoPilot *ap, VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">//Select the element name before iterating<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">selectElement</font></b>(AutoPilot *ap, UCSChar *en);<br>
+    <br>
+    <i><font color="#b22222">//Select the element name (name space version) 
+    before iterating.<br>
+    // * URL, if set to *, matches every namespace<br>
+    // * URL, if set to null, indicates the namespace is undefined.<br>
+    // * localname, if set to *, matches any localname<br>
+    </font></i><b><font color="#228b22">void</font></b> <b>
+    <font color="#0000ff">selectElementNS</font></b>(AutoPilot *ap, UCSChar 
+    *URL, UCSChar *ln);<br>
+    <br>
+    <i><font color="#b22222">//Iterate over all the selected element nodes.<br>
+    </font></i><br>
+    Boolean <b><font color="#0000ff">iterateAP</font></b>(AutoPilot *ap);<br>
+    <br>
+    <i><font color="#b22222">/*<br>
+&nbsp;* This function selects the string representing XPath expression<br>
+&nbsp;* Usually evalXPath is called afterwards<br>
+&nbsp;* return true is the XPath is valid<br>
+&nbsp;*/</font></i><br>
+    Boolean <b><font color="#0000ff">selectXPath</font></b>(AutoPilot *ap, 
+    UCSChar *s);<br>
+    <br>
+    <i><font color="#b22222">/*<br>
+&nbsp;* Evaluate XPath<br>
+&nbsp;*/</font></i><br>
+    <b><font color="#228b22">int</font></b> <b><font color="#0000ff">evalXPath</font></b>(AutoPilot 
+    *ap);</font><p><font face="System"><font color="#228B22"><b>double</b></font> <b><font color="#0000ff">evalXPathToNumber</font></b>(AutoPilot 
+    *ap);</font><p><b><font face="System" color="#228B22">UCSChar*</font></b><font face="System"> <b><font color="#0000ff">evalXPathToString</font></b>(AutoPilot 
+    *ap);</font><p><font face="System"><font color="#228B22"><b>Boolean</b></font> <b><font color="#0000ff">evalXPathToBoolean</font></b>(AutoPilot 
+    *ap);</font><p><font face="System"><br>
+    <br>
+    <i><font color="#b22222">/*<br>
+&nbsp;* Reset XPath<br>
+&nbsp;*/</font></i><br>
+    <b><font color="#228b22">void</font></b> <b><font color="#0000ff">resetXPath</font></b>(AutoPilot 
+    *ap);<br>
+    <br>
+    <i><font color="#b22222">/*<br>
+&nbsp;* Declare prefix/URL binding<br>
+&nbsp;*/</font></i><br>
+    <br>
+    <b><font color="#228b22">void</font></b> <b><font color="#0000ff">
+    declareXPathNameSpace</font></b>(AutoPilot *ap, UCSChar *prefix, UCSChar 
+    *URL);<br>
+    <br>
+&nbsp;</font><h3><font face="Tahoma">List of functions in XMLModifier</font></h3>
+    <p><font face="System"><i><font color="#b22222">// bind VTDNav to 
+    XMLModifier<br>
+    </font></i><b><font color="#228b22">void</font></b> <font color="#0000FF">
+    <b>bind4XMLModifer</b></font>(XMLModifier *xm, VTDNav *vn);<br>
+    <br>
+    <i><font color="#b22222">// remove&nbsp; what ever that is at the cursor 
+    position<br>
+    </font></i><b><font color="#228b22">void</font></b> <font color="#0000FF">
+    <b>remove4XMLModifier</b></font>(XMLModifier *xm);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>removeAttribute</b></font>(XMLModifier *xm, UCSChar 
+    *attrName);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>removeToken</b></font>(XMLModifier *xm, int index);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>insertBeforeElement</b></font>(XMLModifier *xm, 
+    UCSChar *s);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>insertAttribute</b></font>(XMLModifier *xm, UCSChar 
+    *attr);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>insertAfterElement</b></font>(XMLModifier *xm);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>updateToken</b></font>(XMLModifier *xm, int index);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>output</b></font>(XMLModifier *xm, FILE *f);</font><p><font face="System"><b><font color="#228b22">void</font></b>
+    <font color="#0000FF"><b>resetXMLModifier</b></font>(XMLModifier *xm, FILE 
+    *f);</font><p><font face="System"><br>
+    <br>
+    &nbsp;</font><p><font face="System"><br>
+    &nbsp;</font></blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="18" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">
+      <font size="1">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none"><b>
+      <font size="1" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/persistence.html" style="text-decoration: none">VTD+XML Format</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="276" align="left" bordercolor="#000000" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">User's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">0. Introduction</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/1.html" style="text-decoration: none">1. Goals and Features</a>&nbsp;&nbsp;&nbsp; </font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/2.html" style="text-decoration: none">2. How to Process XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/3.html" style="text-decoration: none">3. Navigate VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/4.html" style="text-decoration: none">4. Classes/Interfaces and Methods</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/userGuide/5.html" style="text-decoration: none">5. Comparison with DOM,&nbsp; 
+      SAX, and Pull</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/userGuide/6.html" style="text-decoration: none">6. Table for Token Types
+      </a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 7. The C version VTD-XML</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html" style="text-decoration: none">Developer's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="31" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/involved.html" style="text-decoration: none">
+      Getting Involved</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/links.html" style="text-decoration: none">Articles and Presentations</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a style="text-decoration: none" href="http://vtd-xml.sourceforge.net/benchmark1.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="34" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="272" height="6240" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+
+</html>

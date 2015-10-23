@@ -1,0 +1,500 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>VTD-XML User's Guide</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><b><font face="Tahoma" size="6">&nbsp;VTD-XML: 
+    The Future of XML Processing</font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center">
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF">Mailing Lists</font></a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="2613">
+  <tr>
+    <td width="288" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td width="928" height="2613" rowspan="14" valign="top" bgcolor="#E1E2D6">
+    <h1 align="justify"><font face="Tahoma" size="5" color="#003300">&nbsp;</font></h1>
+    <blockquote>
+    <h2 align="justify"><font face="Lucida Sans" size="5">4.</font><font face="Lucida Sans">Classes/Interfaces 
+    and Methods</font></h2>
+      <hr>
+    <h3 align="justify"><i><font face="Lucida Sans">Important Classes/Interfaces</font></i></h3>
+    <h4 align="justify"><i><font face="Lucida Sans" size="2">Essential Classes</font></i></h4>
+    <ul>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>VTD Generator</b>: 
+    VTDGen is the class that encapsulates the main parsing, index loading and 
+    index reading functions</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>VTD Navigator</b>: 
+    VTDNav is the class that (1) encapsulates XML, VTD, and hierarchical info 
+    (2) contains various navigation functions (3) performs various comparison 
+    and VTD to string or numerical data conversion functions</font></p>
+      </li>
+      <li>
+    <p align="justify"><font size="2" face="Lucida Sans"><b>Autopilot</b>: A 
+    class containing functions that perform node-level iteration and XPath.</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>XMLModifier</b>: A 
+    class that takes advantage of VTD-XML's incremental update capability</font></p>
+      </li>
+    </ul>
+    <h3 align="justify"><i><font face="Lucida Sans" size="2">Other Classes/Interfaces</font></i></h3>
+    <ul>
+      <li>
+    <p align="justify"><font size="2" face="Lucida Sans"><b>ILongBuffer</b>: This is 
+    the interface for VTD record container.</font></p>
+      </li>
+      <li>
+    <p align="justify"><font size="2" face="Lucida Sans"><b>FastLongBuffer</b>: This 
+    class implements ILongBuffer interface. Under the hood, it is a chunk-based
+    buffer that will grow automatically.</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><i><b>NodeRecorder</b></i>: 
+    Save the node location.</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><i><b>BookMark</b></i>: 
+    A hashable, comparable way of saving a single copy of cursor position.</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>TextIterator</b>: 
+    This class allows one to access text nodes in a mix-content document.</font></p>
+      </li>
+      <li>
+    <p align="justify"><font size="2" face="Lucida Sans"><b>ParseException</b>: The 
+    root class for any exception conditions during parse</font></p>
+      </li>
+      <li>
+    <p align="justify"><font size="2" face="Lucida Sans"><b>NavException</b>: The 
+    root class for any exceptions during navigation</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>XPathEvalException</b>: 
+    Thrown when there is something during XPath evaluation</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>XPathParseException</b>: 
+    Thrown when an error occurred during the construction of XPathExpr</font></p>
+      </li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><b>XMLModiferException</b>: 
+    Thrown when there is an exception condition during the modification of XML 
+    document </font></p>
+      </li>
+    </ul>
+    <h3 align="justify"><i><font face="Lucida Sans">Member methods of VTDNav </font>
+    </i>
+    </h3>
+    <p align="justify"><font face="Lucida Sans" size="2">In this sub-section, we 
+    categorize and selectively annotate member methods of VTDNav.</font></p>
+    <ol>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="4">Methods designed for 
+    hierarchical view of VTD</font></p>
+        <ul>
+          <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><i><b>Navigate the cursor</b></i><br>
+    * boolean <b> <u>toElement</u></b>(int direction); <br>
+    * boolean <b> <u>toElement</u></b>(int direction, String elementName);<br>
+    * boolean <b> <u>toElementNS</u></b>(int direction, String URL, String local_name);</font></p>
+          </li>
+          <li>
+    <p align="justify"><font face="Lucida Sans"><i><b><font size="2">About the element at the cursor 
+    position</font></b></i><font size="2"><br>
+    * int <b> <u>getCurrentIndex</u></b>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // return the VTD index of the current element<br>
+    * int <b> <u>getCurrentDepth</u></b>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // return depth of current element <br>
+    * boolean <b> <u>matchElement</u></b>(String s);&nbsp;&nbsp;&nbsp; // match the element name (of the cursor) 
+    against a string value<br>
+    * boolean <b> <u>matchElementNS</u></b>(String s); // match the element name (name space 
+    aware)</font></font></p>
+          </li>
+        </ul>
+      <blockquote>
+    <p align="justify"><font size="2" face="Lucida Sans">* boolean <b> <u>matchTokens</u></b>(int 
+    i1,VTDNav vn1, int i2); // match the element name (name space 
+    aware)</font></p>
+          </blockquote>
+        <ul>
+          <li>
+    <p align="justify"><font face="Lucida Sans"><i><b><font size="2">Attributes, Text, and CDATA</font></b></i><font size="2"><br>
+    * int <b> <u>getAttrVal</u></b>(String attrName);<br>
+    * int <b> <u>getAttrValNS</u></b>(String URL, String localName);<br>
+    * boolean <b> <u>hasAttr</u></b>(String attrName);<br>
+    * boolean <b> <u>hasAttrNs</u></b>(String URL, String localName); <br>
+    * int <b> <u>getText</u></b>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // return the index value of the text value (character data or CDATA), -1 if none found</font></font></p>
+          </li>
+          <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><i><b>Helper function</b></i><br>
+    * void <b> <u>push</u></b>();<br>
+    * boolean <b> <u>pop</u></b>();</font></p>
+          </li>
+          <li>
+    <p align="justify"><font face="Lucida Sans"><i><b><font size="2">Address an element fragment</font></b></i><font size="2"><br>
+    * long <b> <u>getElementFragment</u></b>(); // get the length and offset of the element fragment; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // upper 32 bits length lower 32 bits offset<br>
+&nbsp;</font></font></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+    <p align="justify"><font size="4" face="Lucida Sans">Methods for individual VTD 
+    records </font></p>
+      <ul>
+        <li>
+    <p align="justify"><font face="Lucida Sans"><i><b><font size="2">Comparison
+    </font> </b></i><font size="2"><br>
+    * boolean <u><b>matchRawTokenString</b></u>(int, String); // Match the token 
+    against a string, entities and char <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // references are not resolved<br>
+    * boolean <u><b>matchTokenString</b></u>(int, String); // match the token 
+    against a string, entities and char<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // references are resolved<br>
+    * boolean <u><b>matchTokens</b></u>(int&nbsp;i1, VTDNav vn2,int&nbsp;i2) // match two 
+    VTD tokens <br>
+    <br>
+    * int <u><b>compareRawTokenString</b></u>(int, String); //lexically compare 
+    a VTD token with a string, returns<br>
+    // 1, 0 or -1<br>
+    * int <u><b>compareTokenString</b></u>(int, String); //lexically compare a 
+    VTD token with a string, returns<br>
+    // 1, 0 or -1<br>
+    * int <u><b>compareTokens</b></u>(int, VTDNav vn2, int); // lexically 
+    compare two VTD tokens</font></font></p>
+    <p align="justify"><font face="Lucida Sans" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font></p>
+        </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><i><b>Query token parameters</b></i><br>
+    * int <b> <u>getTokenDepth</u></b>(int index); <br>
+    * int <b> <u>getTokenLength</u></b>(int index);<br>
+    * int <b> <u>getTokenOffset</u></b>(int index);<br>
+    * int <b> <u>getTokenType</u></b>(int index);</font></p>
+        </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans"><i><b><font size="2">Token to String conversion</font></b></i><font size="2"><br>
+    * String <b> <u>toRawString</u></b>(int index);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // entities and char references not resolved<br>
+    * String <b> <u>toString</u></b>(int index);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // entities and char reference resolved<br>
+    * String <b> <u>toNormalizedString</u></b>(int index);&nbsp; // Normalized</font></font></p>
+        </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans" size="2"><i><b>Tokens to numerical data 
+    conversion</b></i><br>
+    * int <b> <u>parseInt</u></b>(int index);<br>
+    * long <b> <u>parseLong</u></b>(int index);<br>
+    * float <b> <u>parseFloat</u></b>(int index);<br>
+    * double <b> <u>parseDouble</u></b>(int index);</font></p>
+        </li>
+        <li>
+    <p align="justify"><font face="Lucida Sans"><i><b><font size="2">Properties of XML and VTD</font></b></i><font size="2"><br>
+    * int <b> <u>getRootIndex</u></b>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Return the VTD index for the root element<br>
+    * IByteBuffer <b> <u>getXML</u></b>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Get the document buffer<br>
+    * int <b> <u>getTokenCount</u></b>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Get the total number of VTD tokens</font></font></p>
+        </li>
+      </ul>
+    <p align="justify">&nbsp;</p>
+      </li>
+      <li>
+    <p align="justify"><font size="4" face="Lucida Sans">Methods for 
+    writing/loading index</font></p>
+        <ul>
+          <li>
+    <p align="justify"><i><b><font face="Lucida Sans" size="2">Index writing</font></b></i></p>
+          </li>
+    </ul>
+    <blockquote>
+    <p align="justify"><font face="Lucida Sans" size="2">*void <b>writeIndex</b>(OutputStream 
+    os);<br>
+    *void <b>writeIndex</b>(String FileName);</font></p>
+        </blockquote>
+    <ul>
+      <li>
+    <p align="justify"><b><i><font face="Lucida Sans" size="2">Index loading</font></i></b></p>
+        </li>
+    </ul>
+    <blockquote>
+    <p align="justify"><font face="Lucida Sans" size="2"><b><i>*</i></b></font><font face="Lucida Sans" size="1">VTDNav
+    </font><b><font face="Lucida Sans" size="2">loadIndex</font></b><font face="Lucida Sans" size="1">(InputStream 
+    is);<br>
+    *VTDNav </font><font face="Lucida Sans" size="2"><b>loadIndex</b></font><font face="Lucida Sans" size="1">(String 
+    FileName);<br>
+    *VTDNav </font><b><font face="Lucida Sans" size="2">loadIndex</font></b><font face="Lucida Sans" size="1">(byte[] 
+    ba);</font></p>
+        </blockquote>
+      </li>
+      <li>
+    <p align="justify"><font size="4" face="Lucida Sans">Methods of AutoPilot for 
+    Doing Node Iteration </font></p>
+        <ul>
+          <li>
+          <p align="justify"><font size="2" face="Lucida Sans"><b><i>Select Elements</i></b><br>
+    * void <b> <u>selectElement</u></b>(String elementName); // select element name before 
+          iterating<br>
+    * void <b> <u>selectElementNS</u></b>(String URL, String elementName);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          // the namespace aware version</font></li>
+          <li>
+          <p align="justify"><b><i><font face="Lucida Sans" size="2">Iterate the 
+          nodes</font></i></b><font size="2" face="Lucida Sans"><br>
+    * boolean <b> <u>iterate</u></b>();</font></li>
+      </ul>
+          <p align="justify">&nbsp;</li>
+      <li>
+    <p align="justify"><font size="4" face="Lucida Sans">Methods of AutoPilot 
+    for XPath</font></p>
+        <ul type="circle">
+          <li>
+    <p align="justify"><font size="2" face="Lucida Sans"><b><i>Select XPath</i></b><br>
+    * void <b> <u>declareXPathNameSpace</u></b>(String attrName);<br>
+    * void <b> <u>selectXPath</u></b>(String XPathExpr);&nbsp;&nbsp;&nbsp; // compile 
+    the XPath string</font></p>
+          </li>
+    </ul>
+    <ul type="circle">
+      <li>
+          <p align="justify"><font size="2" face="Lucida Sans"><b><i>Evaluate 
+          XPath</i></b></font></li>
+    </ul>
+    <blockquote>
+      <p align="justify"><font face="Lucida Sans" size="2">* int <b> <u>evalXPath</u></b>();&nbsp; 
+      // evaluate XPath and moves the cursor to various locations of the 
+      document<br>
+      * double <b> <u>evalXPathToNumber</u></b>(); // evaluate XPath to a double<br>
+      * String <b> <u>evalXPathToString</u></b>();&nbsp; //evaluate XPath to a string <br>
+      * boolean <b> <u>evalXPathToBoolean</u></b>(); // evaluate XPath to a boolean</font></p>
+    </blockquote>
+    <ul type="circle">
+      <li>
+          <p align="justify"><font size="2" face="Lucida Sans"><b><i>Other 
+          Methods</i></b><br>
+          * void <b> <u>resetXPath</u></b>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // call this 
+          function will reset the internal state of XPath for reuse<br>
+          * void <b> <u>bind</u></b>(VTDNav vn); //bind&nbsp; VTDNav to an autoPilot</font></li>
+    </ul>
+          <p align="justify">&nbsp;</li>
+      <li>
+    <p align="justify"><font face="Lucida Sans" size="4">Methods for XMLModifier</font></p>
+        </li>
+    </ol>
+      <blockquote>
+        <ul type="circle">
+          <li>
+    <p align="justify"><i><b><font face="Lucida Sans" size="2">Remove</font></b></i></p>
+          <p align="justify"><font face="Lucida Sans" size="2">*void <b> <u>remove</u></b>()
+          <br>
+          *void <b> <u>removeAttribute</u></b>(String attrName)<br>
+          *void <b> <u>removeToken</u></b>(int i)</font></li>
+        </ul>
+        <ul type="circle">
+          <li>
+    <p align="justify"><i><b><font face="Lucida Sans" size="2">Insert</font></b></i></p>
+    <p align="justify"><font face="Lucida Sans" size="2">*void <b> <u>
+    insertAfterElement</u></b>(String s)<br>
+    *void <b> <u>insertAfterElement</u></b>(byte[] ba)<br>
+    *void <b> <u>insertBeforeElement</u></b>(String s)<br>
+    *void <b> <u>insertBeforeElement</u></b>(byte[] ba)<br>
+    *void <b> <u>insertAttribute</u></b>(String s);<br>
+    *void <b> <u>insertAttribute</u></b>(byte[] ba);</font></p>
+    <p align="justify">&nbsp;</p>
+          </li>
+          <li>
+    <p align="justify"><i><b><font face="Lucida Sans" size="2">Update</font></b></i></p>
+          </li>
+        </ul>
+        <blockquote>
+    <p align="justify"><font face="Lucida Sans" size="2">*void <b> <u>updateToken</u></b>(byte[] 
+    b);<br>
+    *void <b> <u>updateToken</u></b>(String s);</font></p>
+        </blockquote>
+        <ul type="circle">
+          <li>
+    <p align="justify"><i><b><font face="Lucida Sans" size="2">Other Methods</font></b></i></p>
+          </li>
+        </ul>
+        <blockquote>
+    <p align="justify"><font face="Lucida Sans" size="2">*<b><u>output</u></b>(OutputStream 
+    os);<br>
+    *<b><u>reset</u></b>();</font></p>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="18" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">
+      <font size="1">VTD </font> </a></font></b>
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none"><b>
+      <font size="1" face="Tahoma">in 30 
+      seconds</font></b></a></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/persistence.html" style="text-decoration: none">VTD+XML Format</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="276" align="left" bordercolor="#000000" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">User's Guide</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">0. Introduction</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/1.html" style="text-decoration: none">1. Goals and Features</a>&nbsp;&nbsp;&nbsp; </font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/2.html" style="text-decoration: none">2. How to Process XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 
+      <a href="http://vtd-xml.sf.net/userGuide/3.html" style="text-decoration: none">3. Navigate VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 4. Classes/Interfaces and 
+      Methods</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/userGuide/5.html" style="text-decoration: none">5. Comparison with DOM,&nbsp; 
+      SAX, and Pull</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/userGuide/6.html" style="text-decoration: none">6. Table for Token Types
+      </a></font></b></p>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/userGuide/7.html" style="text-decoration: none">&nbsp;7. The C version VTD-XML</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html" style="text-decoration: none">Developer's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="51" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">VTD: A Technical 
+      Perspective</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/involved.html" style="text-decoration: none">
+      Getting Involved</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="17" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/links.html" style="text-decoration: none">Articles and Presentations</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sourceforge.net/benchmark.html" style="text-decoration: none">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="35" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="288" height="2006" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+</html>

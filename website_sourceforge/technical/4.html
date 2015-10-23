@@ -1,0 +1,306 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>VTD-XML technical</title>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">Project 
+    Homepage of VTD-XML </font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="https://sourceforge.net/sflogo.php?type=16&group_id=110612"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center">
+    <a href="http://www.sf.net/projects/vtd-xml" style="text-decoration: none">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black" size="2" color="#FFFFFF">
+    <a href="http://sourceforge.net/mail/?group_id=110612" style="text-decoration: none">
+    Mailing Lists</a></font></td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/" style="text-decoration: none"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612" style="text-decoration: none">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1130" id="AutoNumber3" height="1678">
+  <tr>
+    <td width="243" height="26" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net" style="text-decoration: none">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td height="1678" rowspan="14" valign="top" width="817" bgcolor="#E1E2D6">
+    <blockquote>
+      <h2 align="justify">&nbsp;</h2>
+      <h2 align="justify"><font face="Lucida Sans" color="#25461C">4. A Closer Look</font></h2>
+      <h3 align="justify"><span style="font-weight: 400">
+      <font face="Lucida Sans" size="3">In this section, we analyze some important 
+      aspects of the processing model.</font></span></h3>
+      <h3 align="justify"><font face="Lucida Sans" size="2"><br>
+      </font><font face="Lucida Sans" color="#25461C">4.1 Memory Usage</font></h3>
+      <p align="justify"><font face="Lucida Sans">The fact that the 
+      processing model makes extensive use of 64-bit integers has strong 
+      implications on its memory usage, which we summarize as follows:</font></p>
+      <ul>
+        <li>
+      <p align="justify"><font face="Lucida Sans"><b>Avoid per-object 
+      memory overhead</b>- Per-object allocation typically incurs a small amount 
+      of memory overhead in many modern object-oriented VM-based languages. For 
+      JDK 1.42, our measurement shows an 8-byte overhead associated with every 
+      object allocation. For an array, that overhead goes up to 16 bytes. A VTD 
+      record or a LC entry is immune to Java's per-object overhead because it is 
+      an integer, not an object.<br>
+&nbsp;</font></li>
+      <li>
+      <p align="justify"><font face="Lucida Sans"><b>Use array whenever 
+      possible</b>- We feel that the biggest memory-saving factor is that both 
+      VTD records and LC entries are constant in length and can be stored in 
+      array-like memory chunks. For example, by allocating a large array for 
+      4096 VTD records, one incurs the per-array overhead of 16 bytes only once 
+      across 4096 records, and the per-record overhead is dramatically reduced 
+      to almost nothing. Furthermore, by taking advantages of spatial locality 
+      of associated records, one avoids the cost of explicitly stitching 
+      together objects using pointers.</font></li>
+    </ul>
+      <p align="justify"><font face="Lucida Sans">Our benchmark results 
+      indicate that the total size of the internal representation is usually 1/3 
+      ~1/5 of a DOM tree. For document-oriented XML, the multiplying factor is 
+      usually around 1.3, i.e. the internal representation is 30% larger than 
+      the document (assuming single-byte character encoding). For data oriented 
+      XML, the multiplying factor is between 1.5~2. Comparing with DOM, the 
+      memory reduction is most significant when XML is &quot;taggy&quot; and DOM's memory 
+      consumption is near the high end of its 5x~10x estimate.</font></p>
+      <h3 align="justify"><font face="Lucida Sans" size="2"><br>
+      </font><font face="Lucida Sans" color="#25461C">4.2 Inherent Persistence</font></h3>
+      <p align="justify"><font face="Lucida Sans">For applications that 
+      demand frequent read-only access to XML documents, the processing model 
+      provides the option of saving the internal representations on disk after 
+      the XML documents are processed for the first time. Afterwards, those 
+      applications only needs to load &quot;pre-parsed&quot; form of XML back in memory. 
+      In other words, the in-memory representation of the processing model is <i>
+      inherent persistent</i>. This again is due to the fact that both VTD and 
+      LC use 64-bit integers, not objects, to represent tokens and hierarchy. 
+      When the processing performance is critical, one can potentially create 
+      XML and VTD at the same time, and then package them into a single file 
+      before sending it across the network. The downside of this approach is 
+      that it will add to the network transmission cost, which may not be 
+      suitable for bandwidth constrained environment. The upside is that 
+      XML-aware network appliances sitting on the data path can directly use the 
+      binary portion of the data to process XML (without parsing again). In 
+      addition, the &quot;pre-parsed&quot; form contains the XML text, and therefore loses 
+      no inherent benefits of XML, e.g. extensibility and human readability.</font></p>
+      <h3 align="justify"><font face="Lucida Sans" size="2"><br>
+      </font><font face="Lucida Sans" color="#25461C">4.3 XML on a chip</font></h3>
+      <p align="justify"><font face="Lucida Sans">Recently, &quot;XML on a chip&quot; 
+      has gathered much attention as many companies are racing to deliver 
+      ASIC-based XML processing solutions. A big reason is that the performance 
+      of XML parsing is often cited as a major bottleneck for many 
+      performance-sensitive applications. Matthias et al. [5] identify XML 
+      parsing performance to be a key obstacle to a successful XML deployment, 
+      and recommend hardware-assisted parsing engine to be a potential research 
+      topic. This is hardly surprising, considering the fact that hardware 
+      implementations of processing algorithms free CPU from performing 
+      processor-intensive computations and sometimes provide the only ways to 
+      guarantee QoS. However, one must take into account design constraints that 
+      are specific to XML and custom hardware when thinking of hardware-based 
+      XML parsing. In that context, our processing model possesses a few 
+      attributes critical to the success of implementing &quot;XML on a chip,&quot; which 
+      we summarize below:</font></p>
+      <ul>
+        <li>
+      <p align="justify"><font face="Lucida Sans"><b>Inherent persistence</b>- 
+      For the custom hardware to co-process XML and still interface with the 
+      application logic, the system most certainly has to transport &quot;something&quot; 
+      from the hardware (e.g. a PCI card) into the main address space in which 
+      the programs reside. To make the hardware work seamlessly with the 
+      application logic, one of the fundamental assumptions of distributed 
+      computing applies: The &quot;something&quot; must be persistent because the PCI bus, 
+      though carrying a different name, is physically not different than a set 
+      of wires like Ethernet, and therefore is subject to the same set of design 
+      constraints. Notice that VTD and LCs satisfy this constraint, as both are 
+      inherently persistent. Implementing DOM on a chip, on the other hand, is 
+      prone to fail because a DOM tree is not persistent.</font></li>
+    <li>
+      <p align="justify"><font face="Lucida Sans"><b>Constant record/entry 
+      length</b>- Optionally, the hardware can produce some serialized form of a 
+      DOM tree or SAX events. The problem of this approach is that, to rebuild 
+      the DOM tree or regenerate SAX events, the software application at the 
+      receiving end will have no choice but to go through the most expensive 
+      part of DOM/SAX parsing, i.e., to allocate and garbage-collect objects, 
+      all over again, essentially defeating the purpose of hardware-based 
+      parsing. The culprit is the variable length of &quot;extractive&quot; tokens. In 
+      contrast, because VTD records and LC entries are constant in length and 
+      addressable using integers, the persistence of the internal representation 
+      is post-binding. In other words, the software application at the receiving 
+      end does not incur the cost of allocating a large number of objects, thus 
+      reaping maximum benefit of hardware-based parsing.</font></li>
+  <li>
+      <p align="justify"><font face="Lucida Sans"><b>Minimum buffering</b>- 
+      In order to obtain maximum performance, a good design should strive to be 
+      as stateless as possible. Our processing model, when implemented on chip, 
+      features a flow-through, process-then-discard architecture that is quite 
+      similar to that of DES (Data Encryption Standard)[11]—an algorithm well 
+      known for its high performance hardware implementation. Similar to a DES 
+      chip, a VTD chip scans through the entire document one page at a time to 
+      record all the relevant information, and no character is accessed more 
+      than once. In addition, to avoid the propagation delays associated with 
+      accessing off-chip memory elements, the design should keep as many 
+      variables/states on chip in fixed-size register files. In that regard, an 
+      offset/length based tokenization plays right into the strength of custom 
+      hardware.</font></li>
+</ul>
+      <p align="justify"><font face="Lucida Sans">To sum up, <b><u>the 
+      constant-length token representation is the most important attribute of 
+      the processing model</u></b>. We can also look at this problem from the 
+      opposite direction. If tokens are not constant in length, then they are 
+      not addressable using integers, and the processing model can no longer 
+      bulk-allocate memory buffers to store tokens. Consequently, one probably 
+      has no choice but to allocate lots of objects to represent tokens and 
+      hierarchy, making per-object memory/processing overhead all but 
+      inevitable. And in so doing, applications won't be able to reap 
+      significant performance benefit from custom hardware.</font></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/VTD.html" style="text-decoration: none">VTD in 
+      30 seconds</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="9" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/persistence.html" style="text-decoration: none">VTD+XML Format</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="1" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/userGuide/0.html" style="text-decoration: none">User's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="0" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html" style="text-decoration: none">Developer's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="25" align="left" bordercolor="#0000FF" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">VTD: A Technical Perspective</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/0.html" style="text-decoration: none">0. Abstract</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;&nbsp;<a href="http://vtd-xml.sf.net/technical/1.html" style="text-decoration: none">1. Introduction</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/2.html" style="text-decoration: none">2. A Processing Model Based on VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/3.html" style="text-decoration: none">3. Navigate XML</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 4. A Closer Look</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/5.html" style="text-decoration: none">5. Conclusion</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/6.html" style="text-decoration: none">&nbsp;References</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="10" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/codeSample/cs1.html" style="text-decoration: none">Code Samples</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="3" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/faq.html" style="text-decoration: none">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="2" align="left" bordercolor="#0000FF" valign="top">
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="4" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/links.html" style="text-decoration: none">Articles and Presentations</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="22" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a style="text-decoration: none" href="http://vtd-xml.sourceforge.net/benchmark1.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="32" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/javadoc/" style="text-decoration: none">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="19" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/demo/demo1.html" style="text-decoration: none">Demo</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="243" height="1523" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-5147731-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+
+</html>

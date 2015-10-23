@@ -1,0 +1,338 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Project Homepage of VTD</title>
+<style>
+<!--
+table.MsoTableGrid
+	{border:1.0pt solid windowtext;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	text-indent:11.35pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	}
+-->
+</style>
+</head>
+
+<body>
+
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber1" height="91">
+  <tr>
+    <td width="65%" height="1"><font face="Verdana" size="6">&nbsp;</font><b><font face="Tahoma" size="6">Project 
+    Homepage of VTD-XML </font></b></td>
+    <td width="202%" height="1"><p align="center"><a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=69358&amp;type=5"
+        width="210" height="62" border="0" alt="SourceForge.net Logo"></a></td>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber2" height="23">
+  <tr>
+    <td width="23%" height="23" bgcolor="#000066"></td>
+    <td width="23%" height="23" bgcolor="#000066">
+    <p align="center"><a href="http://www.sf.net/projects/vtd-xml">
+    <font size="2" face="Arial Black" color="#FFFFFF">Sourceforge Home</font></a></p>
+    </td>
+    <td width="17%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+    <a href="http://www.ximpleware.com/"><font color="#FFFFFF" size="2">XimpleWare</font></a></font></td>
+    <td width="16%" height="23" bgcolor="#000066">
+    <p align="center"><font face="Arial Black">
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=110612">
+    <font color="#FFFFFF" size="2">Download</font></a></font></td>
+    <td width="21%" height="23" bgcolor="#000066">
+    </td>
+  </tr>
+</table>
+<hr>
+<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="98%" id="AutoNumber3" height="2757">
+  <tr>
+    <td width="242" height="15" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net">VTD-XML Home</a></font></b></p>
+    </blockquote>
+    </td>
+    <td height="2757" rowspan="11" valign="top" width="818" bgcolor="#E1E2D6">
+    <blockquote>
+      <h2 align="justify">&nbsp;</h2>
+      <h2 align="justify"><font face="Tahoma" color="#25461C">3. Navigate XML</font></h2>
+      <p align="justify"><font face="Book Antiqua">After the parser finishes 
+      processing XML, the processing model provides two views of the underlying 
+      XML data. The first is a flat view of all VTD records. Corresponding to 
+      all tokens in XML in document order, it can be thought of as a view of cached 
+      SAX events. The second is a hierarchical view enabled by a cursor-based 
+      navigation API allowing for DOM-like random access within the document. 
+      And the cursor always points to the VTD record of the current element. In 
+      this section, we first describe the important concepts and internal 
+      constructs of the navigation API, then demonstrates how everything works 
+      together to achieve the purpose of navigation.</font></p>
+      <h3 align="justify"><font face="Verdana" color="#25461C">3.1 Context 
+      Object</font></h3>
+      <p align="justify"><font face="Book Antiqua">To navigate the element 
+      hierarchy represented by VTD and location caches, the processing model 
+      first creates an integer array (whose size equals the maximum depth M) we 
+      call <i>Context Object (CO)</i>. Its primary purpose is to track, at any given 
+      moment of navigation, the position of the current cursor in the element 
+      hierarchy. We use the first entry (CO[0]) in the context object to 
+      indicate the current depth of the cursor. The rest of the array is laid 
+      out as follows: Assuming the current depth of the cursor is <i>D (D &lt;= Max_depth</i>), we place the VTD indexes of the cursor and all its ancestors 
+      (except root index) into the context object according to their depth 
+      values (CO[1] ~ CO[D-1]), as shown in <b>Fig. 4</b>. Any unused entries are 
+      filled with -1.</font></p>
+      <p align="center">
+      <img border="0" src="3.html4.jpg" width="543" height="552"></p>
+      <p align="center">
+      <b><font face="Verdana" size="2">Fig. 4. Mapping element hierarchy into 
+      Context Object.</font></b></p>
+      <p align="justify"><font face="Book Antiqua">Additionally, the context 
+      object maintains the necessary state when one wants to look up the 
+      namespace URL for a given prefix. This is done by a bottom-up search 
+      starting from the attribute tokens under the current element. If no match 
+      is found, move up one level and look for attribute tokens of the parent. 
+      Repeat this process until one finds the matching name space token and the 
+      URL value.</font></p>
+      <h3 align="justify"><font face="Verdana" color="#25461C">3.2 Element 
+      Indexing Strategy</font></h3>
+      <p align="justify"><font face="Book Antiqua">While the context object 
+      maintains the necessary internal state for navigating the element 
+      hierarchy, it does not fully specify how to obtain those VTD indexes from 
+      the VTD buffer and LCs. Indeed, the element indexing strategy of the 
+      processing model strongly influences the internal behaviors of the 
+      navigation. We summarize those strategies and corresponding navigation 
+      behaviors below:</font></p>
+      <ul>
+        <li>
+        <p align="justify"><font face="Book Antiqua"><b>VTD scan without LCs</b>- 
+        With this option, the processing model doesn't allocate or use LCs at 
+        all. Because a VTD record encapsulates both its depth and type, one 
+        simply obtains the VTD index of its sibling and children by directly 
+        scanning the VTD buffer. Scan backwards if one wants to find the 
+        previous sibling; scan forward for the next sibling, the first child and 
+        the last child. In fact, the processing model emulates the behavior of 
+        Xerces' nodeIterator by scanning VTD buffers for element tokens and 
+        simultaneously updating the content of Context Object. The performance 
+        is bound by the maximum bandwidth of the memory. For SOAP header 
+        processing purposes [6], this option provides an important capability 
+        that a SAX parser lacks by default, i.e. being able to go through the 
+        same content multiple times without reparsing.<br>
+&nbsp;</font></li>
+        <li>
+        <p align="justify"><font face="Book Antiqua"><b>Full element 
+        indexing</b>- The processing model can choose to index all elements in 
+        XML, i.e. one LC per depth level up to the maximum document depth. In 
+        this case, VTD indexes are entirely looked up from LCs.<br>
+&nbsp;</font></li>
+        <li>
+        <p align="justify"><font face="Book Antiqua"><b>Proximity element 
+        indexing</b>- For this, we can heuristically pick a depth level so that 
+        navigating below that level is by LC lookup; above that level, scan the 
+        VTD buffer. We find this strategy suitable in many situations for 
+        several reasons. First, full element indexing incurs the cost of 
+        allocating LCs and indexing element. Secondly, scanning the VTD buffer, 
+        effectively a large number of sequential memory reads, is precisely what 
+        the current generation of memory technologies (e.g. DDR SDRAM) are best 
+        at. For example, Micron's Samurai DDR chipset (64-bit data bus) [8] 
+        running at 133 MHz delivers maximum throughput of over 2GB/s. 
+        Furthermore, since one of our design goals is to move the processing 
+        model on chip (more discussion later), in order for custom hardware to 
+        process XML in a single pass, we find it much easier to hardcode levels 
+        of LCs in silicon. Full element indexing in hardware is difficult 
+        because the hardware is less flexible and lacks a priori knowledge of 
+        the depth of XML. Our initial software implementation employs this 
+        proximity indexing strategy with a pre-chosen value of 4.</font></li>
+      </ul>
+      <h3 align="justify"><font face="Verdana" size="4" color="#25461C">3.3 An 
+      Example</font></h3>
+      <p align="justify"><font face="Book Antiqua">In <b>Fig. 5 </b>we show 
+      the content of the context object during a typical navigation run. VTD 
+      records and their corresponding tokens are highlighted and labeled with 
+      their VTD indexes. We use green color to indicate the element tokens since 
+      the cursor only touches those during navigation. Initially, the cursor 
+      points to the root element. As it moves deeper into the hierarchy, the 
+      depth value and the corresponding entry (underscored ones in <b>Fig. 5</b>) 
+      are getting updated to reflect the position change of the cursor. To move 
+      up the hierarchy, we only need to update the depth value and the 
+      corresponding entry in the context object.<br>
+&nbsp;</font></p>
+      <p align="center">
+      <img border="0" src="devGuide3_files/image001.png" width="96%" height="539"></p>
+      <p align="center"><b><font face="Verdana" size="2">Fig.5. Navigating XML 
+      using VTD.</font></b></p>
+      <h3 align="justify"><b><font face="Verdana" color="#25461C">3.4 Important 
+      Methods</font></b></h3>
+      <p align="justify"><font face="Book Antiqua">In our reference 
+      implementation, we organize various parsing and navigation functions into 
+      two classes:<i> VTDGen</i> and <i>VTDNav</i>. <i>VTDGen</i> takes as the 
+      input an in-memory byte array containing the XML document, and produces 
+      VTD records and location caches. <i>VTDNav</i> contains the member methods 
+      that navigate the hierarchy, compare tokens to strings, and convert tokens 
+      to strings or numerical data. In <b>Table 1</b>, we list some of the 
+      important member methods of <i>VTDNav</i>.</font></p>
+      <table class="MsoTableGrid" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: medium none" width="621" height="202">
+        <tr>
+          <td valign="top" style="width: 268; border: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="19">
+          <p class="MsoNormal" align="center" style="text-align: center; text-indent: 0in; text-autospace: none">
+          <b><span style="font-size: 12.0pt">Method Name/Signature</span></b></td>
+          <td valign="top" style="width: 322; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="19">
+          <p class="MsoNormal" align="center" style="text-align: center; text-indent: 0in; text-autospace: none">
+          <b><span style="font-size: 12.0pt">Description</span></b></td>
+        </tr>
+        <tr>
+          <td valign="top" style="width: 268; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="29">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">Boolean
+          </span></i></b><span style="font-family: TimesNewRomanPSMT">
+          toElement(int direction)</span></td>
+          <td valign="top" style="width: 322; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="29">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <span style="font-family: TimesNewRomanPSMT">This is the primary 
+          function for element hierarchy navigation.</span></td>
+        </tr>
+        <tr>
+          <td valign="top" style="width: 268; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="30">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">Boolean
+          </span></i></b><span style="font-family: TimesNewRomanPSMT">
+          toElement(int direction, String elementName)</span></td>
+          <td valign="top" style="width: 322; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="30">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <span style="font-family: TimesNewRomanPSMT">Same as last one, plus 
+          one needs to specify element&nbsp; name</span></td>
+        </tr>
+        <tr>
+          <td valign="top" style="width: 268; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="29">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">Int
+          </span></i></b><span style="font-family: TimesNewRomanPSMT">getText()</span></td>
+          <td valign="top" style="width: 322; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="29">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <span style="font-family: TimesNewRomanPSMT">This function returns the 
+          VTD index for the text node of the current element</span></td>
+        </tr>
+        <tr>
+          <td valign="top" style="width: 268; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="48">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">Int
+          </span></i></b><span style="font-family: TimesNewRomanPSMT">
+          getAttributeValue(String attributeName)</span></td>
+          <td valign="top" style="width: 322; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="48">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <span style="font-family: TimesNewRomanPSMT">This function returns the 
+          VTD index of an attribute</span></p>
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <span style="font-family: TimesNewRomanPSMT">value for a given 
+          attribute name</span></td>
+        </tr>
+        <tr>
+          <td valign="top" style="width: 268; border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="35">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; text-autospace: none">
+          <b><i><span style="font-family: TimesNewRomanPS-BoldItalicMT">Int
+          </span></i></b><span style="font-family: TimesNewRomanPSMT">
+          parseInt(int index)</span></td>
+          <td valign="top" style="width: 322; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0in; padding-bottom: 0in" height="35">
+          <p class="MsoNormal" align="left" style="text-align: left; text-indent: 0in; page-break-after: avoid; text-autospace: none">
+          <span style="font-family: TimesNewRomanPSMT">This function takes a VTD 
+          index and returns the integer value represented by the token content</span></td>
+        </tr>
+      </table>
+      <p align="center"><b><font face="Verdana" size="2">Table 1. Selected 
+      Member Methods of VTDNav</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="25" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/VTD.html">VTD in 
+      30 seconds</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="16" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/userGuide/0.html">User's Guide</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="15" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/DevGuide/0.html">Developer's Guide</a></font></b></p>
+      </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="25" align="left" bordercolor="#0000FF" valign="top" bgcolor="#E1E2D6">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">VTD: A Technical Perspective</font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp; </font><font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/0.html">0. Abstract</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;&nbsp;<a href="http://vtd-xml.sf.net/technical/1.html">1. Introduction</a></font></b></p>
+      <p><b><font face="Tahoma" size="2">&nbsp; </font>
+      <font face="Tahoma" size="1">
+      <a href="http://vtd-xml.sf.net/technical/2.html">2. A Processing Model Based on VTD</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp; 3. Navigate XML</font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/4.html">4. A Closer Look</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/5.html">5. Conclusion</a></font></b></p>
+      <p><b><font face="Tahoma" size="1">&nbsp;
+      <a href="http://vtd-xml.sf.net/technical/6.html">References</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="8" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">Tutorial</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="7" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/faq.html">FAQ</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="29" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sourceforge.net/benchmark.html">Benchmark</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="25" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2"><a href="http://vtd-xml.sf.net/javadoc/">API Doc</a></font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="7" align="left" bordercolor="#0000FF" valign="top">
+    <blockquote>
+      <p><b><font face="Tahoma" size="2">
+      <a href="http://vtd-xml.sf.net/demo.html">Demo</a> (</font><i><font color="#FF0000" face="Tahoma" size="4">New!!</font></i><font face="Tahoma" size="2"> 
+      with XPath )</font></b></p>
+    </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td width="242" height="2585" bordercolor="#0000FF">&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+
+</html>
