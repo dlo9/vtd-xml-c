@@ -48,7 +48,7 @@ public class FilterExpr extends Expr {
 		first_time = true;
 		out_of_range=false;
 		pr.fe=this;
-		needReordering =false;
+		//needReordering =false;
 	}
 	/*public int getPositon(){
 		return fib.size();
