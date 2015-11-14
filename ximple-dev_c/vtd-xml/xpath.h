@@ -452,7 +452,7 @@ void	setPosition_fne(funcExpr *e,int pos);
 void    toString_fne(funcExpr *e, UCSChar* string);
 int	adjust_fne(funcExpr *e, int n);
 Boolean isFinal_fne(funcExpr *e);
-funcName getOpCode_fne(funcExpr *e);
+funcName getFuncOpCode_fne(funcExpr *e);
 void addArg_fne(funcExpr *fne, expr *e);
 		
 void markCacheable_fne(funcExpr *e);
