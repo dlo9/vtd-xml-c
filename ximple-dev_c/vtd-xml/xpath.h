@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+ * Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,7 @@ typedef struct Expr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 } expr;
 
 
@@ -118,6 +119,7 @@ typedef struct LiteralExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	UCSChar *s;
 } literalExpr;
 
@@ -163,6 +165,7 @@ typedef struct NumberExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	double dval;
 } numberExpr;
 
@@ -204,7 +207,24 @@ typedef enum OpType{
 	 OP_LT,
 	 OP_GT
 } opType;
-
+typedef enum CompType {
+	NS_NS,
+	NS_N,
+	NS_S,
+	NS_B,
+	N_NS,
+	N_N,
+	N_S,
+	N_B,
+	S_NS,
+	S_N,
+	S_S,
+	S_B,
+	B_NS,
+	B_N,
+	B_S,
+	B_B
+}compType;
 typedef struct BinaryExpr {
 	free_Expr freeExpr;
 	eval_NodeSet evalNodeSet;
@@ -225,13 +245,17 @@ typedef struct BinaryExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	expr *left;
 	opType op;
 	expr *right;
 	FastIntBuffer *fib1;
 	Boolean isBool;
 	Boolean isNum;
+	compType ct;
 } binaryExpr;
+
+
 
 binaryExpr *createBinaryExpr(expr *e1, opType op, expr *e2);
 void freeBinaryExpr(binaryExpr *e);
@@ -253,6 +277,7 @@ Boolean isFinal_be(binaryExpr *e);
 void markCacheable_be(binaryExpr *e);
 void markCacheable2_be(binaryExpr *e);
 void clearCache_be(binaryExpr *e);
+compType computeCompType(binaryExpr *e);
 /* unary Expr */
 typedef struct UnaryExpr {
 	free_Expr freeExpr;
@@ -270,6 +295,7 @@ typedef struct UnaryExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	set_ContextSize setContextSize;
 	set_Position setPosition;
 	to_String toString;
@@ -392,6 +418,7 @@ typedef struct FuncExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	funcName opCode;
 	aList *al;
 	Boolean isNum;
@@ -425,6 +452,8 @@ void	setPosition_fne(funcExpr *e,int pos);
 void    toString_fne(funcExpr *e, UCSChar* string);
 int	adjust_fne(funcExpr *e, int n);
 Boolean isFinal_fne(funcExpr *e);
+funcName getOpCode_fne(funcExpr *e);
+void addArg_fne(funcExpr *fne, expr *e);
 		
 void markCacheable_fne(funcExpr *e);
 void markCacheable2_fne(funcExpr *e);
@@ -576,6 +605,7 @@ typedef struct LocationPathExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	Step* s;
 	Step* currentStep;
 	pt pathType;
@@ -627,6 +657,7 @@ typedef struct FilterExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	set_ContextSize setContextSize;
 	set_Position setPosition;
 	to_String toString;
@@ -677,6 +708,7 @@ typedef struct PathExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	expr *fe;
 	locationPathExpr *lpe;
 	int evalState;
@@ -728,6 +760,7 @@ typedef struct UnionExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	expr *fe;
 	struct UnionExpr *current;
 	struct UnionExpr *next;
@@ -777,6 +810,7 @@ typedef struct VariableExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	//expr *fe;
 	UCSChar* exprName;
 	expr *exprVal;
@@ -860,6 +894,7 @@ typedef struct CachedExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	Boolean needReordering;
 	expr *e;
 	Boolean cached;
 	Boolean eb;
