@@ -43,6 +43,7 @@ variableExpr *createVariableExpr(UCSChar* s, expr *e){
 	v->markCacheable = (markCacheable_)&markCacheable_ve;
 	v->markCacheable2 = (markCacheable_)&markCacheable2_ve;
 	v->clearCache=(clearCache_)&clearCache_ve;
+	v->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	v->exprName = s;
 	v->exprVal = e;
 	return v;

@@ -56,7 +56,7 @@ unionExpr *createUnionExpr(expr *e){
 	une->evalState = 0;
 	une->ih = NULL;
 	une->needReordering = TRUE;
-	
+	une->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	return une;
 
 }
