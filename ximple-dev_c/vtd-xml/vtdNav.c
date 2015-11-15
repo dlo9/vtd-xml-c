@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ static inline Boolean isElementOrDocument(VTDNav *vn, int index);
 static inline Boolean isWS(int ch);
 //static Boolean matchRawTokenString1(VTDNav *vn, int offset, int len, UCSChar *s);
 static Boolean matchRawTokenString2(VTDNav *vn, Long l, UCSChar *s);
+static Boolean matchRawTokenString3(VTDNav *vn, int index, UCSChar *s);
 //static Boolean matchTokenString1(VTDNav *vn, int offset, int len, UCSChar *s);
 static Boolean matchTokenString2(VTDNav *vn, Long l, UCSChar *s);
 static inline int NSval(VTDNav *vn, int i);
@@ -269,8 +270,10 @@ static Long handle_utf16be(VTDNav *vn, int offset){
 	}
 }
 
-
-static Boolean matchSubString(VTDNav*vn, int os, int eos, int index, int t, UCSChar *s);
+static Boolean isDigit(int c);
+static Boolean matchSubString(VTDNav*vn, int os,  int index, UCSChar *s);
+static Boolean matchSubString2(VTDNav*vn, int os,  int index, UCSChar *s);
+//static Boolean matchSubString2(VTDNav*vn,int os, int index, UCSChar *s)
 VTDNav *createVTDNav(int r, encoding_t enc, Boolean ns, int depth,
 					 UByte *x, int xLen, FastLongBuffer *vtd, FastLongBuffer *l1,
 					 FastLongBuffer *l2, FastIntBuffer *l3, int so, int len, Boolean br){
@@ -405,7 +408,7 @@ VTDNav *createVTDNav(int r, encoding_t enc, Boolean ns, int depth,
 						 vn->fib = createFastIntBuffer2(5);
 						 return vn;
 }
-
+static int getNextChar(VTDNav *vn, vn_helper *h);
 //Free VTDNav object
 //it doesn't free the memory block containing XML doc
 void _freeVTDNav(VTDNav *vn)
@@ -419,6 +422,11 @@ void _freeVTDNav(VTDNav *vn)
 			freeFastLongBuffer(vn->l2Buffer);
 			freeFastIntBuffer(vn->l3Buffer);
 		}
+		//freeFastIntBuffer(vn->fib);
+		free(vn->h1);
+		vn->h1=NULL;
+		free(vn->h2);
+		vn->h2=NULL;
 		free(vn->context);
 		free(vn->stackTemp);
 		if (vn->name!= NULL)
@@ -475,7 +483,7 @@ int getAttrVal(VTDNav *vn, UCSChar *an){
 
 	if (vn->ns == FALSE) {
 		while ((type == TOKEN_ATTR_NAME || type == TOKEN_ATTR_NS)) {
-			if (matchRawTokenString(vn,index,
+			if (matchRawTokenString3(vn,index,
 				an)) { // ns node visible only ns is disabled
 					return index + 1;
 			}
@@ -787,7 +795,7 @@ Long getElementFragment(VTDNav *vn){
 	so = getTokenOffset(vn,getCurrentIndex2(vn)) - 1;
 	if (toElement(vn,NEXT_SIBLING)) {
 
-		int temp = getCurrentIndex(vn),temp2=temp;
+		int temp = getCurrentIndex(vn);
 		int so2;
 		// rewind 
 		while (getTokenDepth(vn,temp) == depth && 
@@ -797,8 +805,8 @@ Long getElementFragment(VTDNav *vn){
 				
 				temp--;
 			}
-		if (temp!=temp2)
-			temp++;
+		/*if (temp!=temp2)
+			temp++;*/
 		//temp++;
 		so2 = getTokenOffset(vn,temp) - 1;
 		// look for the first '>'
@@ -918,7 +926,7 @@ Long getContentFragment(VTDNav *vn){
 		// for an element with next sibling
 		if (toElement(vn,NEXT_SIBLING)) {
 
-			int temp = getCurrentIndex(vn),temp2=temp;
+			int temp = getCurrentIndex(vn);
 			// rewind
 			while (getTokenDepth(vn,temp) == depth && 
 					(getTokenType(vn,temp)== TOKEN_COMMENT || 
@@ -927,8 +935,8 @@ Long getContentFragment(VTDNav *vn){
 				
 				temp--;
 			}
-			if (temp!=temp2)
-				temp++;
+			/*if (temp!=temp2)
+				temp++;*/
 			//temp++;
 			so2 = getTokenOffset(vn,temp) - 1;
 			// look for the first '>'
@@ -1062,7 +1070,7 @@ int getText(VTDNav *vn){
 			vn->context[vn->context[0]] + 1 : vn->rootIndex + 1;
 		int depth = getCurrentDepth(vn);
 		tokenType type;
-		if (index<vn->vtdSize || !vn->atTerminal)
+		if (index<vn->vtdSize && !vn->atTerminal)
 			type= getTokenType(vn,index);
 		else
 			return -1;
@@ -1497,7 +1505,7 @@ Boolean matchElement(VTDNav *vn, UCSChar *en){
 		return TRUE;
 	if (vn->context[0]==-1)
 		return FALSE;
-	return matchRawTokenString(vn,
+	return matchRawTokenString3(vn,
 		(vn->context[0] == 0) ? vn->rootIndex : vn->context[vn->context[0]],
 		en);
 }
@@ -1543,7 +1551,7 @@ Boolean matchElementNS(VTDNav *vn, UCSChar *URL, UCSChar *ln){
 //Match a string against a token with given offset and len, entities 
 //doesn't get resolved.
 Boolean matchRawTokenString1(VTDNav *vn, int offset, int len, UCSChar *s){
-  return  compareRawTokenString2(vn,offset,len,s)==0;
+  return (Boolean) (compareRawTokenString2(vn,offset,len,s)==0);
 }
 
 //Match a string with a token represented by a long (upper 32 len, lower 32 offset).
@@ -1558,7 +1566,27 @@ static Boolean matchRawTokenString2(VTDNav *vn, Long l, UCSChar *s){
 	len = (int) ((l & MASK_TOKEN_FULL_LEN) >> 32);
 	// a little hardcode is always bad
 	offset = (int) l;
-	return compareRawTokenString2(vn, offset, len, s)==0;
+	return (compareRawTokenString2(vn, offset, len, s)==0); 
+}
+
+Boolean matchRawTokenString3(VTDNav *vn, int index, UCSChar *s) {
+	int type = getTokenType(vn,index);
+	int len =
+		(type == TOKEN_STARTING_TAG
+			|| type == TOKEN_ATTR_NAME
+			|| type == TOKEN_ATTR_NS)
+		? getTokenLength(vn,index) & 0xffff
+		: getTokenLength(vn,index);
+
+	int len2 = (int)((longAt(vn->vtdBuffer,index)& MASK_TOKEN_FULL_LEN) >> 43);
+	int os2 = (len2 == 0) ? 0 : len2 + 1;
+	// upper 16 bit is zero or for prefix
+
+	//currentOffset = getTokenOffset(index);
+	// point currentOffset to the beginning of the token
+	// for UTF 8 and ISO, the performance is a little better by avoid
+	// calling getChar() everytime
+	return compareRawTokenString2(vn,getTokenOffset(vn,index) + os2, len - os2, s) == 0;
 }
 
 //Match the string against the token at the given index value. When a token
@@ -3561,11 +3589,11 @@ int compareRawTokenString2(VTDNav *vn, int offset, int len, UCSChar *s){
 	l = (int)wcslen(s);
 	for (i = 0; i < l && offset < endOffset; i++) {
 		l1 = getChar(vn,offset);
-		offset += (int)(l1>>32);
 		if (s[i] < (int) l1)
             return 1;
         if (s[i] > (int) l1)
             return -1;
+		offset += (int)(l1 >> 32);
 	}
 
 	if (i == l && offset < endOffset)
@@ -3809,8 +3837,10 @@ ElementFragmentNs *getElementFragmentNs(VTDNav *vn){
 							appendInt(fib,k);
 							//System.out.println(" ns name ==>" + toString(k));
 						}
+						k += 2;
 					}
-					k+=2;					
+					else
+						break;
 					//type = getTokenType(vn,k);
 				}
 
@@ -4933,6 +4963,7 @@ void _resolveLC_L5(VTDNav_L5 *vn){
 }
 
 void _freeVTDNav_L5(VTDNav_L5 *vn){
+	if (vn!=NULL){
 	freeContextBuffer (vn->contextBuf);
 	freeContextBuffer(vn->contextBuf2);
 	if (vn->br == FALSE && vn->master){
@@ -4943,10 +4974,23 @@ void _freeVTDNav_L5(VTDNav_L5 *vn){
 		freeFastLongBuffer(vn->l4Buffer);
 		freeFastIntBuffer(vn->l5Buffer);
 	}
+	free( vn->h1);
+	vn->h1=NULL;
+	free( vn->h2);
+	vn->h2=NULL;
 	free( vn->context);
 	free( vn->stackTemp);
+	if (vn->name!= NULL)
+		free(vn->name);
+	if (vn->localName != NULL)
+		free(vn->localName);
+	if (vn->URIName != NULL)
+		free(vn->URIName);
+	if (vn->currentNode != NULL)
+		freeBookMark( vn->currentNode);
 	freeFastIntBuffer(vn->fib);
 	free(vn);
+	}
 }
 
 VTDNav_L5 *createVTDNav_L5(int r, encoding_t enc, Boolean ns, int depth,
@@ -10741,7 +10785,7 @@ loop33:
 
 	void _sync(VTDNav *vn,int depth, int index){
 		int i, temp,size;
-		int t=-1;
+		//int t=-1;
 		switch(depth){
 		case -1: return;
 		case 0: 
@@ -11743,7 +11787,45 @@ loop33:
 		setCursorPosition2(vn->currentNode);
 	}
 	
-	void fillXPathString(VTDNav *vn,FastIntBuffer *indexBuffer,FastIntBuffer *countBuffer){}
+	void fillXPathString(VTDNav *vn,FastIntBuffer *indexBuffer,FastIntBuffer *countBuffer){
+		int index = getCurrentIndex(vn) + 1;
+		int tokenType, depth, t = 0, length, i = 0;
+		int dp = vn->context[0];
+		//int size = vtdBuffer.size;
+		// store all text tokens underneath the current element node
+		while (index < vn->vtdSize) {
+			tokenType = getTokenType(vn,index);
+			depth = getTokenDepth(vn,index);
+			if (depth<dp ||
+				(depth == dp && tokenType == TOKEN_STARTING_TAG)) {
+				break;
+			}
+
+			if (tokenType == TOKEN_CHARACTER_DATA
+				|| tokenType == TOKEN_CDATA_VAL) {
+				length = getTokenLength(vn,index);
+				t += length;
+				appendInt(vn->fib,index);
+				if (length > MAX_TOKEN_LENGTH) {
+					while (length > MAX_TOKEN_LENGTH) {
+						length -= MAX_TOKEN_LENGTH;
+						i++;
+					}
+					index += i + 1;
+				}
+				else
+					index++;
+				continue;
+				//
+			}
+			else if (tokenType == TOKEN_ATTR_NAME
+				|| tokenType == TOKEN_ATTR_NS) {
+				index = index + 2;
+				continue;
+			}
+			index++;
+		}
+	}
 
 	inline UCSChar *getXPathStringVal(VTDNav *vn,short mode){
 		return _getXPathStringVal(vn,getCurrentIndex(vn),mode);
@@ -12052,7 +12134,7 @@ loop33:
 				else
 					l = getChar(vn,offset);
 				c = (int)l;
-				if (c==s[0]&& matchSubString(vn,offset, endOffset, index, type,s)){
+				if (c==s[0]&& matchSubString(vn,offset,  index, s)){
 					result=TRUE;
 					goto loop;
 				}else
@@ -12171,7 +12253,7 @@ loop33:
 		}
 		//if (t<s.length())
 		//	return false;
-		for (i=vn->fib->size-1;i!=0;i--){
+		for (i=vn->fib->size-1;i>=0;i--){
 			t+=getStringLength(vn,intAt(vn->fib,i));
 			if (t>=len){
 				d = t-len;//# of chars to be skipped
@@ -12190,13 +12272,14 @@ loop33:
 				l=getChar(vn,offset);
 			offset += (int)(l>>32);
 		}
-		b =matchSubString(vn,offset, endOffset,i,type,s);
+		b =matchSubString(vn,offset, i,s);
 		clearFastIntBuffer(vn->fib);
 		return b;
 	}
 
-	Boolean matchSubString(VTDNav*vn, int os, int eos, int index, int t, UCSChar *s){
-		int offset = os, endOffset=eos, type =t, c;Long l;
+	Boolean matchSubString(VTDNav* vn, int os, int index, UCSChar *s){
+		int offset = os, endOffset=getTokenOffset(vn,intAt( vn->fib,index))+getTokenLength(vn,intAt(vn->fib,index)), 
+			type =getTokenType(vn,intAt(vn->fib,index)), c;Long l;
 		int i=0;int len=wcslen(s);
 		Boolean b=FALSE;
 		while(offset<endOffset){
@@ -12237,4 +12320,534 @@ loop33:
 		if (i==len)
 			return TRUE;
 		return FALSE;
+	}
+
+
+	Boolean matchSubString2(VTDNav* vn, int os,  int index, UCSChar *s){
+		int offset = os, endOffset= getTokenOffset(vn,intAt(vn->fib,index))+getTokenLength(vn,intAt(vn->fib,index)), 
+			type =getTokenType(vn,intAt(vn->fib,index)), c;Long l;
+		size_t i=0;
+		Boolean b=FALSE;
+		while(offset<endOffset){
+			if (type==TOKEN_CHARACTER_DATA)
+				l = getCharResolved(vn,offset);
+			else
+				l = getChar(vn,offset);
+			c = (int)l;
+			if (i<wcslen(s) && c==s[i]){		
+				offset += (int)(l>>32);
+				i++;
+			}else if(i==wcslen(s))
+				return TRUE;
+			else
+				return FALSE;				
+		}
+		index++;
+		while(index<vn->fib->size){		
+			offset = getTokenOffset(vn, intAt(vn->fib,index));
+			endOffset = offset + getTokenLength2(vn,intAt(vn->fib,index));
+			type = getTokenType(vn, intAt(vn->fib,index));
+			while(offset<endOffset){
+				if (type==TOKEN_CHARACTER_DATA)
+					l = getCharResolved(vn,offset);
+				else
+					l = getChar(vn,offset);
+				c = (int)l;//System.out.println("c-===>"+(char)c);
+				if (i<wcslen(s) && c==s[i]){		
+					offset += (int)(l>>32);
+					i++;
+				}else if(i==wcslen(s)){
+					goto loop;
+				}
+				else
+					return FALSE;				
+			}
+			index++;
+		}while(index<vn->fib->size);
+		loop:if ( wcslen(s) ==i  &&index == vn->fib->size && endOffset == offset)
+			return TRUE;
+		return FALSE;
+	}
+	void dumpFragment(VTDNav *vn,Long l, char *fileName){
+	//long l = getElementFragment();
+		int os = (int)l;
+		int len = (int)(l>>32);
+		FILE *f=fopen(fileName,"w");
+		if (f!=NULL){
+			size_t i = fwrite(vn->XMLDoc+vn->docOffset+os,1,len,f);
+			if (i < (size_t) vn->docLen)
+				throwException2(io_exception, "can't complete the write");	
+			fclose(f);
+		} else {
+			throwException2(io_exception,"can't open file");
+		}	
+		
+	}
+
+	void dumpFragment2(VTDNav *vn,char *fileName){
+		Long l = getElementFragment(vn);
+		dumpFragment(vn,l,fileName);
+	}
+	
+	void dumpElementFragmentNs(VTDNav *vn,char *fileName){
+		ElementFragmentNs *efn= getElementFragmentNs(vn);
+		FILE *f=fopen(fileName,"w");
+		if (f!=NULL){
+			writeFragmentToFile(efn,f);
+			fclose(f);
+			freeElementFragmentNs(efn);
+		}else{
+			freeElementFragmentNs(efn);
+			throwException2(io_exception,"can't open file");
+		}
+	}
+    
+	Long expandWhiteSpace(VTDNav *vn,Long l){
+		int offset = (int)l, len=(int) (l>>32);int endOffset;
+		//long l=0;
+		if (vn->encoding >= FORMAT_UTF_16BE) {
+			offset >>= 1;
+			len >>= 1;
+		}
+		// first expand the trailing white spaces
+		endOffset = offset+len;
+		while(isWS(getCharUnit(vn,endOffset))){
+			endOffset++;
+		}
+		
+		// then the leading whtie spaces
+		offset--;
+		while(isWS(getCharUnit(vn,offset))){
+			offset--;
+		}
+		offset++;
+		len = endOffset - offset;
+
+		if (vn->encoding >= FORMAT_UTF_16BE){
+			len <<=1;
+			offset <<= 1;
+		}
+		
+		return ((Long)offset) | (((Long)len)<<32);
+	}
+	
+	Long trimWhiteSpace(VTDNav *vn,Long l){
+		int offset = (int)l, len=(int) (l>>32);int endOffset;
+		//long l=0;
+		if (vn->encoding >= FORMAT_UTF_16BE) {
+			offset >>= 1;
+			len >>= 1;
+		}
+		endOffset= offset+len;
+		// first trim the leading white spaces
+		
+		while(isWS(getCharUnit(vn,offset))){
+			offset++;
+		}
+		
+		// then trim the trailing white spaces
+		//int endOffset = offset+len-1;
+		endOffset--;
+		while(isWS(getCharUnit(vn,endOffset))){
+			endOffset--;
+		}
+		
+		endOffset ++;
+		
+		len = endOffset - offset;
+
+		if (vn->encoding >= FORMAT_UTF_16BE){
+			len <<=1;
+			offset <<= 1;
+		}
+		
+		return ((Long)offset) | (((Long)len)<<32);
+		//return -1;
+	}
+
+
+	double XPathStringVal2Double(VTDNav *vn,int j){
+		tokenType tokenType; double d1 = 0.0;
+		double d= d1/d1; 
+		Boolean minus=FALSE; 
+		Boolean exponent_seen=FALSE; 
+		Boolean minusE=FALSE;
+		int index = j + 1;
+		int depth,i=0, offset, endOffset, len,c;
+		Long l;
+		int state =0;
+		double left=0,right=0,v;
+		int exp=0;
+		double scale=1;
+		
+		int dp = getTokenDepth(vn,j);
+		//boolean r = false;//default
+		
+		//int size = vtdBuffer.size;
+		// store all text tokens underneath the current element node
+		while (index < vn->vtdSize) {
+		    tokenType = getTokenType(vn,index);
+		    depth = getTokenDepth(vn,index);
+		    //t=t+getTokenLength2(index);
+		    if (depth<dp ||
+		    		(depth==dp && tokenType==TOKEN_STARTING_TAG)){
+		    	break;
+		    }
+		    
+		    if (tokenType==TOKEN_CHARACTER_DATA || tokenType== TOKEN_CDATA_VAL ){
+		    	//if (!match)
+		    	offset = getTokenOffset(vn,index);
+		    	len = getTokenLength2(vn,index);
+		    	endOffset = offset + len;
+		    	while(offset<endOffset){
+		    		if (tokenType==TOKEN_CHARACTER_DATA )
+		    			l = getCharResolved(vn,offset);
+		    		else
+		    			l = getChar(vn,offset);
+		    		c = (int)l;
+		    		offset += (int)(l>>32);
+		    		switch (state){
+		    		// consume white spaces
+		    		case 0: 
+						if (isWS(c)) {
+							break;
+						} else if (c == '-' || c == '+') {
+							if (c == '-')
+								minus = TRUE;
+							state = 1;
+						} else if (isDigit(c)) {
+							left = left * 10 + (c - '0');
+							state = 1;
+						} else
+							return d1/d1;
+
+						break;
+		    				// test digits or .
+		    		case 1: 
+		    			if (isDigit(c)){
+		    				left = left*10+ (c-'0');
+		    				state =1;
+		    			} else if (c=='.'){
+		    				state = 2;
+		    			} else if (c=='e'|| c=='E'){
+		    				exponent_seen =  TRUE;
+		    				state =4;
+		    			}else 
+		    				return d1/d1;
+		    			break;
+		    			// test digits before .
+		    		case 2: 
+		    			if(isDigit(c)){
+		    				right = right*10+(c-'0');
+		    				scale = scale*10;
+		    				state =3;
+		    			}else
+		    				return d1/d1;
+		    			break;
+		    			// test digits after .
+		    		case 3:
+		    			if(isDigit(c)){
+		    				right = right*10+(c-'0');
+		    				scale = scale*10;
+		    			}else if (c=='e' ||c== 'E'){
+		    				exponent_seen=TRUE;
+		    				state=4;
+		    			}else if (isWS(c)){
+		    				state = 6;
+		    			}
+		    			else
+		    				return d1/d1;
+		    			break;
+		    			
+		    			// test exponent digits
+		    			
+		    		case 4:
+		    			if (c=='-' || c=='+'){
+		    				if (c=='-'){
+		    					minusE= TRUE;
+		    				}
+		    				state =5;
+		    			}else if (isDigit(c)){
+		    				exp = exp*10+(c-'0');
+		    				state = 5;
+		    			}else
+		    				return d1/d1;
+		    			break;
+		    			// test -+ after exponen
+		    		case 5:
+		    			if (isDigit(c)){
+		    				exp = exp*10+(c-'0');
+		    			} else if (isWS(c)){
+		    				state =6;
+		    			}else 
+		    				return d1/d1;
+		    		    break;
+		    		    // test digits after e
+		    		case 6:
+		    			if (!isWS(c))
+		    				return d1/d1;
+		    			break;
+		    		}
+		    	}
+		    	//index++;
+		    	//continue;
+		    }else if (tokenType==TOKEN_ATTR_NAME
+			        || tokenType == TOKEN_ATTR_NS
+			        || tokenType == TOKEN_PI_NAME){			  
+			    
+		    	index = index+2;
+			    continue;
+			}		    
+			index++;
+		}
+		//return false;
+		v = (double) left;
+		if (right != 0)
+			v += ((double) right) / (double) scale;
+
+		if (exp != 0)
+			v = (minusE)? v /pow(10,exp): v*pow(10, exp);
+
+		return ((minus) ? (-v) : v);
+	}
+
+
+	Boolean isDigit(int c){
+		if (c>='0' && c<='9')
+			return TRUE;
+		else 
+			return FALSE;
+	}
+
+	int getNextChar(VTDNav *vn, vn_helper *h){
+		Long l;
+		int result;		
+		if (h->type==0){// single token
+			if (h->offset == h->endOffset)
+				return -1;
+			if (h->tokenType == TOKEN_CHARACTER_DATA &&
+					h->tokenType !=TOKEN_ATTR_VAL){ 
+				l = getCharResolved(vn,h->offset);
+			}else {
+				l = getChar(vn,h->offset);
+			}
+			h->offset += (int)(l>>32);
+			result = (int)l;
+			return result;
+			
+		}else {// text value
+			if (h->offset < h->endOffset){
+				//return result;
+				if (h->tokenType != TOKEN_PI_VAL &&
+					h->tokenType !=TOKEN_CHARACTER_DATA){ 
+					l = getChar(vn,h->offset);
+				}else {
+					l = getChar(vn,h->offset);
+				}
+				h->offset += (int)(l>>32);
+				result = (int)l;	
+				return result;
+			}else{
+				h->index++;
+				while (h->index < vn->vtdSize) {
+				    tokenType tokenType = getTokenType(vn,h->index);
+				    int depth = getTokenDepth(vn,h->index);
+				    //t=t+getTokenLength2(index);
+				    if (depth<h->depth || 
+				    		(depth==h->depth && tokenType==TOKEN_STARTING_TAG)){
+				    	break;
+				    }
+				    
+				    if (tokenType=TOKEN_CHARACTER_DATA
+				    		|| tokenType==TOKEN_CDATA_VAL){
+				    	//length = getTokenLength2(index);
+				    	//t += length;
+				    	//fib.append(index);
+				    	h->offset = getTokenOffset(vn,h->index);
+				    	h->endOffset = getTokenOffset(vn,h->index)+getTokenLength2(vn,h->index);
+				    	h->tokenType = tokenType;
+				    	//h2.index++;
+				    	return getNextChar(vn,h);
+				    	//
+				    } else if (tokenType==TOKEN_ATTR_NAME
+					        || tokenType == TOKEN_ATTR_NS
+					        || tokenType == TOKEN_PI_NAME){			  
+					    h->index = h->index+2;
+					    continue;
+					}			
+					h->index++;
+				}
+				return -1;
+			}
+		}
+		//return -1;
+	}
+
+	Boolean XPathStringVal_Matches(VTDNav *vn,int j, UCSChar *s){
+		tokenType tokenType;
+		int index = j + 1;
+		int depth, t=0, i=0,offset;
+		//Long l;
+		Boolean result=FALSE;
+		int dp = getTokenDepth(vn,j);
+		//int size = vtdBuffer.size;
+		// store all text tokens underneath the current element node
+		while (index < vn->vtdSize) {
+		    tokenType = getTokenType(vn,index);
+		    depth = getTokenDepth(vn,index);
+		    //t=t+getTokenLength2(index);
+		    if (depth<dp || 
+		    		(depth==dp && tokenType==TOKEN_STARTING_TAG)){
+		    	break;
+		    }
+		    
+		    if (tokenType==TOKEN_CHARACTER_DATA
+		    		|| tokenType==TOKEN_CDATA_VAL){
+		    	//length = getTokenLength2(index);
+		    	//t += length;
+		    	appendInt(vn->fib,index);
+		    	index++;
+		    	continue;
+		    	//
+		    } else if (tokenType==TOKEN_ATTR_NAME
+			        || tokenType ==TOKEN_ATTR_NS
+			        || tokenType ==TOKEN_PI_NAME){			  
+			    index = index+2;
+			    continue;
+			}			
+			index++;
+		}
+		
+		index=0;
+		//type = getTokenType(fib.intAt(index));
+		offset = getTokenOffset(vn,intAt(vn->fib,0));
+		result = matchSubString2(vn,offset, index, s);		
+		clearFastIntBuffer(vn->fib);
+		return result;
+	}
+
+	int XPathStringVal_Matches2(VTDNav *vn,int j, VTDNav *vn2, int k /*k is a token index */){
+		tokenType tokenType1, tokenType2;
+		int c1,c2;
+		if (vn->h1==NULL){
+			vn->h1 = (vn_helper *)malloc( sizeof(vn_helper));
+		}
+		
+		if (vn->h2==NULL){
+			vn->h2 = (vn_helper *)malloc(sizeof(vn_helper));
+		}
+		
+		tokenType1 = getTokenType(vn,j);
+		tokenType2 = getTokenType(vn2,k);
+		
+		if (tokenType1 == TOKEN_STARTING_TAG || tokenType1 == TOKEN_DOCUMENT ){
+			vn->h1->index = j + 1;
+			vn->h1->type = 1;
+			vn->h1->depth = getTokenDepth(vn,j);
+			vn->h1->offset  = -1;
+			while (vn->h1->index < vn->vtdSize) {
+			    int tokenType = getTokenType(vn,vn->h1->index);
+			    int depth = getTokenDepth(vn,vn->h1->index);
+			    //t=t+getTokenLength2(index);
+			    if (depth<vn->h1->depth || 
+			    		(depth==vn->h1->depth && tokenType==TOKEN_STARTING_TAG)){
+			    	break;
+			    }
+			    
+			    if (tokenType==TOKEN_CHARACTER_DATA
+			    		|| tokenType==TOKEN_CDATA_VAL){
+			    	//length = getTokenLength2(index);
+			    	//t += length;
+			    	//fib.append(index);
+			    	vn->h1->offset = getTokenOffset(vn,vn->h1->index);
+			    	vn->h1->endOffset = getTokenOffset(vn,vn->h1->index)+getTokenLength2(vn,vn->h1->index);
+			    	//h1.index++;
+			    	vn->h1->tokenType=tokenType;
+			    	goto loop1;
+			    	//
+			    } else if (tokenType==TOKEN_ATTR_NAME
+				        || tokenType == TOKEN_ATTR_NS
+				        || tokenType == TOKEN_PI_NAME){			  
+				    vn->h1->index = vn->h1->index+2;
+				    continue;
+				}			
+				vn->h1->index++;
+			}
+			loop1:;
+		}
+		else{ 
+			vn->h1->index = -1;
+			vn->h1->type = 0;
+			vn->h1->offset = getTokenOffset(vn,j);
+			vn->h1->endOffset = getTokenOffset(vn,j)+getTokenLength(vn,j);
+			vn->h1->tokenType = getTokenType(vn,j);
+		}
+		
+		if (tokenType2 ==TOKEN_STARTING_TAG || tokenType2 ==TOKEN_DOCUMENT ){
+			vn->h2->index = k + 1;
+			vn->h2->type = 1;
+			vn->h2->depth = getTokenDepth(vn2,k);
+			vn->h2->offset = -1;
+			while (vn->h2->index < vn->vtdSize) {
+			    tokenType tokenType = getTokenType(vn2,vn->h2->index);
+			    int depth = getTokenDepth(vn2,vn->h2->index);
+			    //t=t+getTokenLength2(index);
+			    if (depth<vn->h2->depth || 
+			    		(depth==vn->h2->depth && tokenType==TOKEN_STARTING_TAG)){
+			    	break;
+			    }
+			    
+			    if (tokenType==TOKEN_CHARACTER_DATA
+			    		|| tokenType==TOKEN_CDATA_VAL){
+			    	//length = getTokenLength2(index);
+			    	//t += length;
+			    	//fib.append(index);
+			    	vn->h2->offset = getTokenOffset(vn2,vn->h2->index);
+			    	vn->h2->endOffset = getTokenOffset(vn2,vn->h2->index)+getTokenLength2(vn2,vn->h2->index);
+			    	vn->h2->tokenType = tokenType;
+			    	//h2.index++;
+			    	goto loop2;
+			    	//
+			    } else if (tokenType==TOKEN_ATTR_NAME
+				        || tokenType ==TOKEN_ATTR_NS
+				        || tokenType ==TOKEN_PI_NAME){			  
+				    vn->h2->index = vn->h2->index+2;
+				    continue;
+				}			
+				vn->h2->index++;
+			}
+			loop2: ;
+		}
+		else{ 
+			vn->h2->index = -1;
+			vn->h2->type= 0;
+			vn->h2->offset =getTokenOffset( vn2,k);
+			vn->h2->endOffset= getTokenOffset(vn2,k)+getTokenLength(vn2,k);
+			vn->h2->tokenType =getTokenType( vn2,k);
+		}
+		
+		// set the offset
+		 c1=-1, c2=-1;
+		do{
+			c1=getNextChar(vn, vn->h1); 
+			c2=getNextChar(vn2,vn->h2);		
+			if (c1!=c2){
+				if (c1>c2)
+					return 1;
+				else 
+					return -1;
+				//return false;
+			}
+		} while(c1!=-1 && c2!=-1);
+		
+		if (c1==c2){
+			return 0;
+		}
+		else {
+			if (c1!=-1)
+				return 1;
+			else 
+				return -1;
+		}
+			//return false;
 	}
