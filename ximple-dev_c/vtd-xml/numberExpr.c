@@ -45,7 +45,7 @@ numberExpr *createNumberExpr (double d){
 	n->markCacheable = (markCacheable_)&markCacheable_ne;
 	n->markCacheable2 = (markCacheable2_)&markCacheable2_ne;
 	n->clearCache = (clearCache_)&clearCache_ne;
-
+	n->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	return n;
 }
 

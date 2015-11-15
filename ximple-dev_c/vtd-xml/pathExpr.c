@@ -57,6 +57,7 @@ pathExpr *createPathExpr(expr *f, locationPathExpr *l){
 	pe->markCacheable = (markCacheable_)&markCacheable_pe;
 	pe->markCacheable2 = (markCacheable2_)&markCacheable2_pe;
 	pe->clearCache=(clearCache_)&clearCache_pe;
+	pe->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	pe->needReordering = TRUE;
 	pe->fe = f;
 	pe->lpe= l;
