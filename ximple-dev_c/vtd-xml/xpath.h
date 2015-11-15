@@ -44,7 +44,64 @@ typedef struct intHash {
    int maxDepth;
    int e;
 } IntHash;
-
+typedef enum FuncName {
+	FN_LAST,
+	FN_POSITION,
+	FN_COUNT,
+	FN_LOCAL_NAME,
+	FN_NAMESPACE_URI,
+	FN_NAME,
+	FN_STRING,
+	FN_CONCAT,
+	FN_STARTS_WITH,
+	FN_CONTAINS,
+	FN_SUBSTRING_BEFORE,
+	FN_SUBSTRING_AFTER,
+	FN_SUBSTRING,
+	FN_STRING_LENGTH,
+	FN_NORMALIZE_SPACE,
+	FN_TRANSLATE,
+	FN_BOOLEAN,
+	FN_NOT,
+	FN_TRUE,
+	FN_FALSE,
+	FN_LANG,
+	FN_NUMBER,
+	FN_SUM,
+	FN_FLOOR,
+	FN_CEILING,
+	FN_ROUND,
+	/* 2.0 functions */
+	FN_ABS,
+	FN_ROUND_HALF_TO_EVEN,
+	FN_ROUND_HALF_TO_ODD,
+	FN_CODE_POINTS_TO_STRING,
+	FN_COMPARE,
+	FN_UPPER_CASE,
+	FN_LOWER_CASE,
+	FN_ENDS_WITH,
+	FN_QNAME,
+	FN_LOCAL_NAME_FROM_QNAME,
+	FN_NAMESPACE_URI_FROM_QNAME,
+	FN_NAMESPACE_URI_FOR_PREFIX,
+	FN_RESOLVE_QNAME,
+	FN_IRI_TO_URI,
+	FN_ESCAPE_HTML_URI,
+	FN_ENCODE_FOR_URI,
+	FN_MATCH_NAME,
+	FN_MATCH_LOCAL_NAME,
+	FN_NOT_MATCH_NAME,
+	FN_NOT_MATCH_LOCAL_NAME,
+	FN_CURRENT,
+	FN_GENERATE_ID,
+	FN_FORMAT_NUMBER,
+	FN_KEY,
+	FN_ID,
+	FN_DOCUMENT,
+	FN_SYSTEM_PROPERTY,
+	FN_ELEMENT_AVAILABLE,
+	FN_FUNCTION_AVAILABLE
+} funcName;
 /* function for intHash
  see intHash.c for implemenation*/
 IntHash* createIntHash();
@@ -74,6 +131,7 @@ typedef Boolean (*isFinal_)(struct Expr *e);
 typedef void   (*markCacheable_)(struct Expr *e);
 typedef void   (*markCacheable2_)(struct Expr *e);
 typedef void   (*clearCache_)(struct Expr *e);
+typedef funcName   (*getFuncOpCode_)(struct Expr *e);
 typedef struct Expr {
 	free_Expr freeExpr;
 	eval_NodeSet evalNodeSet;
@@ -94,6 +152,7 @@ typedef struct Expr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 } expr;
 
@@ -120,6 +179,7 @@ typedef struct LiteralExpr {
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
 	Boolean needReordering;
+	getFuncOpCode_ getFuncOpCode;
 	UCSChar *s;
 } literalExpr;
 
@@ -165,6 +225,7 @@ typedef struct NumberExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	double dval;
 } numberExpr;
@@ -192,7 +253,7 @@ void markCacheable2_ne(numberExpr *e);
 void clearCache_ne(numberExpr *e);
 /* binary Expr*/
 /*  define operand */
-typedef enum OpType{		
+typedef enum OpType{
  	 OP_ADD,
 	 OP_SUB,
 	 OP_MULT,
@@ -245,6 +306,7 @@ typedef struct BinaryExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	expr *left;
 	opType op;
@@ -295,6 +357,7 @@ typedef struct UnaryExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	set_ContextSize setContextSize;
 	set_Position setPosition;
@@ -325,63 +388,7 @@ void markCacheable_ue(unaryExpr *e);
 void markCacheable2_ue(unaryExpr *e);
 void clearCache_ue(unaryExpr *e);
 /* function Expr */
-typedef enum FuncName {FN_LAST,
-		   FN_POSITION,
-		   FN_COUNT,
-		   FN_LOCAL_NAME,
-		   FN_NAMESPACE_URI,
-		   FN_NAME,
-		   FN_STRING,
-		   FN_CONCAT,
-		   FN_STARTS_WITH,
-		   FN_CONTAINS,
-		   FN_SUBSTRING_BEFORE,
-		   FN_SUBSTRING_AFTER,
-		   FN_SUBSTRING,
-		   FN_STRING_LENGTH,
-		   FN_NORMALIZE_SPACE,
-		   FN_TRANSLATE,
-		   FN_BOOLEAN,
-		   FN_NOT,
-		   FN_TRUE,
-		   FN_FALSE,
-		   FN_LANG,
-		   FN_NUMBER,
-		   FN_SUM,
-		   FN_FLOOR,
-		   FN_CEILING,
-		   FN_ROUND,
-		   /* 2.0 functions */
-		   FN_ABS,
-		   FN_ROUND_HALF_TO_EVEN,
-		   FN_ROUND_HALF_TO_ODD,
-		   FN_CODE_POINTS_TO_STRING,
-		   FN_COMPARE,
-		   FN_UPPER_CASE,
-		   FN_LOWER_CASE,
-		   FN_ENDS_WITH,
-		   FN_QNAME,
-		   FN_LOCAL_NAME_FROM_QNAME,
-		   FN_NAMESPACE_URI_FROM_QNAME,
-		   FN_NAMESPACE_URI_FOR_PREFIX,
-		   FN_RESOLVE_QNAME,
-		   FN_IRI_TO_URI,
-		   FN_ESCAPE_HTML_URI,
-		   FN_ENCODE_FOR_URI,
-		   FN_MATCH_NAME,	
-		   FN_MATCH_LOCAL_NAME,
-		   FN_NOT_MATCH_NAME,
-		   FN_NOT_MATCH_LOCAL_NAME,
-		   FN_CURRENT,
-		   FN_GENERATE_ID,
-		   FN_FORMAT_NUMBER,
-		   FN_KEY,
-		   FN_ID,
-		   FN_DOCUMENT,
-		   FN_SYSTEM_PROPERTY,
-		   FN_ELEMENT_AVAILABLE,
-		   FN_FUNCTION_AVAILABLE
-} funcName;
+
 
 typedef enum{
 		SIMPLE_P,
@@ -418,6 +425,7 @@ typedef struct FuncExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	funcName opCode;
 	aList *al;
@@ -605,6 +613,7 @@ typedef struct LocationPathExpr {
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	Step* s;
 	Step* currentStep;
@@ -657,6 +666,7 @@ typedef struct FilterExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	set_ContextSize setContextSize;
 	set_Position setPosition;
@@ -708,6 +718,7 @@ typedef struct PathExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	expr *fe;
 	locationPathExpr *lpe;
@@ -760,6 +771,7 @@ typedef struct UnionExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	expr *fe;
 	struct UnionExpr *current;
@@ -810,6 +822,7 @@ typedef struct VariableExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	//expr *fe;
 	UCSChar* exprName;
@@ -894,6 +907,7 @@ typedef struct CachedExpr{
 	markCacheable_ markCacheable;
 	markCacheable2_ markCacheable2;
 	clearCache_ clearCache;
+	getFuncOpCode_ getFuncOpCode;
 	Boolean needReordering;
 	expr *e;
 	Boolean cached;
@@ -925,4 +939,6 @@ Boolean isFinal_ce(cachedExpr *ve);
 void markCacheable_ce(cachedExpr *ve);
 void markCacheable2_ce(cachedExpr *ve);
 void clearCache_ce(cachedExpr *ve);
+
+funcName getFuncOpCode(struct Expr *e);
 #endif
