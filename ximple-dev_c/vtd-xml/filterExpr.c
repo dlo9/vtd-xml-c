@@ -40,6 +40,7 @@ filterExpr *createFilterExpr(expr *e1, Predicate *pr){
 	fe->reset = (reset_)&reset_fe;
 	fe->toString = (to_String)&toString_fe;
 	fe->adjust = (adjust_)&adjust_fe;
+	fe->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	fe->needReordering = TRUE;
 	fe->e = e1;
 	fe->p = pr;
