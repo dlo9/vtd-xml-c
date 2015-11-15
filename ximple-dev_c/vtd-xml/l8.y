@@ -1,6 +1,6 @@
 %{
 /* 
-* Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -124,7 +124,35 @@ AndExpr		:    EqualityExpr { $$ = $1;}
 EqualityExpr    :    RelationalExpr  { $$ = $1;}
 		|    EqualityExpr EQ RelationalExpr  { 
 								Try {
-	 									$$ = (expr *)createBinaryExpr($1,OP_EQ,$3);
+										if ($1->isFinal($1) && $1->isString($1)){
+											if ($3->getFuncOpCode($3)==FN_NAME){
+												funcExpr *tmp = (funcExpr *)$3;
+												tmp->opCode = FN_MATCH_NAME;
+												addArg_fne(tmp,$1);
+												$$ = tmp;
+											} else if ($3->getFuncOpCode($3)==FN_LOCAL_NAME) {
+												funcExpr *tmp = (funcExpr *)$3;
+												tmp->opCode = FN_MATCH_LOCAL_NAME;
+												addArg_fne(tmp,$1);
+												$$ = tmp;
+											} else
+											   $$ = (expr *)createBinaryExpr($1,OP_EQ,$3);
+										} else if ($3->isFinal($3) && $3->isString($3)){
+											if ($1->getFuncOpCode($1)==FN_NAME){
+												funcExpr *tmp = (funcExpr *)$1;
+												tmp->opCode = FN_MATCH_NAME;
+												addArg_fne(tmp,$3);
+												$$ = tmp;
+											} else if ($1->getFuncOpCode($1)==FN_LOCAL_NAME) {
+												funcExpr *tmp = (funcExpr *)$1;
+												tmp->opCode = FN_MATCH_LOCAL_NAME;
+												addArg_fne(tmp,$3);
+												$$ = tmp;
+										    } else
+											   $$ = (expr *)createBinaryExpr($1,OP_EQ,$3);
+										}
+										else 
+	 										$$ = (expr *)createBinaryExpr($1,OP_EQ,$3);
 	 									addObj($$);
 	 								}
 	 							Catch(e){
@@ -134,6 +162,34 @@ EqualityExpr    :    RelationalExpr  { $$ = $1;}
 								}
 		|    EqualityExpr NE RelationalExpr {
 			 					Try {
+								if ($1->isFinal($1) && $1->isString($1)){
+											if ($3->getFuncOpCode($3)==FN_NAME){
+												funcExpr *tmp = (funcExpr *)$3;
+												tmp->opCode = FN_NOT_MATCH_NAME;
+												addArg_fne(tmp,$1);
+												$$ = tmp;
+											} else if ($3->getFuncOpCode($3)==FN_LOCAL_NAME) {
+												funcExpr *tmp = (funcExpr *)$3;
+												tmp->opCode = FN_NOT_MATCH_LOCAL_NAME;
+												addArg_fne(tmp,$1);
+												$$ = tmp;
+											} else
+											   $$ = (expr *)createBinaryExpr($1,OP_NE,$3);
+										} else if ($3->isFinal($3) && $3->isString($3)){
+											if ($1->getFuncOpCode($1)==FN_NAME){
+												funcExpr *tmp = (funcExpr *)$1;
+												tmp->opCode = FN_NOT_MATCH_NAME;
+												addArg_fne(tmp,$3);
+												$$ = tmp;
+											} else if ($1->getFuncOpCode($1)==FN_LOCAL_NAME) {
+												funcExpr *tmp = (funcExpr *)$1;
+												tmp->opCode = FN_NOT_MATCH_LOCAL_NAME;
+												addArg_fne(tmp,$3);
+												$$ = tmp;
+										    } else
+											   $$ = (expr *)createBinaryExpr($1,OP_NE,$3);
+										}
+										else 
 	 									$$ = (expr *)createBinaryExpr($1,OP_NE,$3);
 	 									addObj($$);
 	 								}
