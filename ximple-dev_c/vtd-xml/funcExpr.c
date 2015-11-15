@@ -545,6 +545,8 @@ UCSChar *fname(funcExpr *fne, funcName i){
 			case FN_ENCODE_FOR_URI:	return L"encode-for-uri";
 			case FN_MATCH_NAME:		return L"match-name";
 			case FN_MATCH_LOCAL_NAME:	return L"match-local-name";
+			case FN_NOT_MATCH_NAME:	return L"not-match-name";
+			case FN_NOT_MATCH_LOCAL_NAME: return L"not-match-local-name";
 			case FN_CURRENT:			return L"current";
 			case FN_GENERATE_ID:		return L"generate-id";
 			case FN_FORMAT_NUMBER:	return L"format-number";
@@ -1803,12 +1805,22 @@ UCSChar *generateID(funcExpr *e, VTDNav *vn){
 
 
 int evalFirstArgumentListNodeSet(funcExpr *e, VTDNav *vn){
-	int size, a;
+	int size, a,k;
 	exception ee;
 	push2(vn);
     size = vn->contextBuf2->size;
-    a = -1;
+    a = 0x7fffffff,k=-1;
     Try {
+		if (e->al->e->needReordering) {
+			while ((k = e->al->e->evalNodeSet(e->al->e,vn)) != -1) {
+				//a = evalNodeSet(vn);
+				if (k<a)
+					a = k;
+			}
+			if (a == 0x7fffffff)
+				a = -1;
+		}
+		else
             a = e->al->e->evalNodeSet(e->al->e,vn);
             if (a != -1) {
             	int t = getTokenType(vn,a);
@@ -1833,12 +1845,22 @@ int evalFirstArgumentListNodeSet(funcExpr *e, VTDNav *vn){
 }
 
 int evalFirstArgumentListNodeSet2(funcExpr *e, VTDNav *vn){
-	int size, a;
+	int size, a,k;
 	exception ee;
 	push2(vn);
     size = vn->contextBuf2->size;
-    a = -1;
+    a = 0x7ffffff,k= -1;
     Try {
+		if (e->al->e->needReordering) {
+			while ((k = e->al->e->evalNodeSet(e->al->e,vn)) != -1) {
+				//a = evalNodeSet(vn);
+				if (k<a)
+					a = k;
+			}
+			if (k == 0x7fffffff)
+				a = -1;
+		}
+		else
            a = e->al->e->evalNodeSet(e->al->e,vn);	            
     } Catch (ee) {
     }
@@ -1870,8 +1892,9 @@ Boolean matchName(funcExpr *e, VTDNav *vn){
 	} else if (e->argCount1 == 2) {
 		a = evalFirstArgumentListNodeSet2(e,vn);
 		s1 = e->al->next->e->evalString(e->al->next->e,vn);
-		Try {
-			if (a == -1 || vn->ns == FALSE){}
+		Try{
+			if (a == -1 || vn->ns == FALSE)
+				b = (wcscmp(L"",s1) == 0);
 			//return false;
 			else {
 				type = getTokenType(vn,a);
@@ -1888,7 +1911,7 @@ Boolean matchName(funcExpr *e, VTDNav *vn){
 		return FALSE;
 	} else
 		throwException2(invalid_argument,
-		"name()'s argument count is invalid");
+		"matchName()'s argument count is invalid");
 	return FALSE;
 }
 
@@ -1966,7 +1989,7 @@ Boolean matchLocalName(funcExpr *e,VTDNav *vn){
 			 return b;
 	    } else 
 	        throwException2
-			(invalid_argument,"local-name()'s argument count is invalid");
+			(invalid_argument,"match-local-name()'s argument count is invalid");
 		return FALSE;
 }
 
@@ -1994,4 +2017,21 @@ int getStringVal(funcExpr *fne,VTDNav *vn,int i){
 
 funcName getFuncOpCode_fne(funcExpr *e) {
 	return e->opCode;
+}
+
+void addArg_fne(funcExpr *fne, expr *e) {
+	aList *al = fne->al; 
+	if (fne->al == NULL) {
+		fne->al = malloc(sizeof(aList));
+		fne->al->e = e;
+		fne->argCount1++;
+		return;
+	}
+	while (al->next != NULL) {
+		al = al->next;
+	}
+	fne->al->next = malloc(sizeof(aList));
+	//al = new Alist();
+	fne->al->next->e = e;
+	fne->argCount1++;
 }
