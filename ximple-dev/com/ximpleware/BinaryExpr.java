@@ -480,7 +480,7 @@ public class BinaryExpr extends Expr {
 	// this function computes the boolean when one expression is node set
 	// the other is numerical
 	final private boolean compNumericalNodeSet(Expr left, Expr right, VTDNav vn, int op ){
-	     int i, i1 = 0, stackSize;
+	     int i, stackSize;
 	     double d;
         try {
             d = left.evalNumber(vn);
@@ -504,7 +504,7 @@ public class BinaryExpr extends Expr {
         }
 	}
 	final private boolean compNodeSetNumerical(Expr left, Expr right, VTDNav vn, int op ){
-	     int i,i1 = 0, stackSize;
+	     int i, stackSize;
 	     double d;
        try {
            d = right.evalNumber(vn);
