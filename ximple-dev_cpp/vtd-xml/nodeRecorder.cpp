@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+ * Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -394,7 +394,7 @@ int NodeRecorder::iterate(){
 		default:
 				if (vn->shallowDepth) {
 					vn->context[0] = i;
-					for (j = 1; j < i; j++) {
+					for (j = 0; j < i; j++) {
 						vn->context[j] = fib->intAt(count + j);
 					}
 					vn->l1index = fib->intAt(count + i);
@@ -407,10 +407,10 @@ int NodeRecorder::iterate(){
 					if (b == false) {
 						vn->atTerminal = true;
 						vn->LN = fib->intAt(count + 11);
-						count += i + 8;
+						count += i + 9;
 					} else {
 						vn->atTerminal = false;
-						count += i + 7;
+						count += i + 8;
 					}
 					break;
 				} else {
@@ -477,7 +477,7 @@ int NodeRecorder::iterate(){
 					default:
 						vn->context[0] = i;
 						for (j = 1; j < i; j++) {
-							vn->context[j] = fib->intAt(count + j);
+							vn->context[j] = fib->intAt(count+1 + j);
 						}
 						vn->l1index = fib->intAt(count + i);
 						vn->l2lower = fib->intAt(count + i + 1);
@@ -495,10 +495,10 @@ int NodeRecorder::iterate(){
 						if (b == false) {
 							vn->atTerminal = true;
 							vn->LN = fib->intAt(count + i + 13);
-							count += i + 14;
+							count += i + 15;
 						} else {
 							vn->atTerminal = false;
-							count += i + 13;
+							count += i + 14;
 						}
 						break;
 					}
