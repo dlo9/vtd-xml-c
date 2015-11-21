@@ -1,6 +1,6 @@
 %{
 /* 
-* Copyright (C) 2002-2012 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -164,7 +164,36 @@ AndExpr		:    EqualityExpr { $$ = $1;}
 EqualityExpr    :    RelationalExpr  { $$ = $1;}
 		|    EqualityExpr EQ RelationalExpr  { 
 								try {
-	 									$$ = (Expr *)new BinaryExpr($1,OP_EQ,$3);
+								if ($1->isFinal() && $1->isString()){
+											if ($3->getFuncOpCode()==FN_NAME){
+												FuncExpr *tmp = (FuncExpr *)$3;
+												tmp->opCode = FN_MATCH_NAME;
+												tmp->addArg($1);
+												$$ = tmp;
+											} else if ($3->getFuncOpCode()==FN_LOCAL_NAME) {
+												FuncExpr *tmp = (FuncExpr *)$3;
+												tmp->opCode = FN_MATCH_LOCAL_NAME;
+												tmp->addArg($1);
+												$$ = tmp;
+											} else
+											   $$ = new BinaryExpr($1,OP_EQ,$3);
+										} else if ($3->isFinal() && $3->isString()){
+											if ($1->getFuncOpCode($1)==FN_NAME){
+												FuncExpr *tmp = (FuncExpr *)$1;
+												tmp->opCode = FN_MATCH_NAME;
+												tmp->addArg($3);
+												$$ = tmp;
+											} else if ($1->getFuncOpCode($1)==FN_LOCAL_NAME) {
+												funcExpr *tmp = (funcExpr *)$1;
+												tmp->opCode = FN_MATCH_LOCAL_NAME;
+												tmp->addArg($3);
+												$$ = tmp;
+										    } else
+											   $$ = new BinaryExpr($1,OP_EQ,$3);
+										}
+										else 
+	 										$$ = new BinaryExpr($1,OP_EQ,$3);
+	 									$$ = new BinaryExpr($1,OP_EQ,$3);
 	 									//addObj($$);
 	 								}
 	 							catch(...){
@@ -174,7 +203,35 @@ EqualityExpr    :    RelationalExpr  { $$ = $1;}
 							}
 		|    EqualityExpr NE RelationalExpr {
 			 					try {
-	 									$$ = (Expr *)new BinaryExpr($1,OP_NE,$3);
+	 									if ($1->isFinal() && $1->isString()){
+											if ($3->getFuncOpCode()==FN_NAME){
+												FuncExpr *tmp = (FuncExpr *)$3;
+												tmp->opCode = FN_NOT_MATCH_NAME;
+												tmp->addArg($1);
+												$$ = tmp;
+											} else if ($3->getFuncOpCode()==FN_LOCAL_NAME) {
+												FuncExpr *tmp = (FuncExpr *)$3;
+												tmp->opCode = FN_NOT_MATCH_LOCAL_NAME;
+												tmp->addArg($1);
+												$$ = tmp;
+											} else
+											   $$ = new BinaryExpr($1,OP_NE,$3);
+										} else if ($3->isFinal($3) && $3->isString($3)){
+											if ($1->getFuncOpCode()==FN_NAME){
+												FuncExpr *tmp = (FuncExpr *)$1;
+												tmp->opCode = FN_NOT_MATCH_NAME;
+												tmp->addArg($3);
+												$$ = tmp;
+											} else if ($1->getFuncOpCode($1)==FN_LOCAL_NAME) {
+												funcExpr *tmp = (funcExpr *)$1;
+												tmp->opCode = FN_NOT_MATCH_LOCAL_NAME;
+												tmp->addArg($3);
+												$$ = tmp;
+										    } else
+											   $$ = new BinaryExpr($1,OP_NE,$3);
+										}
+										else 
+	 									$$ = new BinaryExpr($1,OP_NE,$3);
 	 									//addObj($$);
 	 								}
 	 							catch(...){
@@ -662,7 +719,7 @@ Predicate 	:    LB Expr RB {
 									$$ = new Predicate();
 									//addObj($$);
 									$$->e = $2;
-									if ($2->isFinal() && $2->isNumerical()){
+									if ($2->isFinal() && %2->isNumerical()){
 										if ($$->d<1){
 											throw new XPathParseExcpetion("Invalid index number <1");
 										}

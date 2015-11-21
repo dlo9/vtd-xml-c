@@ -39,7 +39,7 @@
 #line 1 "xpathParser.yy"
 
 /* 
-* Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -790,7 +790,41 @@ namespace yy {
 #line 165 "xpathParser.yy"
     { 
 								try {
-	 									(yyval.expression) =(Expr *) new BinaryExpr((yysemantic_stack_[(3) - (1)].expression),OP_EQ,(yysemantic_stack_[(3) - (3)].expression));
+	 									//(yyval.expression) =(Expr *) new BinaryExpr((yysemantic_stack_[(3) - (1)].expression),OP_EQ,(yysemantic_stack_[(3) - (3)].expression));
+										if ((yysemantic_stack_[(3) - (3)].expression)->isFinal() && (yysemantic_stack_[(3) - (3)].expression)->isString()) {
+											if( (yysemantic_stack_[(3) - (1)].expression)->getFuncOpCode() == FN_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (1)].expression);
+												tmp-> opCode= FN_MATCH_NAME;
+												tmp->addArg((yysemantic_stack_[(3) - (3)].expression));
+												yyval.expression = tmp;
+											}
+											else if ((yysemantic_stack_[(3) - (1)].expression)->getFuncOpCode() == FN_LOCAL_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (1)].expression);
+												tmp->opCode = FN_MATCH_LOCAL_NAME;
+												tmp->addArg( (yysemantic_stack_[(3) - (3)].expression));
+												yyval.expression = tmp;
+											}
+											else
+												yyval.expression = new BinaryExpr((yysemantic_stack_[(3) - (3)].expression), OP_EQ, (yysemantic_stack_[(3) - (1)].expression));
+										}
+										else if ((yysemantic_stack_[(3) - (1)].expression)->isFinal() && (yysemantic_stack_[(3) - (1)].expression)->isString()) {
+											if ((yysemantic_stack_[(3) - (3)].expression)->getFuncOpCode() == FN_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (3)].expression);
+												tmp->opCode = FN_MATCH_NAME;
+												tmp->addArg((tmp, yysemantic_stack_[(3) - (1)].expression));
+												yyval.expression = tmp;
+											}
+											else if ((yysemantic_stack_[(3) - (3)].expression)->getFuncOpCode() == FN_LOCAL_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (3)].expression);
+												tmp->opCode = FN_MATCH_LOCAL_NAME;
+												tmp->addArg( (yysemantic_stack_[(3) - (1)].expression));
+												yyval.expression = tmp;
+											}
+											else
+												yyval.expression = new BinaryExpr((yysemantic_stack_[(3) - (3)].expression), OP_EQ, (yysemantic_stack_[(3) - (1)].expression));
+										}
+										else
+											yyval.expression = new BinaryExpr((yysemantic_stack_[(3) - (3)].expression), OP_EQ, (yysemantic_stack_[(3) - (1)].expression));
 	 									//addObj($$);
 	 								}
 	 							catch(...){
@@ -807,7 +841,42 @@ namespace yy {
     {
 			 					try {
 	 									(yyval.expression) = (Expr *)new BinaryExpr((yysemantic_stack_[(3) - (1)].expression),OP_NE,(yysemantic_stack_[(3) - (3)].expression));
-	 									//addObj($$);
+										if ((yysemantic_stack_[(3) - (3)].expression)->isFinal() && (yysemantic_stack_[(3) - (3)].expression)->isString()) {
+											if ((yysemantic_stack_[(3) - (1)].expression)->getFuncOpCode() == FN_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (1)].expression);
+												tmp->opCode = FN_NOT_MATCH_NAME;
+												tmp->addArg((yysemantic_stack_[(3) - (3)].expression));
+												yyval.expression = tmp;
+											}
+											else if ((yysemantic_stack_[(3) - (1)].expression)->getFuncOpCode() == FN_LOCAL_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (1)].expression);
+												tmp->opCode = FN_NOT_MATCH_LOCAL_NAME;
+												tmp->addArg((yysemantic_stack_[(3) - (3)].expression));
+												yyval.expression = tmp;
+											}
+											else
+												yyval.expression = new BinaryExpr((yysemantic_stack_[(3) - (3)].expression), OP_NE, (yysemantic_stack_[(3) - (1)].expression));
+										}
+										else if ((yysemantic_stack_[(3) - (1)].expression)->isFinal() && (yysemantic_stack_[(3) - (1)].expression)->isString()) {
+											if ((yysemantic_stack_[(3) - (3)].expression)->getFuncOpCode() == FN_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (3)].expression);
+												tmp->opCode = FN_NOT_MATCH_NAME;
+												tmp->addArg( (yysemantic_stack_[(3) - (1)].expression));
+												yyval.expression = tmp;
+											}
+											else if ((yysemantic_stack_[(3) - (3)].expression)->getFuncOpCode() == FN_LOCAL_NAME) {
+												FuncExpr *tmp = (FuncExpr *)(yysemantic_stack_[(3) - (3)].expression);
+												tmp->opCode = FN_NOT_MATCH_LOCAL_NAME;
+												tmp->addArg((yysemantic_stack_[(3) - (1)].expression));
+												yyval.expression = tmp;
+											}
+											else
+												yyval.expression = new BinaryExpr((yysemantic_stack_[(3) - (3)].expression), OP_NE, (yysemantic_stack_[(3) - (1)].expression));
+										}
+										else
+											yyval.expression = new BinaryExpr((yysemantic_stack_[(3) - (3)].expression), OP_NE, (yysemantic_stack_[(3) - (1)].expression));
+										
+										//addObj($$);
 	 								}
 	 							catch(...){
 	 								//freeAllObj();
