@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ op(op1),
 right(e2),
 fib1(NULL)
 {
+	//needReordering = true;
 	switch(op){
 	 	case OP_ADD:
 		case OP_SUB:
@@ -41,6 +42,7 @@ fib1(NULL)
 		case OP_LT:
 		default: isNum= false; isBool = true;
 	}
+	compType = computeCompType();
 }
 BinaryExpr::~BinaryExpr(){
 	delete left;
@@ -180,6 +182,44 @@ int BinaryExpr::adjust(int n){
 	return min(i,j);
 }
 
+Byte com_ximpleware::BinaryExpr::computeCompType()
+{
+	if (left->isNodeSet()) {
+		if (right->isNodeSet())
+			return NS_NS;
+		if (right->isNumerical())
+			return NS_N;
+		if (right->isString())
+			return NS_S;
+		return NS_B;
+	}
+	if (left->isNumerical()) {
+		if (right->isNodeSet())
+			return N_NS;
+		if (right->isNumerical())
+			return N_N;
+		if (right->isString())
+			return N_S;
+		return N_B;
+	}
+	if (left->isString()) {
+		if (right->isNodeSet())
+			return S_NS;
+		if (right->isNumerical())
+			return S_N;
+		if (right->isString())
+			return S_S;
+		return S_B;
+	}
+	if (right->isNodeSet())
+		return B_NS;
+	if (right->isNumerical())
+		return B_N;
+	if (right->isString())
+		return B_S;
+	return B_B;
+}
+
 bool BinaryExpr::compEmptyNodeSet(opType op, UCSChar *s){
 		if (op == OP_NE ){
 	        if (wcslen(s)==0) {
@@ -196,26 +236,43 @@ bool BinaryExpr::compEmptyNodeSet(opType op, UCSChar *s){
 bool BinaryExpr::computeComp( opType op,VTDNav *vn){
 	int btemp;
 	UCSChar *st1=NULL, *st2=NULL;
-
-	if (left->isNodeSet() && right->isNodeSet()) {
-		return compNodeSetNodeSet( vn, op);
-	} else {
-		// first argument is always numerical, second a node set
-		if (left->isNumerical() && right->isNodeSet()){
-			return compNumericalNodeSet( vn,op);
-		}
-	    if (left->isNodeSet() && right->isNumerical()){
-			return compNodeSetNumerical(vn,op);
-		}
-		// first argument is always String, second a node set
-		if (left->isString() && right->isNodeSet()){
-			return compStringNodeSet(vn,op);
-		}
-		if (left->isNodeSet() && right->isString()){
-			return compNodeSetString(vn,op);
-		}
-
+	switch (compType) {
+	case NS_NS:return compNodeSetNodeSet(left, right, vn, op);
+	case NS_N:return compNodeSetNumerical(left, right, vn, op);
+	case NS_S:return compNodeSetString(left, right, vn, op);
+		//case NS_B:
+	case N_NS:return compNumericalNodeSet(left, right, vn, op);
+		//case N_N:   break;
+		//case N_S:   break;
+		//case N_B:
+	case S_NS:return compStringNodeSet(left, right, vn, op);
+		//case S_N:
+		//case S_S:
+		//case S_B:
+		//case B_NS:
+		//case B_N:
+		//case B_S:
+		//default:break;
 	}
+	//if (left->isNodeSet() && right->isNodeSet()) {
+	//	return compNodeSetNodeSet(left, right, vn, op);
+	//} else {
+	//	// first argument is always numerical, second a node set
+	//	if (left->isNumerical() && right->isNodeSet()){
+	//		return compNumericalNodeSet(left, right, vn,op);
+	//	}
+	//    if (left->isNodeSet() && right->isNumerical()){
+	//		return compNodeSetNumerical(left, right,vn,op);
+	//	}
+	//	// first argument is always String, second a node set
+	//	if (left->isString() && right->isNodeSet()){
+	//		return compStringNodeSet(left,right,vn,op);
+	//	}
+	//	if (left->isNodeSet() && right->isString()){
+	//		return compNodeSetString(left, right,vn,op);
+	//	}
+
+	//}
 	if (op == OP_EQ || op == OP_NE){
 	if (left->isBoolean() || right->isBoolean()){
 		if (op == OP_EQ)
@@ -248,16 +305,16 @@ bool BinaryExpr::computeComp( opType op,VTDNav *vn){
 	return compNumbers(left->evalNumber(vn),
 		right->evalNumber(vn),op);
 }
-bool BinaryExpr::compNumericalNodeSet(  VTDNav *vn, opType op){
-	int i,i1,stackSize;
+bool BinaryExpr::compNumericalNodeSet(Expr *left, Expr *right, VTDNav *vn, opType op){
+	int i,stackSize;
 	double d;
 	try {
 		   d = left->evalNumber(vn);
             vn->push2();
 			stackSize = vn->contextBuf2->size;
             while ((i = right->evalNodeSet(vn)) != -1) {
-                i1 = getStringVal(vn,i);
-                if (i1!=-1 && compareVNumber1(i1,vn,d,op)){
+                //i1 = getStringVal(vn,i);
+                if (/*i1!=-1 &&*/ compareVNumber1(i,vn,d,op)){
                     right->reset(vn);
                     vn->contextBuf2->size = stackSize;
                     vn->pop2();
@@ -273,16 +330,16 @@ bool BinaryExpr::compNumericalNodeSet(  VTDNav *vn, opType op){
 	}
 	return false;
 }
-bool BinaryExpr::compNodeSetNumerical(  VTDNav *vn, opType op){
-	int i,i1,stackSize;
+bool BinaryExpr::compNodeSetNumerical(Expr *left, Expr *right, VTDNav *vn, opType op){
+	int i,stackSize;
 	double d;
 	try {
 		   d = right->evalNumber(vn);
             vn->push2();
 			stackSize = vn->contextBuf2->size;
             while ((i = left->evalNodeSet(vn)) != -1) {
-                i1 = getStringVal(vn,i);
-                if (i1!=-1 && compareVNumber2(i1,vn,d,op)){
+                //i1 = getStringVal(vn,i);
+                if (compareVNumber2(i,vn,d,op)){
                     left->reset(vn);
                     vn->contextBuf2->size = stackSize;
                     vn->pop2();
@@ -301,7 +358,7 @@ bool BinaryExpr::compNodeSetNumerical(  VTDNav *vn, opType op){
 	}
 	return false;
 }
-bool BinaryExpr::compStringNodeSet( VTDNav *vn, opType op){
+bool BinaryExpr::compStringNodeSet(Expr *left, Expr *right, VTDNav *vn, opType op){
 	int i,i1,stackSize;
 	UCSChar *s=NULL;
 	bool b;
@@ -310,17 +367,31 @@ bool BinaryExpr::compStringNodeSet( VTDNav *vn, opType op){
             vn->push2();
             stackSize = vn->contextBuf2->size;
             while ((i = right->evalNodeSet(vn)) != -1) {
-                i1 = getStringVal(vn,i);
-                if (i1 != -1){
-					b = compareVString2(i1,vn,s,op);
-					if (b){
+				int t = vn->getTokenType(i);
+				if (t != TOKEN_STARTING_TAG
+					&& t != TOKEN_DOCUMENT) {
+					i1 = getStringVal(vn, i);
+					if (i1 != -1) {
+						b = compareVString2(i1, vn, s, op);
+						if (b) {
+							right->reset(vn);
+							vn->contextBuf2->size = stackSize;
+							vn->pop2();
+							delete(s);
+							return b;
+						}
+					}
+				}
+				else {
+					bool b = vn->XPathStringVal_Matches(i, s);
+					if (b) {
 						right->reset(vn);
 						vn->contextBuf2->size = stackSize;
 						vn->pop2();
-						delete(s);
+						
 						return b;
 					}
-                }
+				}
             }
             vn->contextBuf2->size = stackSize;
             vn->pop2();
@@ -333,7 +404,7 @@ bool BinaryExpr::compStringNodeSet( VTDNav *vn, opType op){
 	}
 	return false;
 }
-bool BinaryExpr::compNodeSetString(  VTDNav *vn, opType op){
+bool BinaryExpr::compNodeSetString(Expr *left, Expr *right, VTDNav *vn, opType op){
 	int i,i1 = 0,stackSize;
 	UCSChar *s=NULL;
 	bool b;
@@ -342,17 +413,30 @@ bool BinaryExpr::compNodeSetString(  VTDNav *vn, opType op){
             vn->push2();
             stackSize = vn->contextBuf2->size;
 			while ((i = left->evalNodeSet(vn)) != -1) {
-				i1 = getStringVal(vn,i);
-				if (i1 != -1){
-					b = compareVString2(i1,vn,s,op);
-					if (b){
+				int t = vn->getTokenType(i);
+				if (t != TOKEN_STARTING_TAG
+					&& t != TOKEN_DOCUMENT) {
+					i1 = getStringVal(vn, i);
+					if (i1 != -1) {
+						b = compareVString2(i1, vn, s, op);
+						if (b) {
+							left->reset(vn);
+							vn->contextBuf2->size = stackSize;
+							vn->pop2();
+							delete(s);
+							return b;
+						}
+					}
+				}
+				else {
+					bool b = vn->XPathStringVal_Matches(i, s);
+					if (b) {
 						left->reset(vn);
 						vn->contextBuf2->size = stackSize;
 						vn->pop2();
-						delete(s);
 						return b;
 					}
-                }
+				}
             }
             vn->contextBuf2->size = stackSize;
             vn->pop2();
@@ -365,7 +449,7 @@ bool BinaryExpr::compNodeSetString(  VTDNav *vn, opType op){
 	}
 	return false;
 }
-bool BinaryExpr::compNodeSetNodeSet(  VTDNav *vn, opType op){
+bool BinaryExpr::compNodeSetNodeSet(Expr *left, Expr *right, VTDNav *vn, opType op){
 	int i,i1,k,s1,stackSize;
 	try {
 		if (fib1 == NULL)
@@ -432,7 +516,15 @@ bool BinaryExpr::compNumbers( double d1, double d2, opType op){
         //return false;
 }
 bool BinaryExpr::compareVNumber1( int i, VTDNav *vn, double d, opType op){
-		double d1 = vn->parseDouble(i);
+		double d1; /*= vn->parseDouble(i);*/
+		int t = vn->getTokenType(i);
+		if (t == TOKEN_STARTING_TAG || t == TOKEN_DOCUMENT) {
+			d1 = vn->XPathStringVal2Double(i);
+		}
+		else {
+			i = getStringVal(vn, i);
+			d1 = vn->parseDouble(i);
+		}
 	    switch (op){
 	    	case OP_EQ:
 	    	    return d == d1;
@@ -449,7 +541,15 @@ bool BinaryExpr::compareVNumber1( int i, VTDNav *vn, double d, opType op){
 	    }
 }
 bool BinaryExpr::compareVNumber2( int i, VTDNav *vn, double d, opType op){
-	    double d1 = vn->parseDouble(i);
+		double d1; /*= vn->parseDouble(i);*/
+		int t = vn->getTokenType(i);
+		if (t == TOKEN_STARTING_TAG || t == TOKEN_DOCUMENT) {
+			d1 = vn->XPathStringVal2Double(i);
+		}
+		else {
+			i = getStringVal(vn, i);
+			d1 = vn->parseDouble(i);
+		}
 	    switch (op){
 	    	case OP_EQ:
 	    	    return d1 == d;
@@ -519,7 +619,7 @@ bool BinaryExpr::compareVString2(int k, VTDNav *vn, UCSChar *s, opType op){
 
 }
 bool BinaryExpr::compareVV(int k,  VTDNav *vn, int j,opType op){
-	int i = vn->compareTokens(k, vn, j);
+	int i = vn->XPathStringVal_Matches2(k, vn, j);
 	switch(i){
 
 			case 1:
