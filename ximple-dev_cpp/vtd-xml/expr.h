@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+ * Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,6 +212,7 @@ namespace com_ximpleware{
 	//base class
 	class Expr{
 	public:
+		Expr() { needReordering = true; }
 		virtual bool evalBoolean(VTDNav *vn) = 0;
 
 		virtual double evalNumber(VTDNav *vn) =0;
@@ -239,12 +240,15 @@ namespace com_ximpleware{
 		virtual void markCacheable2(){}
 	//public boolean isConstant(){return false;}
 		virtual void clearCache(){}
+		virtual int getFuncOpCode(){ return -1; }
+		bool needReordering;
 		// to support computer context size 
 		// needs to add 
 		//virtual public boolean needContextSize();
 		//virtual public boolean SetContextSize(int contextSize);
 
 	protected:
+		
 		int getStringIndex(VTDNav* vn){
 			int a = -1;
 			vn->push2();
