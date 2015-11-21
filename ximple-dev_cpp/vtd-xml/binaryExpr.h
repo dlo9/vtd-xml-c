@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+* Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -45,14 +45,34 @@ namespace com_ximpleware{
 
 		void setPosition(int pos);
 		int adjust(int n);
+		Byte computeCompType();
 
+		static const Byte NS_NS = 0;
+		static const Byte NS_N = 1;
+		static const Byte NS_S = 2;
+		static const Byte NS_B = 3;
+		static const Byte N_NS = 4;
+		static const Byte N_N = 5;
+		static const Byte N_S = 6;
+		static const Byte N_B = 7;
+		static const Byte S_NS = 8;
+		static const Byte S_N = 9;
+		static const Byte S_S = 10;
+		static const Byte S_B = 11;
+		static const Byte B_NS = 12;
+		static const Byte B_N = 13;
+		static const Byte B_S = 14;
+		static const Byte B_B = 15;
+
+	protected:
+		Byte compType;
 	private:
 		bool computeComp( opType op,VTDNav *vn);
-		bool compNumericalNodeSet(  VTDNav *vn, opType op);
-		bool compNodeSetNumerical(  VTDNav *vn, opType op);
-		bool compStringNodeSet(  VTDNav *vn, opType op);
-		bool compNodeSetString(  VTDNav *vn, opType op);
-		bool compNodeSetNodeSet(  VTDNav *vn, opType op);
+		bool compNumericalNodeSet(Expr *left, Expr *right, VTDNav *vn, opType op);
+		bool compNodeSetNumerical(Expr *left, Expr *right, VTDNav *vn, opType op);
+		bool compStringNodeSet(Expr *left, Expr *right, VTDNav *vn, opType op);
+		bool compNodeSetString(Expr *left, Expr *right, VTDNav *vn, opType op);
+		bool compNodeSetNodeSet(Expr *left, Expr *right,  VTDNav *vn, opType op);
 		bool compNumbers( double d1, double d2, opType op);
 		bool compareVNumber1( int i, VTDNav *vn, double d, opType op);
 		bool compareVNumber2( int i, VTDNav *vn, double d, opType op);
