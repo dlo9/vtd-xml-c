@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+ * Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,19 +57,32 @@ double FilterExpr::evalNumber(VTDNav *vn){
 	//String s = "";
 		double d1 = 0.0;
 		double d=d1/d1;
-		int a = -1;
+		int a = 0x7fffffff,k=-1;
         vn->push2();
         int size = vn-> contextBuf2->size;
         try {
-            a = evalNodeSet(vn);
+			if (needReordering) {
+				while ((k = evalNodeSet(vn)) != -1) {
+					// a = evalNodeSet(vn);
+					if (k < a)
+						a = k;
+				}
+				if (a == 0x7fffffff)
+					a = -1;
+			}
+			else {
+				a = evalNodeSet(vn);
+			}
+           // a = evalNodeSet(vn);
             if (a != -1) {
             	int t = vn->getTokenType(a);
                 if (t == TOKEN_ATTR_NAME) {
                 	d = vn->parseDouble(a+1);
                 } else if (t == TOKEN_STARTING_TAG || t ==TOKEN_DOCUMENT) {
-                    UCSChar *s = vn->getXPathStringVal(), *s1;
+                    /*UCSChar *s = vn->getXPathStringVal(), *s1;
                     d  = wcstod(s,&s1);
-					delete s;
+					delete s;*/
+					d = vn->XPathStringVal2Double(a);
                 }else if (t == TOKEN_PI_NAME) {
                 	if (a+1 < vn->vtdSize || vn->getTokenType(a+1)==TOKEN_PI_VAL)
 	                	//s = vn.toString(a+1); 	
@@ -125,12 +138,24 @@ int FilterExpr::evalNodeSet(VTDNav *vn){
 UCSChar* FilterExpr::evalString(VTDNav *vn){
 
 	UCSChar *s = NULL;	
-	int a = -1;
+	int a =0x7fffffff, k=-1;
 	vn->push2();
     int size = vn->contextBuf2->size;
      
 	try {
-         a = evalNodeSet(vn);
+		if (needReordering) {
+			while ((k = evalNodeSet(vn)) != -1) {
+				// a = evalNodeSet(vn);
+				if (k < a)
+					a = k;
+			}
+			if (a == 0x7fffffff)
+				a = -1;
+		}
+		else {
+			a = evalNodeSet(vn);
+		}
+        // a = evalNodeSet(vn);
          if (a != -1) {
             	int t = vn->getTokenType(a);
                 switch(t){
