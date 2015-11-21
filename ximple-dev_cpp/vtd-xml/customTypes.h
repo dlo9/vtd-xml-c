@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2002-2013 XimpleWare, info@ximpleware.com
+ * Copyright (C) 2002-2015 XimpleWare, info@ximpleware.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,18 @@
 #include <string.h>
 #include "vtdException.h"
 //#include <cstdint>
-
+#include <algorithm>
+using std::max;
+using std::min;
 using namespace std;
 #ifndef isNaN
 #define isNaN(x) ((x) != (x))
 #endif
 
-/*#ifndef min
-#define min(a,b)  (((a) > (b)) ? (b) : (a)) 
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif*/
+//#ifndef min
+//#define min(a,b)  (((a) > (b)) ? (b) : (a)) 
+//#define max(a,b) (((a) > (b)) ? (a) : (b))
+//#endif
 
 namespace com_ximpleware {
 	typedef wchar_t UCSChar;
