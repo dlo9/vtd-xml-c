@@ -151,7 +151,7 @@ void AutoPilot::selectElementNS(UCSChar *URL, UCSChar *ln){
     it = SIMPLE_NS;
     depth = vn->getCurrentDepth();
     localName = ln;
-	URL = URL;
+	this->URL = URL;
     ft = true;
 }
 
@@ -182,7 +182,7 @@ void AutoPilot::selectElementNS_D(UCSChar *URL, UCSChar *ln){
 	it = DESCENDANT_NS;
     depth = vn->getCurrentDepth();
     localName = ln;
-	URL = URL;
+	this->URL = URL;
     ft = true;
 }
 /**
@@ -210,7 +210,7 @@ void AutoPilot::selectElementNS_F(UCSChar *URL, UCSChar *ln){
 	it = FOLLOWING_NS;
     ft= true;
     localName = ln;
-    URL = URL;
+    this->URL = URL;
 }
 
 /**
@@ -250,7 +250,7 @@ void AutoPilot::selectElementNS_P(UCSChar *URL, UCSChar *ln){
 	depth = vn->getCurrentDepth();
 	it = PRECEDING_NS;
     ft = true;	
-	URL = URL;
+	this->URL = URL;
 	localName = ln;
     contextCopy = new int[vn->nestingLevel]; //(int[])vn.context.clone();
 	memcpy(contextCopy,vn->context,a);
