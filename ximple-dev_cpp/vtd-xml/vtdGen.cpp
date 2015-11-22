@@ -3463,7 +3463,7 @@ void VTDGen::setDoc_BR(UByte *ba, int len, int os, int docLen){
 	temp_offset = 0;
 	XMLDoc = ba;
 	docOffset = offset = os;
-	docLen = docLen;
+	this->docLen = docLen;
 	bufLen = len;
 	endOffset = os + docLen;
 	last_depth = last_l3_index = last_l2_index = last_l1_index;
