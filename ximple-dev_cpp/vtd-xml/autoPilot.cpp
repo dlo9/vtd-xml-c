@@ -144,14 +144,14 @@ void AutoPilot::selectElement(UCSChar *en){
 // * URL, if set to *, matches every namespace
 // * URL, if set to null, indicates the namespace is undefined.
 // * localname, if set to *, matches any localname*/
-void AutoPilot::selectElementNS(UCSChar *URL, UCSChar *ln){
+void AutoPilot::selectElementNS(UCSChar *URL1, UCSChar *ln){
     if (ln == NULL){
 		 throw InvalidArgumentException(" invalid argument for selectElementNS, localName can't be NULL");
 	}
     it = SIMPLE_NS;
     depth = vn->getCurrentDepth();
     localName = ln;
-	this->URL = URL;
+	URL = URL1;
     ft = true;
 }
 
@@ -175,14 +175,14 @@ void AutoPilot::selectElement_D(UCSChar *en){
 * Select all descendent elements along the Descendent axis, with ns awareness
 * This function is not intended to be called directly
 */
-void AutoPilot::selectElementNS_D(UCSChar *URL, UCSChar *ln){
+void AutoPilot::selectElementNS_D(UCSChar *URL1, UCSChar *ln){
  if (ln == NULL){
 		 throw InvalidArgumentException(" invalid argument for selectElementNS_D, localName can't be NULL");
 	}
 	it = DESCENDANT_NS;
     depth = vn->getCurrentDepth();
     localName = ln;
-	this->URL = URL;
+	URL = URL1;
     ft = true;
 }
 /**
@@ -203,14 +203,14 @@ void AutoPilot::selectElement_F(UCSChar *en){
 * Select all descendent elements along the following axis, with ns awareness
 * This function is not intended to be called directly
 */
-void AutoPilot::selectElementNS_F(UCSChar *URL, UCSChar *ln){
+void AutoPilot::selectElementNS_F(UCSChar *URL1, UCSChar *ln){
 	if (ln == NULL){
 		 throw InvalidArgumentException(" invalid argument for selectElementNS_F, localName can't be NULL");
 	}
 	it = FOLLOWING_NS;
     ft= true;
     localName = ln;
-    this->URL = URL;
+    URL = URL1;
 }
 
 /**
@@ -241,7 +241,7 @@ void AutoPilot::selectElement_P(UCSChar *en){
 * This function is not intended to be called directly
 * Select all descendent elements along the preceding axis, with ns awareness
 */
-void AutoPilot::selectElementNS_P(UCSChar *URL, UCSChar *ln){
+void AutoPilot::selectElementNS_P(UCSChar *URL1, UCSChar *ln){
 	int i;
 	int a = sizeof(int)* vn->nestingLevel;
     if (ln == NULL){
@@ -250,7 +250,7 @@ void AutoPilot::selectElementNS_P(UCSChar *URL, UCSChar *ln){
 	depth = vn->getCurrentDepth();
 	it = PRECEDING_NS;
     ft = true;	
-	this->URL = URL;
+	URL = URL1;
 	localName = ln;
     contextCopy = new int[vn->nestingLevel]; //(int[])vn.context.clone();
 	memcpy(contextCopy,vn->context,a);
