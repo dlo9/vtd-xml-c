@@ -49,7 +49,7 @@ namespace com_ximpleware {
 		int endOffset; 
 		int type;
 		int depth;
-		tokenType tokenType;
+		tokenType tType;
 	};
 	class VTDNav {
 		friend class ElementFragmentNs;
