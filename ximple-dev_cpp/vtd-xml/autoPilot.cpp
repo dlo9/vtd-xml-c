@@ -118,14 +118,14 @@ void AutoPilot::selectAttr(UCSChar *an){
 }
 
 /* Select an attribute name, both local part and namespace URL part*/
-void AutoPilot::selectAttrNS(UCSChar *URL, UCSChar *ln){
+void AutoPilot::selectAttrNS(UCSChar *URL1, UCSChar *ln){
 	if (ln == NULL){
 		 throw InvalidArgumentException(" invalid argument for selectElement, localName can't be NULL");
 	}
 	it = ATTR_NS;
     ft = true;
     localName = ln;
-    this->URL = URL;
+    URL = URL1;
 }
 
 
