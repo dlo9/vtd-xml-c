@@ -107,6 +107,6 @@ namespace com_ximpleware {
 
 	const Long MAXLONG = 0x7fffffffffffffffLL;
 	const Long MINLONG = 0x8000000000000001LL;
-};
+}
 
 #endif
