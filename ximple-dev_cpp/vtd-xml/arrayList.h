@@ -56,6 +56,6 @@ namespace com_ximpleware {
 			return addNew(element);
 	}
 
-};
+}
 
 #endif
