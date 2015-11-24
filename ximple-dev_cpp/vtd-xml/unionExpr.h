@@ -64,6 +64,6 @@ namespace com_ximpleware{
 		/*FastIntBuffer *fib;*/
 		IntHash *ih;
 	};
-};
+}
 
 #endif
