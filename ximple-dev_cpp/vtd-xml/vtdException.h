@@ -138,6 +138,6 @@ namespace com_ximpleware{
 	public:
 		OtherException(const char* s):VTDException(s){}
 	};
-};
+}
 
 #endif

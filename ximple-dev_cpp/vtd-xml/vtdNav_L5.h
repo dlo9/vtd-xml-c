@@ -205,6 +205,6 @@ namespace com_ximpleware {
 		bool toNode(int direction);
 		virtual bool verifyNodeCorrectness();
 	};
-};
+}
 
 #endif
