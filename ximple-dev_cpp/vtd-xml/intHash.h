@@ -50,6 +50,6 @@ namespace com_ximpleware {
 		int maxDepth;
 		int e;
 	};
-};
+}
 
 #endif
