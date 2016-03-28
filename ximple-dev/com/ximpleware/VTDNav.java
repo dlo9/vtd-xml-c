@@ -167,6 +167,12 @@ public class VTDNav {
 	protected FastLongBuffer l1Buffer;
 	protected FastLongBuffer l2Buffer;
 	protected FastIntBuffer l3Buffer;
+	
+	//protected float VTDBuffer_size_r;
+	//protected float l1Buffer_size_r;
+	//protected float l2Buffer_size_r;
+	//protected float l3Buffer_size_r;
+	
 	protected IByteBuffer XMLDoc;
 
 	//private int recentNS; // most recently visited NS node, experiment for
@@ -264,6 +270,11 @@ public class VTDNav {
 		l2Buffer = l2;
 		l3Buffer = l3;
 		vtdBuffer = vtd;
+		//VTDBuffer_size_r=1/vtdBuffer.size;
+		//l1Buffer_size_r=1/l1Buffer.size;
+		//l2Buffer_size_r=1/l2Buffer.size;
+		//l3Buffer_size_r=1/l3Buffer.size;
+		
 		XMLDoc = x;
 
 		encoding = enc;
@@ -8612,7 +8623,8 @@ public class VTDNav {
 		while(isWS(getCharUnit(offset))){
 			offset++;
 		}
-		
+		if (offset == endOffset)
+			return (((long) 0)<<32) & l;
 		// then trim the trailing white spaces
 		//int endOffset = offset+len-1;
 		endOffset--;
