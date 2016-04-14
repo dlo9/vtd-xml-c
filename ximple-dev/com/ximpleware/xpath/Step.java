@@ -123,19 +123,24 @@ public class Step{
 	final public void setNodeTest(NodeTest n){
 		nt = n;
 		if (axis_type == AxisType.CHILD && n.testType ==NodeTest.NAMETEST ){
+			
 			axis_type = AxisType.CHILD0;
 		}else if (axis_type == AxisType.DESCENDANT && n.testType ==NodeTest.NAMETEST ){
-			axis_type = AxisType.DESCENDANT0;
+			//if (prevS!=null && prevS.nt.testType==NodeTest.NAMETEST)
+				axis_type = AxisType.DESCENDANT0;
 		}else if (axis_type == AxisType.DESCENDANT_OR_SELF && n.testType ==NodeTest.NAMETEST ){
-			axis_type = AxisType.DESCENDANT_OR_SELF0;
+			//if (prevS!=null && prevS.nt.testType==NodeTest.NAMETEST)
+				axis_type = AxisType.DESCENDANT_OR_SELF0;
 		}else if (axis_type == AxisType.FOLLOWING && n.testType ==NodeTest.NAMETEST ){
-			axis_type = AxisType.FOLLOWING0;
+				axis_type = AxisType.FOLLOWING0;
 		}else if (axis_type == AxisType.PRECEDING && n.testType ==NodeTest.NAMETEST ){
 			axis_type = AxisType.PRECEDING0;
 		}else if (axis_type == AxisType.FOLLOWING_SIBLING && n.testType ==NodeTest.NAMETEST ){
-			axis_type = AxisType.FOLLOWING_SIBLING0;
+			//if (prevS!=null && prevS.nt.testType==NodeTest.NAMETEST)
+				axis_type = AxisType.FOLLOWING_SIBLING0;
 		}else if (axis_type == AxisType.PRECEDING_SIBLING&& n.testType ==NodeTest.NAMETEST ){
-			axis_type = AxisType.PRECEDING_SIBLING0;
+			//if (prevS!=null && prevS.nt.testType==NodeTest.NAMETEST)
+				axis_type = AxisType.PRECEDING_SIBLING0;
 		}
 		if (n.testType== NodeTest.NODE 
 				|| (n.testType==NodeTest.NAMETEST && n.nodeName.equals("*"))){
