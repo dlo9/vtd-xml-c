@@ -343,7 +343,7 @@ public class LocationPathExpr extends Expr{
 		    	            state = END;
 		    	            break;
 		    	        }
-		    	        
+		    	       // System.out.println(" element name "+vn.toRawString(vn.getCurrentIndex()));
 						 b=vn.toElement(VTDNav.FIRST_CHILD);
 						 state =  END;
 						 if (b ){
@@ -396,6 +396,7 @@ public class LocationPathExpr extends Expr{
 		    	        }
 		    	        
 		   			 	state =  BACKWARD;
+		   			 //	System.out.println(" element name "+vn.toRawString(vn.getCurrentIndex()));
 		   			 	forward: if (vn.toElement(VTDNav.FC)) {
 							do {
 								if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
@@ -434,6 +435,7 @@ public class LocationPathExpr extends Expr{
 							transition_child(vn);
 							break;
 						}
+				//		System.out.println(" element name "+vn.toRawString(vn.getCurrentIndex()));
 						while (vn.toElement(VTDNav.NS)) {
 							if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
 									&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))) {
@@ -501,7 +503,7 @@ public class LocationPathExpr extends Expr{
 		switch(state){
 			case START:
 			case FORWARD:
-			    if (vn.atTerminal){
+			    /*if (vn.atTerminal){
 			        if (state == START)
 			            state = END;
 			        else {
@@ -511,7 +513,7 @@ public class LocationPathExpr extends Expr{
 			            currentStep = currentStep.prevS;
 			        }
 			        break;
-			    }
+			    }*/
 			    
     	        t = currentStep.p;
     	        while(t!=null){
@@ -1146,7 +1148,7 @@ public class LocationPathExpr extends Expr{
 	    	    
 	    	case BACKWARD:
 				b = false;
-				vn.push2();
+				//vn.push2();
 
 				while (vn.toElement(VTDNav.P)) {
 					if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
@@ -1316,7 +1318,7 @@ public class LocationPathExpr extends Expr{
 	    	    
 	    	case BACKWARD:
 				b = false;
-				vn.push2();
+				//vn.push2();
 
 				while (vn.toNode(VTDNav.P)) {
 					if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
@@ -2777,69 +2779,98 @@ public class LocationPathExpr extends Expr{
 				}
 			}
 		}
-		
+		//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 		while (true) {
 			switch (currentStep.axis_type) {
 
 			case AxisType.CHILD0:
+				//System.out.println("evaluation child");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 				if ( (result = process_child(vn))!=-2){
 					return result;
 				}
+				//System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 	    		break;
 			case AxisType.CHILD:
+				//System.out.println("evaluation child");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 			    if ( (result = process_child2(vn))!=-2){
 				   return result;
 			    }
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.DESCENDANT_OR_SELF0: 
 			case AxisType.DESCENDANT0: 
 			case AxisType.PRECEDING0: 
 			case AxisType.FOLLOWING0:
+				//System.out.println("DDPF");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 				if ((result = process_DDFP(vn))!= -2)
 			        return result;
+				//System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.DESCENDANT_OR_SELF:
 			case AxisType.DESCENDANT:
 			case AxisType.PRECEDING:								
 			case AxisType.FOLLOWING:
+				//System.out.println("DDPF");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 			    if ((result = process_DDFP2(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.PARENT:
 			    if ((result = process_parent(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.ANCESTOR:
+				//System.out.println("Ancestor");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 			    if ((result = process_ancestor2(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.ANCESTOR_OR_SELF:
+				//System.out.println("ancestor of self");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 			    if ((result = process_ancestor_or_self2(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.SELF:
 			    if ((result = process_self2(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.FOLLOWING_SIBLING:
+				//System.out.println("following sibling");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 			    if ((result = process_following_sibling2(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.FOLLOWING_SIBLING0:
+				//System.out.println("following sibling");
+				//System.out.println(" current index ==>"+vn.getCurrentIndex());//+" "+this.currentStep);
 			    if ((result = process_following_sibling(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.PRECEDING_SIBLING:
 			    if ((result = process_preceding_sibling2(vn))!= -2)
 			        return result;
+			   // System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.PRECEDING_SIBLING0:
 			    if ((result = process_preceding_sibling(vn))!= -2)
 			        return result;
+			    //System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			case AxisType.ATTRIBUTE:
 			    if ((result = process_attribute(vn))!= -2)
 			        return result;
+			   // System.out.println(" current index ==>"+vn.getCurrentIndex()+" "+this.currentStep);
 			    break;
 			default:
 				if ((result = process_namespace(vn))!= -2)
