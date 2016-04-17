@@ -294,7 +294,8 @@ public class LocationPathExpr extends Expr{
 		}
 		
 		final protected void transition_child(VTDNav vn)throws NavException{
-			
+			if (currentStep.hasPredicate)
+				currentStep.resetP(vn);
 			vn.toElement(VTDNav.P);
 			if (currentStep.prevS != null){
 				currentStep = currentStep.prevS;
@@ -302,6 +303,43 @@ public class LocationPathExpr extends Expr{
 			}else{
 				state = END;								
 			}
+		}
+		final protected void transition_ancestor(VTDNav vn) throws NavException{
+			//currentStep.out_of_range = false;
+			vn.pop2();
+			if (currentStep.prevS!=null) {
+				if (currentStep.hasPredicate)
+					currentStep.resetP(vn);
+				state =  BACKWARD;
+				currentStep = currentStep.prevS;
+			}
+			else {
+				 state =  END;
+			}
+		}
+		
+		final protected void transition_following_sibling(VTDNav vn) throws NavException{
+			vn.pop2();
+		  	if (currentStep.hasPredicate)
+		  		currentStep.resetP(vn);
+		  	if(currentStep.prevS!=null){
+		  		currentStep = currentStep.prevS;
+		  		 state =  BACKWARD;
+		  	}else{
+		  		 state =  END;
+		  	}
+		}
+		
+		final protected void transition_preceding_sibling(VTDNav vn) throws NavException{
+			vn.pop2();
+		  	if (currentStep.hasPredicate)
+		  		currentStep.resetP(vn);
+		  	if(currentStep.prevS!=null){
+		  		currentStep = currentStep.prevS;
+		  		 state =  BACKWARD;
+		  	}else{
+		  		 state =  END;
+		  	}
 		}
 		/**
 		 * For processing node tests that are element specific
@@ -430,8 +468,6 @@ public class LocationPathExpr extends Expr{
 						//b = false;
 						if(currentStep.out_of_range){
 							currentStep.out_of_range = false;
-							if (currentStep.hasPredicate)
-								currentStep.resetP(vn);
 							transition_child(vn);
 							break;
 						}
@@ -447,8 +483,7 @@ public class LocationPathExpr extends Expr{
 							state =  FORWARD;
 							currentStep = currentStep.nextS;
 						} else {
-							if (currentStep.hasPredicate)
-		    					currentStep.resetP(vn);
+							currentStep.out_of_range = false;
 							transition_child(vn);
 						}
 					break;
@@ -456,8 +491,6 @@ public class LocationPathExpr extends Expr{
 		    	case TERMINAL:
 		    			if(currentStep.out_of_range){
 		    				currentStep.out_of_range = false;
-		    				if (currentStep.hasPredicate)
-		    					currentStep.resetP(vn);
 		    				transition_child(vn);
 		    				break;
 		    			}
@@ -471,8 +504,7 @@ public class LocationPathExpr extends Expr{
 									return result;
 							}
 						}
-						if (currentStep.hasPredicate)
-							currentStep.resetP(vn);
+						currentStep.out_of_range = false;
 						transition_child(vn);
 					break;
 
@@ -639,6 +671,7 @@ public class LocationPathExpr extends Expr{
 							return result;
 					}									
 				} else {
+					currentStep.out_of_range = false;
 					transition_DDFP(vn);
 				}
 				break;
@@ -664,6 +697,7 @@ public class LocationPathExpr extends Expr{
 			            return result;
 			        //}
 			    } else {
+			    	currentStep.out_of_range = false;
 			    	transition_DDFP(vn);
 			    }
             break;
@@ -1039,177 +1073,7 @@ public class LocationPathExpr extends Expr{
 		}
 	    return -2;
 	}
-	
-	final protected int process_ancestor( VTDNav vn)
-	throws XPathEvalException, NavException{
-	    int result;
-	    boolean b = false, b1 = false;
-	    //int contextSize;
-	    Predicate t= null;
-	    
-	    switch(state){
-	    	case START:
-	    		
-	    	    t = currentStep.p;
-	    	    while (t != null) {
-	    	        if (t.requireContext) {
-	    	            int i = computeContextSize( t, vn);
-	    	            if (i == 0) {
-	    	                b1 = true;
-	    	                break;
-	    	            } else
-	    	                t.setContextSize(i);
-	    	        }
-	    	        t = t.nextP;
-	    	    }
-	    	    if (b1) {
-	    	        state = END;
-	    	        break;
-	    	    }
-
-	    	    state = END;
-	    	    if (vn.getCurrentDepth() != -1) {
-	    	        vn.push2();
-
-	    	        while (vn.toElement(VTDNav.P)) {
-	    	            if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
-	    	            		&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))) {
-	    	                if (currentStep.nextS != null) {
-	    	                    state = FORWARD;
-	    	                    currentStep = currentStep.nextS;
-	    	                    break;
-	    	                } else {
-	    	                    //vn.pop();
-	    	                    state = TERMINAL;
-	    	                    result = vn.getCurrentIndex();
-	    	                    if (isUnique(result))
-	    	                        return result;
-	    	                }
-	    	            }
-	    	        }
-	    	        if (state == END) {
-	    	        	if (currentStep.hasPredicate)
-	    	        		currentStep.resetP(vn);
-	    	            vn.pop2();
-	    	        }
-	    	    }
-	    	    break;
-    	        
-	    	case END:   
-				currentStep =null;
-				// reset();
-			    return -1;
-			    
-	    	case FORWARD:	    	    
-	    	     t = currentStep.p;
-	    	     while(t!=null){
-	    	        if (t.requireContext){
-	    	             int i = computeContextSize(t,vn);
-	    	             if (i==0){
-	    	                 b1 = true;
-	    	                 break;
-	    	             }else
-	    	                 t.setContextSize(i);
-	    	        }
-	    	        t = t.nextP;
-	    	    }
-	    	    if (b1){
-	    	        currentStep = currentStep.prevS;
-	    	        state = BACKWARD;
-	    	        break;
-	    	    }
-			    state =  BACKWARD;
-			   	vn.push2();
-					
-			   	while(vn.toElement(VTDNav.P)){
-			   		if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
-			   				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
-			   			if (currentStep.nextS != null){
-			   				 state =  FORWARD;
-			   				currentStep = currentStep.nextS;
-			   				break;
-			   			}
-			   			else {
-			   				//vn.pop();
-			   				 state =  TERMINAL;
-			   				result = vn.getCurrentIndex();
-							if ( isUnique(result))
-								return result;
-			   			}
-			   		}							
-			   	}
-			   	if ( state == BACKWARD){
-			   		if (currentStep.hasPredicate)
-			   			currentStep.resetP(vn);
-					vn.pop2();
-			   		currentStep=currentStep.prevS;
-			   	}			    
-			  	break;
-	    	    
-	    	case BACKWARD:
-				b = false;
-				//vn.push2();
-
-				while (vn.toElement(VTDNav.P)) {
-					if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
-							&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))) {
-						if (currentStep.nextS!= null) {
-							 state =  FORWARD;
-							currentStep = currentStep.nextS;
-							b = true;
-							break;
-						} else {
-							//vn.pop();
-							 state =  TERMINAL;
-							result = vn.getCurrentIndex();
-							if ( isUnique(result))
-								return result;
-						}
-					}
-				}
-				if (b==false){
-					vn.pop2();
-					if (currentStep.prevS!=null) {
-						if (currentStep.hasPredicate)
-							currentStep.resetP(vn);
-						state =  BACKWARD;
-						currentStep = currentStep.prevS;
-					}
-					else {
-						 state =  END;
-					}
-				}
-				break;
-				
-	    	case TERMINAL:			
-	    	    while (vn.toElement(VTDNav.P)) {
-				if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
-						&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))) {
-					result = vn.getCurrentIndex();
-					if ( isUnique(result))
-						return result;
-				}
-			}
-			vn.pop2();
-			
-			if (currentStep.prevS!=null) {
-				if (currentStep.hasPredicate)
-					currentStep.resetP(vn);
-				 state =  BACKWARD;
-				currentStep = currentStep.prevS;
-			}
-			else {
-				 state =  END;
-			}
-			break;
 		
-		default:
-			throw new  XPathEvalException("unknown state");
-	    }
-	    return -2;
-	}
-	
-	
 	final protected int process_ancestor2( VTDNav vn)
 	throws XPathEvalException, NavException{
 	    int result;
@@ -1319,6 +1183,11 @@ public class LocationPathExpr extends Expr{
 	    	case BACKWARD:
 				b = false;
 				//vn.push2();
+				if (currentStep.out_of_range){
+					currentStep.out_of_range = false;
+					transition_ancestor(vn);
+					break;
+				}
 
 				while (vn.toNode(VTDNav.P)) {
 					if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
@@ -1338,20 +1207,17 @@ public class LocationPathExpr extends Expr{
 					}
 				}
 				if (b==false){
-					vn.pop2();
-					if (currentStep.prevS!=null) {
-						if (currentStep.hasPredicate)
-							currentStep.resetP(vn);
-						state =  BACKWARD;
-						currentStep = currentStep.prevS;
-					}
-					else {
-						 state =  END;
-					}
+					currentStep.out_of_range = false;
+					transition_ancestor(vn);
 				}
 				break;
 				
-	    	case TERMINAL:			
+	    	case TERMINAL:		
+	    		if (currentStep.out_of_range){
+					currentStep.out_of_range = false;
+					transition_ancestor(vn);
+					break;
+				}
 	    	    while (vn.toNode(VTDNav.P)) {
 				if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
 						&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))) {
@@ -1360,17 +1226,9 @@ public class LocationPathExpr extends Expr{
 						return result;
 				}
 			}
-			vn.pop2();
-			
-			if (currentStep.prevS!=null) {
-				if (currentStep.hasPredicate)
-					currentStep.resetP(vn);
-				 state =  BACKWARD;
-				currentStep = currentStep.prevS;
-			}
-			else {
-				 state =  END;
-			}
+	    	    
+	    	currentStep.out_of_range = false;
+			transition_ancestor(vn);
 			break;
 		
 		default:
@@ -2176,11 +2034,16 @@ public class LocationPathExpr extends Expr{
 		  	return -1;
 		  	
 		  case  BACKWARD:
+			if (currentStep.out_of_range){
+				currentStep.out_of_range = false;
+				transition_following_sibling(vn);
+				break;
+			}
 		  	while (vn.toNode(VTDNav.NS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
 		  			if (currentStep.nextS!=null){
-		  				 state =  FORWARD;
+		  				state =  FORWARD;
 		  				currentStep = currentStep.nextS;
 		  				b = true;
 		  				break;
@@ -2193,19 +2056,17 @@ public class LocationPathExpr extends Expr{
 		  		}
 		  	}
 		    if (b==false){
-		    	vn.pop2();
-		    	if (currentStep.hasPredicate)
-		    		currentStep.resetP(vn);
-		    	if (currentStep.prevS==null){
-		    		 state =  END;
-		    	}else{
-		    		 state =  BACKWARD;
-		    		currentStep = currentStep.prevS;
-		    	}
+		    	currentStep.out_of_range = false;
+		    	transition_following_sibling(vn);
 		    }
 		  	break;
 		  
 		  case  TERMINAL:
+			  if (currentStep.out_of_range){
+					currentStep.out_of_range = false;
+					transition_following_sibling(vn);
+					break;
+			 }
 		  	while (vn.toNode(VTDNav.NS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2215,15 +2076,8 @@ public class LocationPathExpr extends Expr{
 						return result;
 		  		}
 		  	}
-		  	vn.pop2();
-		  	if (currentStep.hasPredicate)
-		  		currentStep.resetP(vn);
-		  	if(currentStep.prevS!=null){
-		  		currentStep = currentStep.prevS;
-		  		state =  BACKWARD;
-		  	}else{
-		  		state =  END;
-		  	}
+		  	currentStep.out_of_range = false;
+		  	transition_following_sibling(vn);
 		  	break;
 
 		  default:
@@ -2300,6 +2154,11 @@ public class LocationPathExpr extends Expr{
 		  	return -1;
 		  	
 		  case  BACKWARD:
+			  if (currentStep.out_of_range){
+					currentStep.out_of_range = false;
+					transition_following_sibling(vn);
+					break;
+				}
 		  	while (vn.toElement(VTDNav.NS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2317,19 +2176,17 @@ public class LocationPathExpr extends Expr{
 		  		}
 		  	}
 		    if (b==false){
-		    	vn.pop2();
-		    	if (currentStep.hasPredicate)
-		    		currentStep.resetP(vn);
-		    	if (currentStep.prevS==null){
-		    		 state =  END;
-		    	}else{
-		    		 state =  BACKWARD;
-		    		currentStep = currentStep.prevS;
-		    	}
+		    	currentStep.out_of_range = false;
+		    	transition_following_sibling(vn);
 		    }
 		  	break;
 		  
 		  case  TERMINAL:
+			if (currentStep.out_of_range){
+				currentStep.out_of_range = false;
+				transition_following_sibling(vn);
+				break;
+			}
 		  	while (vn.toElement(VTDNav.NS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2339,15 +2196,8 @@ public class LocationPathExpr extends Expr{
 						return result;
 		  		}
 		  	}
-		  	vn.pop2();
-		  	if (currentStep.hasPredicate)
-		  		currentStep.resetP(vn);
-		  	if(currentStep.prevS!=null){
-		  		currentStep = currentStep.prevS;
-		  		 state =  BACKWARD;
-		  	}else{
-		  		 state =  END;
-		  	}
+		  	currentStep.out_of_range = false;
+		  	transition_following_sibling(vn);
 		  	break;
 
 		  default:
@@ -2422,6 +2272,11 @@ public class LocationPathExpr extends Expr{
 		  	return -1;
 		  
 		  case  BACKWARD:
+			  if(currentStep.out_of_range){
+				  currentStep.out_of_range=false;
+				  transition_preceding_sibling(vn);
+				  break;
+			  }
 		  	while (vn.toElement(VTDNav.PS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2439,19 +2294,18 @@ public class LocationPathExpr extends Expr{
 		  		}
 		  	}
 		    if (b==false){
-		    	vn.pop2();
-		    	if (currentStep.hasPredicate)
-			  		currentStep.resetP(vn);
-		    	if (currentStep.prevS==null){
-		    		 state =  END;
-		    	}else{
-		    		 state =  BACKWARD;
-		    		currentStep = currentStep.prevS;
-		    	}
+		    	currentStep.out_of_range = false;
+		    	transition_preceding_sibling(vn);
 		    }
 		  	break;
 		  
 		  case  TERMINAL:
+			  if(currentStep.out_of_range){
+				  currentStep.out_of_range=false;
+				  transition_preceding_sibling(vn);
+				  break;
+			  }
+			  
 		  	while (vn.toElement(VTDNav.PS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2461,15 +2315,8 @@ public class LocationPathExpr extends Expr{
 						return result;
 		  		}
 		  	}
-		  	if (currentStep.hasPredicate)
-		  		currentStep.resetP(vn);
-		  	vn.pop2();
-		  	if(currentStep.prevS!=null){
-		  		currentStep = currentStep.prevS;
-		  		state =  BACKWARD;
-		  	}else{
-		  		state =  END;
-		  	}
+		  	currentStep.out_of_range = false;
+		  	transition_preceding_sibling(vn);
 		  	break;
 		  
 		  default:
@@ -2544,6 +2391,11 @@ public class LocationPathExpr extends Expr{
 		  	return -1;
 		  
 		  case  BACKWARD:
+			  if(currentStep.out_of_range){
+				  currentStep.out_of_range=false;
+				  transition_preceding_sibling(vn);
+				  break;
+			  }
 		  	while (vn.toNode(VTDNav.PS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2561,19 +2413,17 @@ public class LocationPathExpr extends Expr{
 		  		}
 		  	}
 		    if (b==false){
-		    	vn.pop2();
-		    	if (currentStep.hasPredicate)
-		    		currentStep.resetP(vn);
-		    	if (currentStep.prevS==null){
-		    		 state =  END;
-		    	}else{
-		    		 state =  BACKWARD;
-		    		currentStep = currentStep.prevS;
-		    	}
+		    	currentStep.out_of_range = false;
+		    	transition_preceding_sibling(vn);
 		    }
 		  	break;
 		  
 		  case  TERMINAL:
+			  if(currentStep.out_of_range){
+				  currentStep.out_of_range=false;
+				  transition_preceding_sibling(vn);
+				  break;
+			  }
 		  	while (vn.toNode(VTDNav.PS)){
 		  		if ((currentStep.nt_eval || currentStep.nt.eval2(vn)) 
 		  				&& ((!currentStep.hasPredicate) || currentStep.evalPredicates(vn))){
@@ -2583,15 +2433,8 @@ public class LocationPathExpr extends Expr{
 						return result;
 		  		}
 		  	}
-		  	vn.pop2();
-		  	if (currentStep.hasPredicate)
-		  		currentStep.resetP(vn);
-		  	if(currentStep.prevS!=null){
-		  		currentStep = currentStep.prevS;
-		  		 state =  BACKWARD;
-		  	}else{
-		  		 state =  END;
-		  	}
+		  	currentStep.out_of_range = false;
+		  	transition_preceding_sibling(vn);
 		  	break;
 		  
 		  default:
@@ -3461,9 +3304,7 @@ public class LocationPathExpr extends Expr{
 
 		case BACKWARD:
 			if (currentStep.out_of_range){
-				currentStep.out_of_range = false;
-				if (currentStep.hasPredicate)
-					currentStep.resetP(vn);
+				currentStep.out_of_range=false;
 				transition_child(vn);
 				break;
 			}
@@ -3481,8 +3322,7 @@ public class LocationPathExpr extends Expr{
 				state = FORWARD;
 				currentStep = currentStep.nextS;
 			} else{
-				if (currentStep.hasPredicate)
-					currentStep.resetP(vn);
+				currentStep.out_of_range = false;
 				transition_child(vn);
 			}
 
@@ -3490,9 +3330,7 @@ public class LocationPathExpr extends Expr{
 
 		case TERMINAL:
 			if (currentStep.out_of_range){
-				currentStep.out_of_range = false;
-				if (currentStep.hasPredicate)
-					currentStep.resetP(vn);
+				currentStep.out_of_range=false;
 				transition_child(vn);
 				break;
 			}
@@ -3505,8 +3343,7 @@ public class LocationPathExpr extends Expr{
 						return result;
 				}
 			}
-			if (currentStep.hasPredicate)
-				currentStep.resetP(vn);
+			currentStep.out_of_range = false;
 			transition_child(vn);
 
 			break;
