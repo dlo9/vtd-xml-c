@@ -309,9 +309,13 @@ public class AutoPilot {
 			/*
 			 * if (vn.atTerminal) return false;
 			 */
+			
 			if (ft == false)
 				return vn.iterate_following(name, special);
 			else {
+				if (vn.atTerminal && ((vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NAME)
+						|| vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NS))
+					return false;
 				ft = false;
 				// find the first next sibling of
 				while (true) {
@@ -329,11 +333,15 @@ public class AutoPilot {
 			}
 
 		case FOLLOWING_NS:
-			if (vn.atTerminal)
-				return false;
+			/*if (vn.atTerminal)
+				return false;*/
+			
 			if (ft == false)
 				return vn.iterate_followingNS(URL, localName);
 			else {
+				if (vn.atTerminal && ((vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NAME)
+						|| vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NS))
+					return false;
 				ft = false;
 				// find the first next sibling of
 				while (true) {
@@ -350,20 +358,22 @@ public class AutoPilot {
 			}
 
 		case PRECEDING:
-			if (vn.atTerminal && ((vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NAME)
-					|| vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NS))
-				return false;
+			
 			if (ft) {
+				if (vn.atTerminal && ((vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NAME)
+						|| vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NS))
+					return false;
 				ft = false;
 				vn.toElement(VTDNav.ROOT);
 			}
 			return vn.iterate_preceding(name, contextCopy, endIndex);
 
 		case PRECEDING_NS:
-			if (vn.atTerminal && ((vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NAME)
-					|| vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NS))
-				return false;
+			
 			if (ft) {
+				if (vn.atTerminal && ((vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NAME)
+						|| vn.getTokenType(vn.LN) == VTDNav.TOKEN_ATTR_NS))
+					return false;
 				ft = false;
 				vn.toElement(VTDNav.ROOT);
 			}
