@@ -157,7 +157,7 @@ int computeContextSize(locationPathExpr *lpe, Predicate *p, VTDNav *vn){
 			if (ap==NULL)
 					ap =  createAutoPilot(vn);
 				else
-					bind(ap,vn);
+					apBind(ap,vn);
 			//ap = createAutoPilot(vn);
 			if (lpe->currentStep->nt->testType == NT_NODE)
 				selectAttr(ap,(UCSChar *)L"*");
@@ -181,7 +181,7 @@ int computeContextSize(locationPathExpr *lpe, Predicate *p, VTDNav *vn){
 			if (ap==NULL)
 					ap = createAutoPilot(vn);
 				else
-					bind(ap,vn);
+					apBind(ap,vn);
 			if (lpe->currentStep->nt->testType == NT_NODE)
 				selectNameSpace(ap,(UCSChar *)L"*");
 			else
@@ -624,7 +624,7 @@ static int process_attribute(locationPathExpr *lpe, VTDNav *vn){
 						lpe->currentStep->o = ap = createAutoPilot(vn);
 					else {
 						ap = lpe->currentStep->o;
-						bind(ap,vn);
+						apBind(ap,vn);
 					}
 					if (lpe->currentStep->nt->testType== NT_NODE)
 						selectAttr(ap,L"*");
@@ -793,7 +793,7 @@ static int process_namespace(locationPathExpr *lpe, VTDNav *vn){
 						lpe->currentStep->o = ap = createAutoPilot(vn);
 					else {
 						ap = lpe->currentStep->o;
-						bind(ap,vn);
+						apBind(ap,vn);
 					}
 					if (lpe->currentStep->nt->testType== NT_NODE)
 						selectNameSpace(ap,L"*");
@@ -1142,7 +1142,7 @@ static int process_DDFP(locationPathExpr *lpe, VTDNav *vn){
 					lpe->currentStep->o = ap = createAutoPilot(vn);
 				else{
 					ap = lpe->currentStep->o;
-					bind(ap,vn);
+					apBind(ap,vn);
 				}
 				if (lpe->currentStep->ft == TRUE) {
 
@@ -2643,7 +2643,7 @@ int computeContextSize4DDFP(locationPathExpr *lpe,Predicate *p, VTDNav *vn){
 		if (ap==NULL)
 			ap = createAutoPilot(vn);
 		else
-			bind(ap,vn);
+			apBind(ap,vn);
 		if (lpe->currentStep->axis_type == AXIS_DESCENDANT_OR_SELF0 )
 			if (lpe->currentStep->nt->testType == NT_NODE)
 				setSpecial(ap,TRUE);
@@ -2691,7 +2691,7 @@ int computeContextSize4DDFP2(locationPathExpr *lpe,Predicate *p, VTDNav *vn){
 		if (ap==NULL)
 			ap = createAutoPilot(vn);
 		else
-			bind(ap,vn);
+			apBind(ap,vn);
 		
 		//currentStep.o = ap = new AutoPilot(vn);
 	    if (lpe->currentStep->axis_type == AXIS_DESCENDANT_OR_SELF)
@@ -3437,7 +3437,7 @@ int process_DDFP2(locationPathExpr *lpe,VTDNav *vn){
 			}
 			else {
 				ap = (AutoPilot *) lpe->currentStep->o;
-				bind(ap,vn);
+				apBind(ap,vn);
 			}
 			if (lpe->currentStep->ft) {
 

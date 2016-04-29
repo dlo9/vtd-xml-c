@@ -16,10 +16,7 @@ ALL.O = arrayList.o autoPilot.o binaryExpr.o bookMark.o cachedExpr.o contextBuff
 
 # Have to redefine bind since it is used in socket.h (curl, etc.)
 $(TARGET): $(ALL.O)
-	objcopy --redefine-sym bind=apBind autoPilot.o
-	sed -i 's/bind(/apBind(/' autoPilot.h
 	ar rcs $@ $^
 
 clean:
 	rm -f $(ALL.O) $(TARGET)
-	sed -i 's/apBind(/bind(/' autoPilot.h

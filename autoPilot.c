@@ -749,7 +749,7 @@ void declareXPathNameSpace(AutoPilot *ap, UCSChar* prefix, UCSChar *URL){
 /**
  * 
  */
-void bind(AutoPilot *ap, VTDNav *new_vn){
+void apBind(AutoPilot *ap, VTDNav *new_vn){
 	ap->elementName = NULL;
 	ap->elementName2 = NULL;
     ap->vn = new_vn;

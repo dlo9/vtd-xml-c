@@ -76,7 +76,7 @@ AutoPilot *createAutoPilot2();
 void printExprString(AutoPilot *ap);
 
 /* bind */
-void bind(AutoPilot *ap, VTDNav *vn);
+void apBind(AutoPilot *ap, VTDNav *vn);
 
 /* free AutoPilot*/
 void freeAutoPilot(AutoPilot *ap);
