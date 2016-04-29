@@ -1,179 +1,25 @@
 CC=gcc
- 
-CFLAGS= -c -O3 -Wall -Winline -fgnu89-inline -fomit-frame-pointer -fforce-addr -frerun-cse-after-loop -fexpensive-optimizations -fregmove -frerun-loop-opt -fmerge-all-constants -fno-branch-count-reg -funroll-loops -fpeephole -march=core2 -falign-functions -falign-loops -falign-jumps -freorder-blocks -freorder-functions -fprefetch-loop-arrays -funswitch-loops -fbranch-target-load-optimize2 -fvpt --param inline-unit-growth=300 --param max-inline-recursive-depth=2 --param large-function-growth=600
 
-CFLAGS2 = -c -ggdb
-LDFLAGS = -O3 -fomit-frame-pointer -fforce-addr -frerun-cse-after-loop -fexpensive-optimizations -fregmove -frerun-loop-opt -march=core2 -lm 
-LDFLAGS2  = -ggdb
+TARGET=libvtd.a
+INCLUDE = -I.
+CFLAGS= -c -ggdb -O3 -Wall -Winline -fgnu89-inline -fomit-frame-pointer -fforce-addr -frerun-cse-after-loop -fexpensive-optimizations -fregmove -frerun-loop-opt -fmerge-all-constants -fno-branch-count-reg -funroll-loops -fpeephole -march=core2 -falign-functions -falign-loops -falign-jumps -freorder-blocks -freorder-functions -fprefetch-loop-arrays -funswitch-loops -fbranch-target-load-optimize2 -fvpt --param inline-unit-growth=300 --param max-inline-recursive-depth=2 --param large-function-growth=600 #-Wno-unused-variable -Wno-pointer-to-int-cast -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-but-set-variable -Wno-strict-overflow -Wno-parentheses -Wno-int-to-pointer-cast -Wno-pointer-sign -Wno-maybe-uninitialized -Wno-switch -Wno-char-subscripts -Wno-inline -Wno-sequence-point -Wno-implicit-int -Wno-incompatible-pointer-types -Wno-return-type
 
-#all :  vtd-xml RSSReader stats soap benchmark_vtdxml update indexWriter indexReader testNodeRecorder testOverwrite testBookMark  FragmentTest ModifyXML
-all :  vtd-xml RSSReader stats soap benchmark_vtdxml update indexWriter indexReader testNodeRecorder testOverwrite testBookMark  FragmentTest 
+LDFLAGS = -O3 -ggdb -fomit-frame-pointer -fforce-addr -frerun-cse-after-loop -fexpensive-optimizations -fregmove -frerun-loop-opt -march=core2 -lm 
 
-benchmark_vtdxml: benchmark_vtdxml.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
+.SUFFIXES: .o .c
 
-FragmentTest: FragmentTest.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDE) -o $*.o $<
 
-#ModifyXML: ModifyXML.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
-
-erase: erase.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
-
-soap: soap.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
-
-stats: stats.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
-
-RSSReader: RSSReader.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
-
-update: update.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o variableExpr.o cachedExpr.o
-
-indexWriter: indexWriter.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o  variableExpr.o cachedExpr.o
-
-indexReader: indexReader.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o  variableExpr.o cachedExpr.o
-	
-testNodeRecorder: testNodeRecorder.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o  textIter.o  variableExpr.o cachedExpr.o
-
-testOverwrite: testOverwrite.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o  variableExpr.o cachedExpr.o
-
-testBookMark: testBookMark.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o  variableExpr.o cachedExpr.o
-
-vtd-xml: vtd-xml.o arrayList.o fastIntBuffer.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o  variableExpr.o cachedExpr.o
+ALL.O = arrayList.o autoPilot.o binaryExpr.o bookMark.o cachedExpr.o contextBuffer.o decoder.o elementFragmentNs.o fastIntBuffer.o fastLongBuffer.o filterExpr.o funcExpr.o helper.o indexHandler.o intHash.o l8.tab.o lex.yy.o literalExpr.o locationPathExpr.o nodeRecorder.o numberExpr.o pathExpr.o textIter.o transcoder.o unaryExpr.o unionExpr.o variableExpr.o vtdGen.o vtdNav.o XMLChar.o XMLModifier.o
 
 
-	${CC} ${LDFLAGS} -o vtd-xml vtd-xml.o fastIntBuffer.o arrayList.o fastLongBuffer.o contextBuffer.o vtdNav.o vtdGen.o autoPilot.o XMLChar.o helper.o lex.yy.o l8.tab.o literalExpr.o numberExpr.o pathExpr.o filterExpr.o binaryExpr.o unaryExpr.o funcExpr.o locationPathExpr.o intHash.o unionExpr.o decoder.o XMLModifier.o nodeRecorder.o indexHandler.o bookMark.o elementFragmentNs.o transcoder.o textIter.o  variableExpr.o cachedExpr.o
+# Have to redefine bind since it is used in socket.h (curl, etc.)
+$(TARGET): $(ALL.O)
+	objcopy --redefine-sym bind=apBind autoPilot.o
+	sed -i 's/bind(/apBind(/' autoPilot.h
+	ar rcs $@ $^
 
 clean:
-	-rm *.o soap RSSReader vtd-xml stats
-
-benchmark_vtdxml.o: example/benchmark_vtdxml.c
-	${CC} ${CFLAGS} example/benchmark_vtdxml.c
-
-erase.o : example/erase.c
-	${CC} ${CFLAGS} example/erase.c
-
-FragmentTest.o: example/FragmentTest.c
-	${CC} ${CFLAGS} example/FragmentTest.c
-
-#ModifyXML.o: example/ModifyXML.c
-#	${CC} ${CFLAGS} example/ModifyXML.c
-
-vtd-xml.o: example/vtd-xml.c
-	${CC} ${CFLAGS} example/vtd-xml.c
-
-RSSReader.o : example/RSSReader.c
-	${CC} ${CFLAGS} example/RSSReader.c
-
-update.o : example/update.c
-	${CC} ${CFLAGS} example/update.c
-
-stats.o : example/stats.c
-	${CC} ${CFLAGS} example/stats.c
-
-soap.o	: example/soap.c
-	${CC} ${CFLAGS} example/soap.c
-
-indexWriter.o	: example/indexWriter.c 
-	${CC} ${CFLAGS} example/indexWriter.c
-
-indexReader.o	: example/indexReader.c 
-	${CC} ${CFLAGS} example/indexReader.c
-
-testNodeRecorder.o	: example/testNodeRecorder.c
-	${CC} ${CFLAGS} example/testNodeRecorder.c
-
-testOverwrite.o	: example/testOverwrite.c
-	${CC} ${CFLAGS} example/testOverwrite.c
-
-testBookMark.o 	: example/testBookMark.c
-	${CC} ${CFLAGS} example/testBookMark.c
-
-elementFragmentNs.o  : elementFragmentNs.c
-	${CC} ${CFLAGS} elementFragmentNs.c
-
-bookMark.o : bookMark.c
-	${CC} ${CFLAGS} bookMark.c
-
-nodeRecorder.o	: nodeRecorder.c
-	${CC} ${CFLAGS} nodeRecorder.c	
-
-indexHandler.o	: indexHandler.c
-	${CC} ${CFLAGS} indexHandler.c
-	
-cachedExpr.o	: cachedExpr.c
-	${CC} ${CFLAGS} cachedExpr.c
-
-decoder.o : decoder.c
-	${CC} ${CFLAGS} decoder.c
-
-intHash.o : intHash.c
-	${CC} ${CFLAGS} intHash.c
-
-arrayList.o : arrayList.c
-	${CC} ${CFLAGS} arrayList.c
-	
-fastIntBuffer.o : fastIntBuffer.c
-	${CC} ${CFLAGS} fastIntBuffer.c
-
-fastLongBuffer.o : fastLongBuffer.c
-	${CC} ${CFLAGS} fastLongBuffer.c
-
-contextBuffer.o : contextBuffer.c
-	${CC} ${CFLAGS} contextBuffer.c    
-
-vtdGen.o : vtdGen.c
-	${CC} ${CFLAGS} vtdGen.c
-	
-vtdNav.o : vtdNav.c
-	${CC} ${CFLAGS} vtdNav.c
-
-autoPilot.o : autoPilot.c
-	${CC} ${CFLAGS} autoPilot.c
-
-XMLModifier.o : XMLModifier.c
-	${CC} ${CFLAGS} XMLModifier.c
-	
-
-XMLChar.o : XMLChar.c
-	${CC} ${CFLAGS} XMLChar.c	
-
-unionExpr.o : unionExpr.c
-	${CC} ${CFLAGS} unionExpr.c
-
-filterExpr.o : filterExpr.c
-	${CC} ${CFLAGS} filterExpr.c
-
-literalExpr.o : literalExpr.c
-	${CC} ${CFLAGS} literalExpr.c
-
-numberExpr.o : numberExpr.c
-	${CC} ${CFLAGS} numberExpr.c
-
-unaryExpr.o : unaryExpr.c
-	${CC} ${CFLAGS} unaryExpr.c
-
-locationPathExpr.o : locationPathExpr.c
-	${CC} ${CFLAGS} locationPathExpr.c
-
-
-pathExpr.o : pathExpr.c
-	${CC} ${CFLAGS} pathExpr.c
-
-lex.yy.o : lex.yy.c
-	${CC} ${CFLAGS} lex.yy.c
-
-l8.tab.o : l8.tab.c
-	${CC} ${CFLAGS} l8.tab.c
-
-funcExpr.o : funcExpr.c
-	${CC} ${CFLAGS} funcExpr.c
-
-variableExpr.o : variableExpr.c
-	${CC} ${CFLAGS} variableExpr.c
-
-
-helper.o : helper.c
-	${CC} ${CFLAGS} helper.c
-
-transcoder.o : transcoder.c
-	${CC} ${CFLAGS} transcoder.c
-
-textIter.o  : textIter.c
-	${CC} ${CFLAGS} textIter.c
+	rm -f $(ALL.O) $(TARGET)
+	sed -i 's/apBind(/bind(/' autoPilot.h

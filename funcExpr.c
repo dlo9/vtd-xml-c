@@ -17,7 +17,7 @@
 */
 /*VTD-XML is protected by US patent 7133857, 7260652, an 7761459*/
 #include "xpath.h"
-#include "xmlModifier.h"
+#include "XMLModifier.h"
 
 static double sum(funcExpr *fne, VTDNav *vn);
 static int argCount(funcExpr *fne);
