@@ -55,6 +55,7 @@ IntHash* createIntHash2(int hashWidthExpo){
 	ih->m2 = (~ih->m1) & 0xffffffff;
 	ih->maxDepth = 0;
 	ih->pse = ih_pageSizeE;
+	ih->e = NULL;
 	/* initialize everything to null */
 	for (i=0;i<ih->hw;i++){
 		ih->storage[i]= NULL;

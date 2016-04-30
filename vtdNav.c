@@ -3525,6 +3525,7 @@ void throwException2 (enum exception_type et, char *msg){
 	exception e;
 	e.et = et;
 	e.msg = msg;
+	e.sub_msg = NULL;
 	Throw e;
 }
 

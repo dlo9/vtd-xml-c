@@ -2110,6 +2110,13 @@ locationPathExpr *createLocationPathExpr(){
 		free(lpe);
 		Throw e;
 	}
+	// if Boolean enum is smaller than the word size,
+	// word alignment in the struct gives valgrind an
+	// "uninisialized value error", so initialize a whole
+	// word here (and then also do a real initialization later)
+	if (sizeof(Boolean) < sizeof(void *))
+		*(void **) &(lpe->needReordering) = 0;
+
 	lpe->freeExpr = (free_Expr) &freeLocationPathExpr;
 	lpe->evalBoolean = (eval_Boolean)&evalBoolean_lpe;
 	lpe->evalNodeSet = (eval_NodeSet)&evalNodeSet_lpe;
@@ -2134,6 +2141,7 @@ locationPathExpr *createLocationPathExpr(){
 	lpe->s = NULL;
 	lpe->pathType = RELATIVE_PATH;
 	lpe->currentStep = NULL;
+	lpe->needReordering = FALSE;
 	return lpe;
 }
 

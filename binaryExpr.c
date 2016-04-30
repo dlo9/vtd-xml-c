@@ -511,6 +511,7 @@ binaryExpr *createBinaryExpr(expr *e1, opType op, expr *e2){
 	be->op = op;
 	be->right = e2;
 	be->fib1 = NULL;
+	be->ct = B_B;
 	switch(be->op){
 	 	case OP_ADD:
 		case OP_SUB:
