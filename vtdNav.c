@@ -154,6 +154,14 @@ static int _toStringLowerCase(VTDNav *vn, UCSChar *s, int index, int offset);
 static int _toStringUpperCase(VTDNav *vn, UCSChar *s, int index, int offset);
 
 static UCSChar* _getXPathStringVal(VTDNav *vn, int index,short mode);
+
+//Test whether current element has an attribute with the matching name.
+extern inline Boolean hasAttr(VTDNav *vn, UCSChar *attrName);
+
+//Test whether the current element has an attribute with 
+//matching namespace URL and localname.
+extern inline Boolean hasAttrNS(VTDNav *vn, UCSChar *URL, UCSChar *localName);
+
 /*Create VTDNav object*/
 static Long handle_utf8(VTDNav *vn, Long temp, int offset){
 	int c,d,a,i;

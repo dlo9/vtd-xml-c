@@ -409,13 +409,6 @@ extern inline UByte* getXML(VTDNav *vn){
 extern inline tokenType getTokenType(VTDNav *vn, int index){
 	return (tokenType) ((longAt(vn->vtdBuffer,index) & MASK_TOKEN_TYPE) >> 60) & 0xf;
 }
-//Test whether current element has an attribute with the matching name.
-extern inline Boolean hasAttr(VTDNav *vn, UCSChar *attrName);
-
-//Test whether the current element has an attribute with 
-//matching namespace URL and localname.
-extern inline Boolean hasAttrNS(VTDNav *vn, UCSChar *URL, UCSChar *localName);
-
 //This method is similar to getElementByName in DOM except it doesn't
 //return the nodeset, instead it iterates over those nodes.
 extern int iterate(VTDNav *vn, int dp, UCSChar *en, Boolean special);

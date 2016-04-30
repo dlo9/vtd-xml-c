@@ -42,50 +42,6 @@ Boolean isReady;// = FALSE;
 Boolean isCharacterReady;
 
 void XMLChar_init();
-   /**
-     * Returns true if the specified character is a supplemental character.
-     *
-     * @param c The character to check.
-     */
-    extern inline Boolean XMLChar_isSupplemental(int c);
-
-    /**
-     * Returns true the supplemental character corresponding to the given
-     * surrogates.
-     *
-     * @param h The high surrogate.
-     * @param l The low surrogate.
-     */
-    extern inline int XMLChar_isSupplementalChar(char h, char l) ;
-
-    /**
-     * Returns the high surrogate of a supplemental character
-     *
-     * @param c The supplemental character to "split".
-     */
-    extern inline  unsigned short XMLChar_highSurrogate(int c);
-
-    /**
-     * Returns the low surrogate of a supplemental character
-     *
-     * @param c The supplemental character to "split".
-     */
-    extern inline  unsigned short XMLChar_lowSurrogate(int c);
-
-    /**
-     * Returns whether the given character is a high surrogate
-     *
-     * @param c The character to check.
-     */
-    extern inline  Boolean XMLChar_isHighSurrogate(int c);
-    /**
-     * Returns whether the given character is a low surrogate
-     *
-     * @param c The character to check.
-     */
-    extern inline  Boolean XMLChar_isLowSurrogate(int c);
-
-
     /**
      * Returns true if the specified character is valid. This method
      * also checks the surrogate character range from 0x10000 to 0x10FFFF.
@@ -181,14 +137,6 @@ void XMLChar_init();
 	extern inline Boolean XMLChar_isNCName(int c) {
         return c < 0x10000 && (CHARS[c] & MASK_NCNAME) != 0;
     } 
-    /**
-     * Returns true if the specified character is a valid Pubid
-     * character as defined by production [13] in the XML 1.0
-     * specification.
-     *
-     * @param c The character to check.
-     */
-    extern inline Boolean XMLChar_isPubid(int c);
 
 	int Character_digit(int ch, int radix);
 
