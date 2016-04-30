@@ -17,6 +17,7 @@ ALL.O = arrayList.o autoPilot.o binaryExpr.o bookMark.o cachedExpr.o contextBuff
 # Have to redefine bind since it is used in socket.h (curl, etc.)
 $(TARGET): $(ALL.O)
 	ar rcs $@ $^
+	ctags *.c *.h
 
 clean:
-	rm -f $(ALL.O) $(TARGET)
+	rm -f $(ALL.O) $(TARGET) tags
