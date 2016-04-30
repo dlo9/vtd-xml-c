@@ -414,6 +414,8 @@ VTDNav *createVTDNav(int r, encoding_t enc, Boolean ns, int depth,
 						 vn->URIName=NULL;
 						 vn->currentNode=NULL;
 						 vn->fib = createFastIntBuffer2(5);
+						 vn->h1 = NULL;
+						 vn->h2 = NULL;
 						 return vn;
 }
 static int getNextChar(VTDNav *vn, vn_helper *h);
