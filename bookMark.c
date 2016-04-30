@@ -18,6 +18,7 @@
 /*VTD-XML is protected by US patent 7133857, 7260652, an 7761459*/
 #include "bookMark.h"
 #include "vtdNav.h"
+#include "xpath.h"
 
 BookMark *createBookMark(){
 	BookMark *bm = (BookMark*) malloc(sizeof(BookMark));

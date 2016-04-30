@@ -17,6 +17,7 @@
  */
 /*VTD-XML is protected by US patent 7133857, 7260652, an 7761459*/
 #include "autoPilot.h"
+#include "xpath.h"
 /* This method insert a prefix/URL pair into the nsList, if there are prefix duplicates 
  the URL in the list is replaced with new URL*/
 static _thread struct nsList *nl;

@@ -22,7 +22,7 @@
 #include "customTypes.h"
 
 #include "cexcept.h"
-#include "xpath.h"
+#include "vtdNav.h"
 /**
  * Bookmark is a single instance of a node position.
  * You can save the cursor's position into a bookMark instance

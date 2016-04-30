@@ -22,7 +22,6 @@
 #include "customTypes.h"
 #include "vtdNav.h"
 #include "cexcept.h"
-#include "xpath.h"
 #include "helper.h"
 
 /* iter_type defines the type of iteration, to be used in function iterateAP*/
