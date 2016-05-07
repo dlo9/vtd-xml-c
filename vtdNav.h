@@ -298,7 +298,7 @@ VTDNav *createVTDNav(int r, encoding_t enc, Boolean ns, int depth,
 
 //Free VTDNav object
 
-void freeVTDNav(VTDNav *vn);
+static void freeVTDNav(VTDNav *vn);
 
 //Return the attribute count of the element at the cursor position.
 int getAttrCount(VTDNav *vn);
@@ -534,7 +534,7 @@ extern inline void sampleState(VTDNav *vn, FastIntBuffer *fib){
 	vn->__sampleState(vn,fib);
 }
 
-extern inline void freeVTDNav(VTDNav *vn){
+static inline void freeVTDNav(VTDNav *vn){
 	vn->__freeVTDNav(vn);
 }
 
