@@ -88,7 +88,7 @@ static Boolean isText(TextIter *ti, int index){
 	} Catch(e){
 		
 	}
-	return FALSE;
+	return VTD_FALSE;
 }
 
 
@@ -100,7 +100,7 @@ static int handleDefault(TextIter *ti){
 	type = getTokenType(ti->vn,sp);
 	while (d >= ti->depth
 		&& !(d == ti->depth && type == TOKEN_STARTING_TAG)) {
-			if (isText(ti,sp) == TRUE && d == ti->depth) {
+			if (isText(ti,sp) == VTD_TRUE && d == ti->depth) {
 				ti->prevLocation = sp;
 				return sp;
 			}
@@ -123,7 +123,7 @@ static int handleDocumentNode(TextIter *ti){
 	//int d = vn.getTokenDepth(sp);
 	//int type = vn.getTokenType(sp);
 	//while (d == -1/*&& !(d == depth && type == VTDNav.TOKEN_STARTING_TAG)*/) {
-	while(TRUE){    
+	while(VTD_TRUE){    
 		if (sp< ti->vn->rootIndex) {
 			if (isText(ti,sp)){
 				ti->prevLocation = sp;
@@ -158,7 +158,7 @@ static int handleLevel0(TextIter *ti){
 	type = getTokenType(ti->vn,sp);
 	while (d >= ti->depth
 		&& !(d == ti->depth && type == TOKEN_STARTING_TAG)) {
-			if (isText(ti,sp) == TRUE && d == ti->depth) {
+			if (isText(ti,sp) == VTD_TRUE && d == ti->depth) {
 				ti->prevLocation = sp;
 				return sp;
 			}
@@ -213,13 +213,13 @@ static int handleLevel1(TextIter *ti){
                         sp++;
                         //continue; 
                     }
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==1 ) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==1 ) {
                         ti->prevLocation = sp;
                         return sp;
                     }
                     sp++;
                 } else if (sp < temp1) {
-                    if (isText(ti,sp) == TRUE) {
+                    if (isText(ti,sp) == VTD_TRUE) {
                         ti->prevLocation = sp;
                         return sp;
                     }
@@ -228,7 +228,7 @@ static int handleLevel1(TextIter *ti){
                     //if (sp == temp2) { // last child element
                     //} else
                     
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp) == 1){
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp) == 1){
                     	//System.out.println("depth ->"+vn.getTokenDepth(sp));
                         ti->prevLocation = sp;
                         return sp;
@@ -249,7 +249,7 @@ static int handleLevel1(TextIter *ti){
             while (sp < ti->vn->vtdSize
                 && d >= 1
                 && !(d == 1 && type == TOKEN_STARTING_TAG)) {
-                if (isText(ti,sp) == TRUE) {
+                if (isText(ti,sp) == VTD_TRUE) {
                     ti->prevLocation = sp;
                     return sp;
                 }
@@ -304,13 +304,13 @@ static int handleLevel2(TextIter *ti){
                         	sp++;
                         //continue;
                     }
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==2) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==2) {
                         ti->prevLocation = sp;
                         return sp;
                     }
                     sp++;
                 } else if (sp < temp1) {
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==2) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==2) {
                         ti->prevLocation = sp;
                         return sp;
                     }
@@ -318,7 +318,7 @@ static int handleLevel2(TextIter *ti){
                 } else {
                     //if (sp == temp2) { // last child element
                     //} else                 
-                    if ( isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp) == 2) {
+                    if ( isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp) == 2) {
                         ti->prevLocation = sp;
                         return sp;
                     } else if ((getTokenType(ti->vn,sp)==TOKEN_STARTING_TAG
@@ -339,7 +339,7 @@ static int handleLevel2(TextIter *ti){
                 && d >= 2
                 && !(d == 2 && type == TOKEN_STARTING_TAG)) {
                 // the last condition indicates the start of the next sibling element
-                if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==2) {
+                if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==2) {
                     ti->prevLocation = sp;
                     return sp;
                 }
@@ -362,7 +362,7 @@ static int handleLevel2(TextIter *ti){
 //        type = getTokenType(ti->vn,sp);
 //        while (d >= ti->depth
 //            && !(d == ti->depth && type == TOKEN_STARTING_TAG)) {
-//            if (isText(ti,sp) == TRUE && d == ti->depth) {
+//            if (isText(ti,sp) == VTD_TRUE && d == ti->depth) {
 //                ti->prevLocation = sp;
 //                return sp;
 //            }
@@ -500,13 +500,13 @@ static int _handleLevel2(TextIter *ti){
                         	sp++;
                         //continue;
                     }
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==2) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==2) {
                         ti->prevLocation = sp;
                         return sp;
                     }
                     sp++;
                 } else if (sp < temp1) {
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==2) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==2) {
                         ti->prevLocation = sp;
                         return sp;
                     }
@@ -514,7 +514,7 @@ static int _handleLevel2(TextIter *ti){
                 } else {
                     //if (sp == temp2) { // last child element
                     //} else                 
-                    if ( isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp) == 2) {
+                    if ( isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp) == 2) {
                         ti->prevLocation = sp;
                         return sp;
                     } else if ((getTokenType(ti->vn,sp)==TOKEN_STARTING_TAG
@@ -534,7 +534,7 @@ static int _handleLevel2(TextIter *ti){
                 && d >= 2
                 && !(d == 2 && type == TOKEN_STARTING_TAG)) {
                 // the last condition indicates the start of the next sibling element
-                if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==2) {
+                if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==2) {
                     ti->prevLocation = sp;
                     return sp;
                 }
@@ -590,13 +590,13 @@ static int handleLevel3(TextIter *ti){
                         	sp++;
                         //continue;
                     }
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==3) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==3) {
                         ti->prevLocation = sp;
                         return sp;
                     }
                     sp++;
                 } else if (sp < temp1) {
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==3) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==3) {
                         ti->prevLocation = sp;
                         return sp;
                     }
@@ -604,7 +604,7 @@ static int handleLevel3(TextIter *ti){
                 } else {
                     //if (sp == temp2) { // last child element
                     //} else                 
-                    if ( isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp) == 3) {
+                    if ( isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp) == 3) {
                         ti->prevLocation = sp;
                         return sp;
                     } else if ((getTokenType(ti->vn,sp)==TOKEN_STARTING_TAG
@@ -624,7 +624,7 @@ static int handleLevel3(TextIter *ti){
                 && d >= 3
                 && !(d == 3 && type == TOKEN_STARTING_TAG)) {
                 // the last condition indicates the start of the next sibling element
-                if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==3) {
+                if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==3) {
                     ti->prevLocation = sp;
                     return sp;
                 }
@@ -681,13 +681,13 @@ static int handleLevel4(TextIter *ti){
                         	sp++;
                         //continue;
                     }
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==4) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==4) {
                         ti->prevLocation = sp;
                         return sp;
                     }
                     sp++;
                 } else if (sp < temp1) {
-                    if (isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp)==4) {
+                    if (isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp)==4) {
                         ti->prevLocation = sp;
                         return sp;
                     }
@@ -695,7 +695,7 @@ static int handleLevel4(TextIter *ti){
                 } else {
                     //if (sp == temp2) { // last child element
                     //} else                 
-                    if ( isText(ti,sp) == TRUE && getTokenDepth(ti->vn,sp) == 4) {
+                    if ( isText(ti,sp) == VTD_TRUE && getTokenDepth(ti->vn,sp) == 4) {
                         ti->prevLocation = sp;
                         return sp;
                     } else if ((getTokenType(ti->vn,sp)== TOKEN_STARTING_TAG
@@ -715,7 +715,7 @@ static int handleLevel4(TextIter *ti){
                 && d >= 4
                 && !(d == 4 && type == TOKEN_STARTING_TAG)) {
                 // the last condition indicates the start of the next sibling element
-                if (isText(ti,sp) == TRUE &&getTokenDepth(ti->vn,sp)== 4) {
+                if (isText(ti,sp) == VTD_TRUE &&getTokenDepth(ti->vn,sp)== 4) {
                     ti->prevLocation = sp;
                     return sp;
                 }

@@ -157,14 +157,14 @@ AutoPilot *createAutoPilot(VTDNav *v){
 	ap->URL = NULL;
     ap->vn = v;
     ap->it = UNDEFINED; /* initial state: not defined */
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
 	//ap->startIndex = -1;
 	ap->xpe = NULL;
 	nl = NULL;
 	ap->contextCopy = NULL;
-	ap->special = FALSE;
+	ap->special = VTD_FALSE;
 	ap->fib = NULL;
-	ap->cachingOption = TRUE;
+	ap->cachingOption = VTD_TRUE;
 	ap->stackSize=0;
 	return ap;
 }
@@ -186,14 +186,14 @@ AutoPilot *createAutoPilot2(){
     ap->vn = NULL;
     //depth = v.getCurrentDepth();
     ap->it = UNDEFINED; // not defined
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
 	ap->xpe = NULL;
 	//ap->startIndex = -1;
 	nl = NULL;
 	ap->contextCopy = NULL;
-	ap->special = FALSE;
+	ap->special = VTD_FALSE;
 	ap->fib = NULL;
-	ap->cachingOption = TRUE;
+	ap->cachingOption = VTD_TRUE;
 	ap->stackSize=0;
 	return ap;
 }
@@ -236,7 +236,7 @@ void selectAttr(AutoPilot *ap, UCSChar *an){
 			 " invalid argument for selectElement, elementName can't be NULL");
 	}
 	ap->it= ATTR;
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
     ap->size = getTokenCount(ap->vn);
 	ap->elementName = an;
 }
@@ -248,7 +248,7 @@ void selectAttrNS(AutoPilot *ap, UCSChar *URL, UCSChar *ln){
 			 " invalid argument for selectElement, localName can't be NULL");
 	}
 	ap->it = ATTR_NS;
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
     ap->localName = ln;
     ap->URL = URL;
 }
@@ -264,7 +264,7 @@ void selectElement(AutoPilot *ap, UCSChar *en){
     ap->it = SIMPLE;
     ap->depth = getCurrentDepth(ap->vn);
     ap->elementName = en;
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
 }
 
 /*Select the element name (name space version) before iterating.
@@ -280,7 +280,7 @@ void selectElementNS(AutoPilot *ap, UCSChar *URL, UCSChar *ln){
     ap->depth = getCurrentDepth(ap->vn);
     ap->localName = ln;
 	ap->URL = URL;
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
 }
 
 
@@ -297,7 +297,7 @@ void selectElement_D(AutoPilot *ap, UCSChar *en){
 	ap->it = DESCENDANT;
 	ap->depth = getCurrentDepth(ap->vn);
 	ap->elementName = en;
-	ap->ft = TRUE;
+	ap->ft = VTD_TRUE;
 }
 
 /**
@@ -313,7 +313,7 @@ void selectElementNS_D(AutoPilot *ap, UCSChar *URL, UCSChar *ln){
     ap->depth = getCurrentDepth(ap->vn);
     ap->localName = ln;
 	ap->URL = URL;
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
 }
 
 
@@ -328,7 +328,7 @@ void selectElement_F(AutoPilot *ap, UCSChar *en){
 			" invalid argument for selectElement_F, elementName can't be NULL");
 	 }
 	ap->it = FOLLOWING;
-	ap->ft = TRUE;
+	ap->ft = VTD_TRUE;
 	ap->elementName = en;
 }
 /**
@@ -341,7 +341,7 @@ void selectElementNS_F(AutoPilot *ap, UCSChar *URL, UCSChar *ln){
 			 " invalid argument for selectElementNS_F, localName can't be NULL");
 	}
 	ap->it = FOLLOWING_NS;
-    ap->ft= TRUE;
+    ap->ft= VTD_TRUE;
     ap->localName = ln;
     ap->URL = URL;
 }
@@ -360,7 +360,7 @@ void selectElement_P(AutoPilot *ap, UCSChar *en){
 	 }
 	ap->depth = getCurrentDepth(ap->vn);
 	ap->it = PRECEDING;
-    ap->ft = TRUE;	
+    ap->ft = VTD_TRUE;	
 	ap->elementName = en;
     ap->contextCopy = (int *)malloc(a); //(int[])vn.context.clone();
 	memcpy(ap->contextCopy,ap->vn->context,a);
@@ -384,7 +384,7 @@ void selectElementNS_P(AutoPilot *ap, UCSChar *URL, UCSChar *ln){
 	}
 	ap->depth = getCurrentDepth(ap->vn);
 	ap->it = PRECEDING_NS;
-    ap->ft = TRUE;	
+    ap->ft = VTD_TRUE;	
 	ap->URL = URL;
 	ap->localName = ln;
     ap->contextCopy = (int *)malloc(a); //(int[])vn.context.clone();
@@ -411,96 +411,96 @@ Boolean iterateAP(AutoPilot *ap){
 	switch (ap->it) {
 		case SIMPLE :
 			if (ap->vn->atTerminal)
-				return FALSE;
-			if (ap->ft == FALSE)
+				return VTD_FALSE;
+			if (ap->ft == VTD_FALSE)
 				return iterate(ap->vn, ap->depth, ap->elementName, ap->special);
 			else {
-				ap->ft = FALSE;
+				ap->ft = VTD_FALSE;
 				if (ap->special || matchElement(ap->vn, ap->elementName)) {
-					return TRUE;
+					return VTD_TRUE;
 				} else
 					return iterate(ap->vn, ap->depth, ap->elementName,ap->special);
 			}
 		case SIMPLE_NS :
 			if (ap->vn->atTerminal)
-				return FALSE;
-			if (ap->ft == FALSE)
+				return VTD_FALSE;
+			if (ap->ft == VTD_FALSE)
 				return iterateNS(ap->vn, ap->depth, ap->URL, ap->localName);
 			else {
-				ap->ft = FALSE;
+				ap->ft = VTD_FALSE;
 				if (matchElementNS(ap->vn, ap->URL, ap->localName)) {
 					
-					return TRUE;
+					return VTD_TRUE;
 				} else
 					return iterateNS(ap->vn, ap->depth, ap->URL, ap->localName);
 			}
 		case DESCENDANT:
 			if (ap->vn->atTerminal)
-				return FALSE;
+				return VTD_FALSE;
 			return iterate(ap->vn, ap->depth, ap->elementName, ap->special);
 		case DESCENDANT_NS:
          	if (ap->vn->atTerminal)
-         	    return FALSE;         	
+         	    return VTD_FALSE;         	
          	return iterateNS(ap->vn, ap->depth, ap->URL, ap->localName);
 		case FOLLOWING:
 		   	if (ap->vn->atTerminal)
-         	    return FALSE;
-            if (ap->ft == FALSE)
+         	    return VTD_FALSE;
+            if (ap->ft == VTD_FALSE)
                 return iterate_following(ap->vn, ap->elementName, ap->special);
             else {
-            	ap->ft = FALSE;
-            	while(TRUE){
+            	ap->ft = VTD_FALSE;
+            	while(VTD_TRUE){
             		while (toElement(ap->vn, NEXT_SIBLING)){
             			 if (ap->special || matchElement(ap->vn,ap->elementName)) {                	
-                            return TRUE;
+                            return VTD_TRUE;
             			 }
             			 return iterate_following(ap->vn, ap->elementName, ap->special);
             		}
-                    if (toElement(ap->vn, PARENT)==FALSE){
-                        return FALSE;
+                    if (toElement(ap->vn, PARENT)==VTD_FALSE){
+                        return VTD_FALSE;
                     } 
             	}
             }
 		case FOLLOWING_NS:
         	if (ap->vn->atTerminal)
-         	    return FALSE;
-         	if (ap->ft == FALSE)
+         	    return VTD_FALSE;
+         	if (ap->ft == VTD_FALSE)
                 return iterate_followingNS(ap->vn,ap->URL,ap->localName);
             else {
-            	ap->ft = FALSE;
-            	while(TRUE){
+            	ap->ft = VTD_FALSE;
+            	while(VTD_TRUE){
             		while (toElement(ap->vn, NEXT_SIBLING)){
             			 if (matchElementNS(ap->vn, ap->URL,ap->localName)) {                	
-                            return TRUE;
+                            return VTD_TRUE;
             			 }
 						 return iterate_followingNS(ap->vn, ap->URL,ap->localName);
             		}
-                    if (toElement(ap->vn,PARENT)==FALSE){
-						return FALSE;
+                    if (toElement(ap->vn,PARENT)==VTD_FALSE){
+						return VTD_FALSE;
                     } 
             	}
             }
 		case PRECEDING:
 			if (ap->vn->atTerminal)
-         	    return FALSE;
+         	    return VTD_FALSE;
 			if (ap->ft){
-				ap->ft = FALSE;
+				ap->ft = VTD_FALSE;
 				toElement(ap->vn,ROOT);
 			}
          	return iterate_preceding(ap->vn, ap->elementName, ap->contextCopy, ap->endIndex);
 
 		case PRECEDING_NS:
 			if (ap->vn->atTerminal)
-         	    return FALSE;
+         	    return VTD_FALSE;
 			if (ap->ft){
-				ap->ft = FALSE;
+				ap->ft = VTD_FALSE;
 				toElement(ap->vn,ROOT);
 			}
          	return iterate_precedingNS(ap->vn, ap->URL,ap->localName,ap->contextCopy,ap->endIndex);
 		default :
 			throwException2(pilot_exception,
 				"unknow iteration type for iterateAP");
-			return FALSE;
+			return VTD_FALSE;
 	}
 }
 
@@ -515,12 +515,12 @@ int iterateAttr(AutoPilot *ap){
 	switch(ap->it){
 			case ATTR:
 				if (wcscmp(ap->elementName,L"*")==0){
-					if (ap->ft != FALSE){
-						ap->ft = FALSE;
+					if (ap->ft != VTD_FALSE){
+						ap->ft = VTD_FALSE;
 						ap->index = getCurrentIndex2(ap->vn)+1;
 					} else
 						ap->index +=2;
-					if (ap->vn->ns == FALSE){
+					if (ap->vn->ns == VTD_FALSE){
 						while(ap->index<ap->size){
 							tokenType type = getTokenType(ap->vn,ap->index);
 							if (type == TOKEN_ATTR_NAME
@@ -550,10 +550,10 @@ int iterateAttr(AutoPilot *ap){
 						return -1;
 					}
 				}else{
-					if (ap->ft == FALSE){
+					if (ap->ft == VTD_FALSE){
 						return -1;
 					} else {
-						ap->ft = FALSE;
+						ap->ft = VTD_FALSE;
 						i = getAttrVal(ap->vn,ap->elementName);
 						if(i!=-1){
 							//ap->vn->LN = i-1;
@@ -564,10 +564,10 @@ int iterateAttr(AutoPilot *ap){
 					}   	    			
 				}
 			case ATTR_NS:
-				if (ap->ft == FALSE){
+				if (ap->ft == VTD_FALSE){
 					return -1;
 				} else {
-					ap->ft = FALSE;
+					ap->ft = VTD_FALSE;
 				    i = getAttrValNS(ap->vn,ap->URL,ap->localName);
 					if(i!=-1){
 						//ap->vn->LN = i-1;
@@ -591,12 +591,12 @@ int iterateAttr2(AutoPilot *ap){
 	switch(ap->it){
 			case ATTR:
 				if (wcscmp(ap->elementName,L"*")==0){
-					if (ap->ft != FALSE){
-						ap->ft = FALSE;
+					if (ap->ft != VTD_FALSE){
+						ap->ft = VTD_FALSE;
 						ap->index = getCurrentIndex2(ap->vn)+1;
 					} else
 						ap->index +=2;
-					if (ap->vn->ns == FALSE){
+					if (ap->vn->ns == VTD_FALSE){
 						while(ap->index<ap->size){
 							tokenType type = getTokenType(ap->vn,ap->index);
 							if (type == TOKEN_ATTR_NAME
@@ -626,10 +626,10 @@ int iterateAttr2(AutoPilot *ap){
 						return -1;
 					}
 				}else{
-					if (ap->ft == FALSE){
+					if (ap->ft == VTD_FALSE){
 						return -1;
 					} else {
-						ap->ft = FALSE;
+						ap->ft = VTD_FALSE;
 						i = getAttrVal(ap->vn,ap->elementName);
 						if(i!=-1){
 							ap->vn->LN = i-1;
@@ -640,10 +640,10 @@ int iterateAttr2(AutoPilot *ap){
 					}   	    			
 				}
 			case ATTR_NS:
-				if (ap->ft == FALSE){
+				if (ap->ft == VTD_FALSE){
 					return -1;
 				} else {
-					ap->ft = FALSE;
+					ap->ft = VTD_FALSE;
 				    i = getAttrValNS(ap->vn,ap->URL,ap->localName);
 					if(i!=-1){
 						ap->vn->LN = i-1;
@@ -668,21 +668,21 @@ Boolean selectXPath(AutoPilot *ap, UCSChar *s){
 	if (s==NULL){
 		throwException2(xpath_parse_exception,
 			" xpath input string can't be NULL ");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if(ap->xpe!=NULL)
 		ap->xpe->freeExpr(ap->xpe);
 	XMLChar_init();
 
 	ap->xpe = xpathParse(s, nl,el);
-	ap->ft = TRUE;
+	ap->ft = VTD_TRUE;
 	if (ap->xpe == NULL){
 		throwException2(xpath_parse_exception, "Invalid XPath expression");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (ap->cachingOption)
 		ap->xpe->markCacheable(ap->xpe);
-	return TRUE;
+	return VTD_TRUE;
 	
 }
 
@@ -712,11 +712,11 @@ double evalXPathToNumber(AutoPilot *ap){
  */
 int evalXPath(AutoPilot *ap){	
 	if (ap->xpe != NULL){
-		if (ap->ft == TRUE){
+		if (ap->ft == VTD_TRUE){
 			if (ap->vn != NULL){
 	            ap->stackSize = ap->vn->contextBuf2->size;
 			}
-			ap->ft = FALSE;
+			ap->ft = VTD_FALSE;
 			ap->xpe->adjust(ap->xpe, ap->vn->vtdSize);
 		}
 		return ap->xpe->evalNodeSet(ap->xpe,ap->vn);
@@ -732,7 +732,7 @@ void resetXPath(AutoPilot *ap){
 	if (ap->xpe != NULL && ap->vn!=NULL){
 		ap->xpe->reset(ap->xpe,ap->vn);
 		ap->vn->contextBuf2->size = ap->stackSize;
-		ap->ft = TRUE;
+		ap->ft = VTD_TRUE;
 		if (ap->cachingOption)
 			ap->xpe->clearCache(ap->xpe);
 	}
@@ -755,9 +755,9 @@ void apBind(AutoPilot *ap, VTDNav *new_vn){
 	ap->elementName2 = NULL;
     ap->vn = new_vn;
 	ap->it = UNDEFINED; 
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
     ap->size = 0;
-    ap->special = FALSE;
+    ap->special = VTD_FALSE;
 }
 
 
@@ -792,14 +792,14 @@ void declareVariableExpr(AutoPilot *ap, UCSChar* varName, UCSChar* varExpr){
 	if (varExpr==NULL || varName==NULL){
 		throwException2(xpath_parse_exception,
 			" xpath input string or variable name can't be NULL ");
-		//return FALSE;
+		//return VTD_FALSE;
 	}
 	tmp = getExprFromList(el,varName);
 	if(tmp!=NULL)
 		tmp->freeExpr(tmp);
 	Try{
 		tmp = xpathParse(varExpr, nl,el);
-		//ap->ft = TRUE;
+		//ap->ft = VTD_TRUE;
 		if (tmp == NULL){
 			throwException2(xpath_parse_exception, "variable expr declaration failed ");
 		}
@@ -814,7 +814,7 @@ void selectNameSpace(AutoPilot *ap, UCSChar *en){
 	if (en == NULL)
 		throwException2(invalid_argument,"namespace name can't be null");
 	ap->it = NAMESPACE;
-    ap->ft = TRUE;
+    ap->ft = VTD_TRUE;
     ap->size = getTokenCount(ap->vn);
 	ap->elementName = en;
 	if (wcscmp(en,L"*")!=0){
@@ -833,10 +833,10 @@ void selectNameSpace(AutoPilot *ap, UCSChar *en){
 }
 
 int iterateNameSpace(AutoPilot *ap){
-		if (ap->vn->ns == FALSE)
+		if (ap->vn->ns == VTD_FALSE)
 			return -1;
-		if (ap->ft != FALSE) {
-			ap->ft = FALSE;
+		if (ap->ft != VTD_FALSE) {
+			ap->ft = VTD_FALSE;
 			ap->index = getCurrentIndex2(ap->vn) + 1;
 		} else
 			ap->index += 2;
@@ -851,15 +851,15 @@ int iterateNameSpace(AutoPilot *ap){
 				    	// check to see if the namespace has appeared before
 				    	if (checkNsUniqueness(ap,ap->index)){
 				    		ap->vn->LN = ap->index;
-				    		ap->vn->atTerminal = TRUE;
+				    		ap->vn->atTerminal = VTD_TRUE;
 				    		return ap->index;
 				    	}
 				    }
 				} 
 				ap->index += 2;
 			} else {
-				ap->vn->atTerminal = FALSE;
-				if (toElement(ap->vn, P) == FALSE) {
+				ap->vn->atTerminal = VTD_FALSE;
+				if (toElement(ap->vn, P) == VTD_FALSE) {
 					return -1;
 				} else {
 					ap->index = getCurrentIndex2(ap->vn) + 1;
@@ -874,21 +874,21 @@ Boolean checkNsUniqueness(AutoPilot *ap, int index){
 	int j;
 	for (j=0;j<ap->fib->size;j++){
 		if (compareTokens(ap->vn,intAt(ap->fib,j), ap->vn, index)==0)
-			return FALSE;
+			return VTD_FALSE;
 	}		
 	appendInt(ap->fib,index);
-	return TRUE;
+	return VTD_TRUE;
 }
 
 void selectNode(AutoPilot *ap){
-	ap->ft = TRUE;
+	ap->ft = VTD_TRUE;
 	ap->depth = getCurrentDepth(ap->vn);
 	ap->it = SIMPLE_NODE;
 }
 void selectPrecedingNode(AutoPilot *ap){
 	int i;
 	int a = sizeof(int)* ap->vn->nestingLevel;
-	ap->ft = TRUE;
+	ap->ft = VTD_TRUE;
 	ap->depth = getCurrentDepth(ap->vn);
 	ap->contextCopy = (int *)malloc(a); //(int[])vn.context.clone();
 	memcpy(ap->contextCopy,ap->vn->context,a);
@@ -907,13 +907,13 @@ void selectPrecedingNode(AutoPilot *ap){
 }
 
 void selectFollowingNode(AutoPilot *ap){
-	 ap->ft = TRUE;
+	 ap->ft = VTD_TRUE;
 	 ap->depth = getCurrentDepth(ap->vn);
 	 ap->it = FOLLOWING_NODE;
 }
 
 void selectDescendantNode(AutoPilot *ap){
-	 ap->ft = TRUE;
+	 ap->ft = VTD_TRUE;
 	 ap->depth = getCurrentDepth(ap->vn);
 	 ap->it = DESCENDANT_NODE;
 }
@@ -923,40 +923,40 @@ Boolean iterateAP2(AutoPilot *ap){
 switch (ap->it) {
 		case SIMPLE_NODE:
 			if (ap->ft && ap->vn->atTerminal)
-				return FALSE;
+				return VTD_FALSE;
 			if (ap->ft){
-				ap->ft =FALSE;
-				return TRUE;
+				ap->ft =VTD_FALSE;
+				return VTD_TRUE;
 			}
 			return iterateNode(ap->vn,ap->depth);
 			
 		case DESCENDANT_NODE:
 			if (ap->ft&&ap->vn->atTerminal)
-				return FALSE;
+				return VTD_FALSE;
 			else{
-				ap->ft=FALSE;
+				ap->ft=VTD_FALSE;
 				return iterateNode(ap->vn,ap->depth);
 			}
          	
 		case FOLLOWING_NODE:
 			if (ap->ft){
-				Boolean b= FALSE;
+				Boolean b= VTD_FALSE;
 				do{
 					b = toNode(ap->vn,NEXT_SIBLING);
 					if (b){
-						ap->ft = FALSE;
-						return TRUE;
+						ap->ft = VTD_FALSE;
+						return VTD_TRUE;
 					}else{
 						b = toNode(ap->vn,PARENT);
 					}
 				}while(b);
-				return FALSE;
+				return VTD_FALSE;
 			}			
 			return iterate_following_node(ap->vn);
 			
 		case PRECEDING_NODE:
 			if(ap->ft){
-				ap->ft = FALSE;
+				ap->ft = VTD_FALSE;
 				toNode(ap->vn,ROOT);
 				toNode(ap->vn,PARENT);	
 			}
@@ -964,7 +964,7 @@ switch (ap->it) {
 		//case 
 		default :
 			throwException2(pilot_exception," iteration action type undefined");
-			return FALSE;
+			return VTD_FALSE;
 }
 }
 

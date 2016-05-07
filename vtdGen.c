@@ -144,8 +144,8 @@ VTDGen *createVTDGen(){
 	vg->nsBuffer2 = createFastLongBuffer(4);
 	vg->nsBuffer3 = createFastLongBuffer(4);
 	vg->currentElementRecord = 0;
-	vg->singleByteEncoding = TRUE;
-	vg->shallowDepth = TRUE;
+	vg->singleByteEncoding = VTD_TRUE;
+	vg->shallowDepth = VTD_TRUE;
 
 	vg->anaLen = ATTR_NAME_ARRAY_SIZE;
 	vg->panaLen = ATTR_NAME_ARRAY_SIZE;
@@ -164,10 +164,10 @@ VTDGen *createVTDGen(){
 	vg->XMLDoc = NULL;
 	vg->rootIndex = vg->endOffset= 0;
 	vg->ns = vg->offset = vg->prev_offset =0;
-	vg->stateTransfered = TRUE; // free VTDGen won't free all location cache and VTD buffer
+	vg->stateTransfered = VTD_TRUE; // free VTDGen won't free all location cache and VTD buffer
 
-	vg->br = FALSE;
-	vg->ws = FALSE;
+	vg->br = VTD_FALSE;
+	vg->ws = VTD_FALSE;
 	return vg;
 }
 
@@ -181,7 +181,7 @@ void freeVTDGen(VTDGen *vg){
 		freeFastLongBuffer(vg->nsBuffer3);
 		freeFastLongBuffer(vg->nsBuffer2);
 		freeFastIntBuffer(vg->nsBuffer1);
-		if (vg->stateTransfered == FALSE || vg->br == TRUE){
+		if (vg->stateTransfered == VTD_FALSE || vg->br == VTD_TRUE){
 			//free(vg->XMLDoc);
 			freeFastLongBuffer(vg->VTDBuffer);
 			freeFastLongBuffer(vg->l1Buffer);
@@ -195,8 +195,8 @@ void freeVTDGen(VTDGen *vg){
 // clear the internal state of VTDGen so it can process 
 // the next XML file
 void clear(VTDGen *vg){
-	if (vg->br == FALSE){
-		if (vg->stateTransfered == FALSE){
+	if (vg->br == VTD_FALSE){
+		if (vg->stateTransfered == VTD_FALSE){
 			//free(vg->XMLDoc);
 			freeFastLongBuffer(vg->VTDBuffer);			
 			freeFastLongBuffer(vg->l1Buffer);
@@ -228,8 +228,8 @@ void clear(VTDGen *vg){
 
 	vg->depth = -1;
 	vg->increment = 1;
-	vg->BOM_detected = FALSE;
-	vg->must_utf_8 = FALSE;
+	vg->BOM_detected = VTD_FALSE;
+	vg->must_utf_8 = VTD_FALSE;
 	vg->ch = vg->ch_temp = 0;
 	vg->encoding = FORMAT_UTF8;
 
@@ -243,7 +243,7 @@ static int  entityIdentifier(VTDGen *vg){
 			case '#' :
 				ch = getChar(vg);
 				if (ch == 'x') {
-					while (TRUE) {
+					while (VTD_TRUE) {
 						ch = getChar(vg);
 						if (ch >= '0' && ch <= '9') {
 							val = (val << 4) + (ch - '0');
@@ -260,7 +260,7 @@ static int  entityIdentifier(VTDGen *vg){
 						}
 					}
 				} else {
-					while (TRUE) {
+					while (VTD_TRUE) {
 						if (ch >= '0' && ch <= '9') {
 							val = val * 10 + (ch - '0');
 						} else if (ch == ';') {
@@ -561,10 +561,10 @@ static Boolean skip4OtherEncoding(VTDGen *vg, int ch1){
 	if (temp == ch1)
 	{
 		vg->offset++;
-		return TRUE;
+		return VTD_TRUE;
 	}
 	else
-		return FALSE;
+		return VTD_FALSE;
 
 }
 static int handleOtherEncoding(VTDGen *vg){
@@ -1197,7 +1197,7 @@ static void matchUTFEncoding(VTDGen *vg){
 							== FORMAT_UTF_16LE
 							|| vg->encoding
 							== FORMAT_UTF_16BE) {
-								if (vg->BOM_detected == FALSE){
+								if (vg->BOM_detected == VTD_FALSE){
 									throwException(parse_exception,0,
 										"Parse exception in parse()",
 										"BOM not detected for UTF-16");
@@ -1342,9 +1342,9 @@ static Boolean skipUTF8(VTDGen *vg,int temp, int ch){
 
 	if (val == ch) {
 		vg->offset += a + 1;
-		return TRUE;
+		return VTD_TRUE;
 	} else {
-		return FALSE;
+		return VTD_FALSE;
 	}
 }
 static Boolean skip_16be(VTDGen *vg, int ch){
@@ -1355,9 +1355,9 @@ static Boolean skip_16be(VTDGen *vg, int ch){
 			//offset += 2;
 			if (temp == ch) {
 				vg->offset += 2;
-				return TRUE;
+				return VTD_TRUE;
 			} else
-				return FALSE;
+				return VTD_FALSE;
 	} else {
 		val = temp;
 		temp = vg->XMLDoc[vg->offset + 2] << 8 | vg->XMLDoc[vg->offset + 3];
@@ -1371,9 +1371,9 @@ static Boolean skip_16be(VTDGen *vg, int ch){
 
 		if (val == ch) {
 			vg->offset += 4;
-			return TRUE;
+			return VTD_TRUE;
 		} else
-			return FALSE;
+			return VTD_FALSE;
 	}
 }
 static Boolean skip_16le(VTDGen *vg, int ch){
@@ -1382,9 +1382,9 @@ static Boolean skip_16le(VTDGen *vg, int ch){
 	if (temp < 0xdc00 || temp > 0xdfff) { // check for low surrogate
 		if (temp == ch) {
 			vg->offset += 2;
-			return TRUE;
+			return VTD_TRUE;
 		} else {
-			return FALSE;
+			return VTD_FALSE;
 		}
 	} else {
 		val = temp;
@@ -1400,9 +1400,9 @@ static Boolean skip_16le(VTDGen *vg, int ch){
 
 		if (val == ch) {
 			vg->offset += 4;
-			return TRUE;
+			return VTD_TRUE;
 		} else
-			return FALSE;
+			return VTD_FALSE;
 	}
 }
 
@@ -1410,7 +1410,7 @@ static Boolean skip_16le(VTDGen *vg, int ch){
 //static int getCharAfterSe(VTDGen *vg){
 //	int n = 0;
 //	int temp; //offset saver
-//	while (TRUE) {
+//	while (VTD_TRUE) {
 //		n = getChar(vg);
 //		if (!XMLChar_isSpaceChar(n)) {
 //			if (n != '&')
@@ -1439,7 +1439,7 @@ static int getCharAfterS(VTDGen *vg){
 		if ((n == ' ' || n == '\n' || n =='\t'|| n == '\r'  )) {
 		} else
 			return n;
-	}while (TRUE);
+	}while (VTD_TRUE);
 }
 
 // Returns the VTDNav object after parsing, it also cleans 
@@ -1479,8 +1479,8 @@ VTDNav *getNav(VTDGen *vg){
 
 	/*vg->l1Buffer  = vg->l2Buffer=vg->VTDBuffer = NULL;
 	vg->l3Buffer = NULL;*/
-	vg->stateTransfered = TRUE;
-	vn->master = TRUE;
+	vg->stateTransfered = VTD_TRUE;
+	vn->master = VTD_TRUE;
 	clear(vg);
 	return vn;
 
@@ -1553,21 +1553,21 @@ void parse(VTDGen *vg, Boolean ns){
 	
 	//Boolean unique;
 	//Boolean unequal;
-	Boolean helper = FALSE;
-	Boolean default_ns = FALSE;
-	Boolean isXML = FALSE;
-	/*Boolean BOM_detected = FALSE;*/
-	/*Boolean must_utf_8 = FALSE; */
+	Boolean helper = VTD_FALSE;
+	Boolean default_ns = VTD_FALSE;
+	Boolean isXML = VTD_FALSE;
+	/*Boolean BOM_detected = VTD_FALSE;*/
+	/*Boolean must_utf_8 = VTD_FALSE; */
 	Long x;
 	/*char char_temp; //holds the ' or " indicating start of attr val */
 	int sos = 0, sl = 0;
 	vg->length1 = vg->length2 = 0;
 	XMLChar_init();
 	vg->ns = ns;
-	vg->is_ns = FALSE;
+	vg->is_ns = VTD_FALSE;
 	vg->encoding = FORMAT_UTF8;
 	vg->attr_count =vg->prefixed_attr_count=0; /*, ch = 0, ch_temp = 0*/
-	vg->singleByteEncoding= TRUE;
+	vg->singleByteEncoding= VTD_TRUE;
 
 	/* first check first 2 bytes BOM to determine if encoding is UTF16*/
 	decide_encoding(vg);
@@ -1575,7 +1575,7 @@ void parse(VTDGen *vg, Boolean ns){
 	/* enter the main finite state machine */
 	Try {
 		_writeVTD(vg,0,0,TOKEN_DOCUMENT,vg->depth);
-		while (TRUE) {
+		while (VTD_TRUE) {
 			switch (parser_state) {
 
 					case STATE_LT_SEEN : 
@@ -1615,7 +1615,7 @@ void parse(VTDGen *vg, Boolean ns){
 								}
 							} else
 								break;
-						}while (TRUE);
+						}while (VTD_TRUE);
 						vg->length1 = vg->offset - vg->temp_offset - vg->increment;
 						x = ((Long) vg->length1 << 32) + vg->temp_offset;
 						vg->tag_stack[vg->depth] = x;
@@ -1693,10 +1693,10 @@ void parse(VTDGen *vg, Boolean ns){
 								break;
 							}
 						}
-						helper = TRUE;
+						helper = VTD_TRUE;
 						if (vg->ch == '/') {
 							vg->depth--;
-							helper = FALSE;
+							helper = VTD_FALSE;
 							vg->ch = getChar(vg);
 						}
 						if (vg->ch == '>') {
@@ -1812,11 +1812,11 @@ void parse(VTDGen *vg, Boolean ns){
 									vg->ch = getChar(vg);
 									if (vg->ch == '='
 										|| XMLChar_isSpaceChar(vg->ch)) {
-									vg->is_ns = TRUE;
-									default_ns = TRUE;
+									vg->is_ns = VTD_TRUE;
+									default_ns = VTD_TRUE;
 								}else if( vg->ch == ':') {
-									vg->is_ns = TRUE; //break;
-									default_ns = FALSE;
+									vg->is_ns = VTD_TRUE; //break;
+									default_ns = VTD_FALSE;
 								}
 							}
 						}
@@ -1828,7 +1828,7 @@ void parse(VTDGen *vg, Boolean ns){
 								vg->ch = getChar(vg);
 							} else
 								break;
-						}while (TRUE);
+						}while (VTD_TRUE);
 						vg->length1 = getPrevOffset(vg) - vg->temp_offset;
 						if (vg->is_ns && vg->ns){
 							// make sure postfix isn't xmlns
@@ -1844,10 +1844,10 @@ void parse(VTDGen *vg, Boolean ns){
 							}
 						}
 						checkAttributeUniqueness(vg);
-						//unique = TRUE;
+						//unique = VTD_TRUE;
 						//for (i = 0; i < vg->attr_count; i++) {
 						//	int prevLen;
-						//	unequal = FALSE;
+						//	unequal = VTD_FALSE;
 						//	prevLen = (int) vg->attr_name_array[i];
 						//	if (vg->length1 == prevLen) {
 						//		int prevOffset =
@@ -1855,12 +1855,12 @@ void parse(VTDGen *vg, Boolean ns){
 						//		for (j = 0; j < prevLen; j++) {
 						//			if (vg->XMLDoc[prevOffset + j]
 						//			!= vg->XMLDoc[vg->temp_offset + j]) {
-						//				unequal = TRUE;
+						//				unequal = VTD_TRUE;
 						//				break;
 						//			}
 						//		}
 						//	} else
-						//		unequal = TRUE;
+						//		unequal = VTD_TRUE;
 						//	unique = unique && unequal;
 						//}
 						//if (!unique && vg->attr_count != 0){		
@@ -1868,7 +1868,7 @@ void parse(VTDGen *vg, Boolean ns){
 						//						"Parse exception in parse()",
 						//						"Error in attr: Attr name not unique");
 						//}
-						//unique = TRUE;
+						//unique = VTD_TRUE;
 						//if (vg->attr_count < vg->anaLen) {
 						//	vg->attr_name_array[vg->attr_count] =
 						//		((Long) (vg->temp_offset) << 32) + vg->length1;
@@ -1936,7 +1936,7 @@ void parse(VTDGen *vg, Boolean ns){
 									// length
 								}
 							}
-							//vg->is_ns = FALSE;
+							//vg->is_ns = VTD_FALSE;
 						} else {
 							if (vg->singleByteEncoding){
 								if (vg->length2>MAX_PREFIX_LENGTH 
@@ -2009,7 +2009,7 @@ void parse(VTDGen *vg, Boolean ns){
 												"Parse exception in parse()",
 												"Error in attr: Invalid XML char");
 							}
-						}while (TRUE);
+						}while (VTD_TRUE);
 
 						vg->length1 = vg->offset - vg->temp_offset - vg->increment;
 						if (vg->ns && vg->is_ns){
@@ -2072,8 +2072,8 @@ void parse(VTDGen *vg, Boolean ns){
 								TOKEN_ATTR_VAL,
 								vg->depth);
 						}
-						isXML = FALSE;
-						vg->is_ns = FALSE;
+						isXML = VTD_FALSE;
+						vg->is_ns = VTD_FALSE;
 						vg->ch = getChar(vg);
 						if (XMLChar_isSpaceChar(vg->ch)) {
 							vg->ch = getCharAfterS(vg);
@@ -2084,10 +2084,10 @@ void parse(VTDGen *vg, Boolean ns){
 							}
 						}
 
-						helper = TRUE;
+						helper = VTD_TRUE;
 						if (vg->ch == '/') {
 							vg->depth--;
-							helper = FALSE;
+							helper = VTD_FALSE;
 							vg->ch = getChar(vg);
 						}
 
@@ -2170,7 +2170,7 @@ void parse(VTDGen *vg, Boolean ns){
 								break;
 							} else 
 								handleOtherTextChar(vg,vg->ch);
-						}while (TRUE);
+						}while (VTD_TRUE);
 						vg->length1 = vg->offset - vg->increment - vg->temp_offset;						
 						if (vg->singleByteEncoding){
 							writeVTDText(vg,
@@ -2262,24 +2262,24 @@ Boolean parseFile(VTDGen *vg, Boolean ns,char *fileName){
 	f = fopen(fileName,"rb");
 	if (f==NULL){
 		//throwException2(invalid_argument,"fileName not valid");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	status = stat(fileName,&buffer);
 	if (status !=0){
 		fclose(f);
 		//throwException2(parse_exception,"error occurred in parseFile");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	len = buffer.st_size;
 	ba = malloc(len);
 	if (ba == NULL){
 		fclose(f);
 		//throwException2(out_of_mem,"error occurred in parseFile");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (fread(ba,1,len,f)!=len){
 		fclose(f);
-		return FALSE;
+		return VTD_FALSE;
 	}
 	setDoc(vg,ba,len);
 	Try{
@@ -2291,11 +2291,11 @@ Boolean parseFile(VTDGen *vg, Boolean ns,char *fileName){
 		printf("%s\n",e.msg);
 		printf("%s\n",e.sub_msg);
 		//throwException2(out_of_mem,"error occurred in parseFile");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	
 	fclose(f);
-	return TRUE;
+	return VTD_TRUE;
 }
 
 // set the XML Doc container and turn on buffer reuse
@@ -2306,11 +2306,11 @@ void setDoc_BR(VTDGen *vg, UByte *ba, int len){
 //Set the XMLDoc container.Also set the offset and len of the document 
 void setDoc_BR2(VTDGen *vg, UByte *ba, int len, int os, int docLen){
 	int a,i1=8,i2=9,i3=11;
-	vg->br = TRUE;
+	vg->br = VTD_TRUE;
 	vg->depth = -1;
 	vg->increment = 1;
-	vg->BOM_detected = FALSE;
-	vg->must_utf_8 = FALSE;
+	vg->BOM_detected = VTD_FALSE;
+	vg->must_utf_8 = VTD_FALSE;
 	vg->ch = vg->ch_temp = 0;
 	vg->temp_offset = 0;
 	vg->XMLDoc = ba;
@@ -2417,7 +2417,7 @@ void setDoc_BR2(VTDGen *vg, UByte *ba, int len, int os, int docLen){
 		}
 
 	}
-	vg->stateTransfered = FALSE;
+	vg->stateTransfered = VTD_FALSE;
 }
 
 // Set the XMLDoc container.
@@ -2430,11 +2430,11 @@ void setDoc(VTDGen *vg, UByte *ba, int len){
    docLen is the length of the XML content in byte */
 void setDoc2(VTDGen *vg, UByte *ba, int len, int os, int docLen){
 	int a,i1=8,i2=9,i3=11;
-	vg->br = FALSE;
+	vg->br = VTD_FALSE;
 	vg->depth = -1;
 	vg->increment = 1;
-	vg->BOM_detected = FALSE;
-	vg->must_utf_8 = FALSE;
+	vg->BOM_detected = VTD_FALSE;
+	vg->must_utf_8 = VTD_FALSE;
 	vg->ch = vg->ch_temp = 0;
 	vg->temp_offset = 0;
 	vg->XMLDoc = ba;
@@ -2463,7 +2463,7 @@ void setDoc2(VTDGen *vg, UByte *ba, int len, int os, int docLen){
 			a = 15;
 		}
 
-		if (vg->stateTransfered == FALSE && vg->VTDBuffer != NULL){
+		if (vg->stateTransfered == VTD_FALSE && vg->VTDBuffer != NULL){
 			freeFastLongBuffer(vg->VTDBuffer);
 			freeFastLongBuffer(vg->l1Buffer);
 			freeFastLongBuffer(vg->l2Buffer);
@@ -2522,7 +2522,7 @@ void setDoc2(VTDGen *vg, UByte *ba, int len, int os, int docLen){
 				a = 15;
 				i1 = 8;
 			}
-			if (vg->stateTransfered == FALSE && vg->VTDBuffer != NULL){
+			if (vg->stateTransfered == VTD_FALSE && vg->VTDBuffer != NULL){
 			freeFastLongBuffer(vg->VTDBuffer);
 			freeFastLongBuffer(vg->l1Buffer);
 			freeFastLongBuffer(vg->l2Buffer);
@@ -2539,7 +2539,7 @@ void setDoc2(VTDGen *vg, UByte *ba, int len, int os, int docLen){
 
 	}
 
-	vg->stateTransfered = FALSE;
+	vg->stateTransfered = VTD_FALSE;
 }
 
 /* Increments offset only when the next char matches a given value. */
@@ -2560,26 +2560,26 @@ static Boolean skipChar(VTDGen *vg, int ch){
 				}
 				if (ch == temp) {
 					vg->offset++;
-					return TRUE;
+					return VTD_TRUE;
 				} else {
-					return FALSE;
+					return VTD_FALSE;
 				}
 			case FORMAT_ISO_8859_1 :
 				temp = vg->XMLDoc[vg->offset];
 				if (temp == ch) {
 					vg->offset++;
-					return TRUE;
+					return VTD_TRUE;
 				} else {
-					return FALSE;
+					return VTD_FALSE;
 				}
 			case FORMAT_UTF8 :
 				temp = vg->XMLDoc[vg->offset];
 				if (temp <128) {
 					if (ch == temp) {
 						vg->offset++;
-						return TRUE;
+						return VTD_TRUE;
 					} else {
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}
 				return skipUTF8(vg,temp,ch);
@@ -2685,7 +2685,7 @@ void decide_encoding(VTDGen *vg){
 		if (vg->XMLDoc[vg->offset + 1] == (UByte)-1) {
 			vg->offset += 2;
 			vg->encoding = FORMAT_UTF_16BE;
-			vg->BOM_detected = TRUE;
+			vg->BOM_detected = VTD_TRUE;
 		} else{
 			throwException(parse_exception,0,	
 				"Parse exception in parse()",
@@ -2696,7 +2696,7 @@ void decide_encoding(VTDGen *vg){
 		if (vg->XMLDoc[vg->offset + 1] == (UByte)-2) {
 			vg->offset += 2;
 			vg->encoding = FORMAT_UTF_16LE;
-			vg->BOM_detected = TRUE;
+			vg->BOM_detected = VTD_TRUE;
 		} else{
 			throwException(parse_exception,0,	
 				"Parse exception in parse()",
@@ -2705,7 +2705,7 @@ void decide_encoding(VTDGen *vg){
 	} else if (vg->XMLDoc[vg->offset] == (UByte)-17) {
 		if (vg->XMLDoc[vg->offset+1] == (UByte)-69 && vg->XMLDoc[vg->offset+2]==(UByte)-65){
 			vg->offset +=3;
-			vg->must_utf_8= TRUE;
+			vg->must_utf_8= VTD_TRUE;
 		}
 		else {
 			throwException(parse_exception,0,	
@@ -2735,7 +2735,7 @@ void decide_encoding(VTDGen *vg){
 	}
 
 	if (vg->encoding < FORMAT_UTF_16BE) {
-		if (vg->ns == TRUE) {
+		if (vg->ns == VTD_TRUE) {
 			if (((Long) vg->offset + vg->docLen) >= (1U << 30)){
 				throwException(parse_exception,0,	
 					"Parse exception in parse()",
@@ -2756,7 +2756,7 @@ void decide_encoding(VTDGen *vg){
 		}
 	}
 	if (vg->encoding >= FORMAT_UTF_16BE){
-		vg->singleByteEncoding = FALSE;
+		vg->singleByteEncoding = VTD_FALSE;
 	}
 }
 int process_end_pi(VTDGen *vg){
@@ -2775,7 +2775,7 @@ int process_end_pi(VTDGen *vg){
 				}
 		}
 
-		while (TRUE) {
+		while (VTD_TRUE) {
 			//vg->ch = getChar(vg);
 			if (!XMLChar_isNameChar(vg->ch)) {
 				break;
@@ -2813,7 +2813,7 @@ int process_end_pi(VTDGen *vg){
 		if (XMLChar_isSpaceChar(vg->ch)) {
 			vg->ch = getCharAfterS(vg);
 
-			while (TRUE) {
+			while (VTD_TRUE) {
 				if (XMLChar_isValidChar(vg->ch)) {
 					if (vg->ch == '?') {
 						if (skipChar(vg,'>')) {
@@ -2889,7 +2889,7 @@ int process_end_pi(VTDGen *vg){
 }
 int process_end_comment(VTDGen *vg){
 	int parser_state=0;
-	while (TRUE) {
+	while (VTD_TRUE) {
 		vg->ch = getChar(vg);
 		if (XMLChar_isValidChar(vg->ch)) {
 			if (vg->ch == '-' && skipChar(vg,'-')) {
@@ -2935,7 +2935,7 @@ int process_end_comment(VTDGen *vg){
 }
 int process_comment(VTDGen *vg){
 	int parser_state=0;
-	while (TRUE) {
+	while (VTD_TRUE) {
 		vg->ch = getChar(vg);
 		if (XMLChar_isValidChar(vg->ch)) {
 			if (vg->ch == '-' && skipChar(vg,'-')) {
@@ -3005,7 +3005,7 @@ int process_doc_type(VTDGen *vg){
 	int parser_state=0;
 	int	z = 1;
 
-	while (TRUE) {
+	while (VTD_TRUE) {
 		vg->ch = getChar(vg);
 		if (XMLChar_isValidChar(vg->ch)) {
 			if (vg->ch == '>')
@@ -3058,7 +3058,7 @@ int process_doc_type(VTDGen *vg){
 
 static int process_cdata(VTDGen *vg){
 	int parser_state=0;
-	while (TRUE) {
+	while (VTD_TRUE) {
 		vg->ch = getChar(vg);
 		if (XMLChar_isValidChar(vg->ch)) {
 			if (vg->ch == ']' && skipChar(vg,']')) {
@@ -3132,7 +3132,7 @@ static int process_pi_val(VTDGen *vg){
 	}
 	vg->temp_offset = vg->offset;
 	vg->ch = getChar(vg);
-	while (TRUE) {
+	while (VTD_TRUE) {
 		if (XMLChar_isValidChar(vg->ch)) {
 			if (vg->ch == '?'){
 				if (skipChar(vg,'>')) {
@@ -3206,7 +3206,7 @@ static int process_pi_val(VTDGen *vg){
 }
 int process_pi_tag(VTDGen *vg){
 	int parser_state=0;
-	while (TRUE) {
+	while (VTD_TRUE) {
 		vg->ch = getChar(vg);
 		if (!XMLChar_isNameChar(vg->ch))
 			break;
@@ -3695,7 +3695,7 @@ static int process_qm_seen(VTDGen *vg){
 }
 
 static int process_ex_seen(VTDGen *vg){
-	Boolean hasDTD = FALSE;
+	Boolean hasDTD = VTD_FALSE;
 	int parser_state;
 	vg->ch = getChar(vg);
 	switch (vg->ch) {
@@ -3741,12 +3741,12 @@ static int process_ex_seen(VTDGen *vg){
 							&& skipChar(vg,'E')
 							&& (vg->depth == -1)
 							&& !hasDTD) {
-								hasDTD = TRUE;
+								hasDTD = VTD_TRUE;
 								vg->temp_offset = vg->offset;
 								parser_state = STATE_DOCTYPE;
 								break;
 						} else {
-							if (hasDTD == TRUE){
+							if (hasDTD == VTD_TRUE){
 								throwException(parse_exception,0,
 									"Parse exception in parse()",
 									"Error for DOCTYPE: Only DOCTYPE allowed");
@@ -3808,7 +3808,7 @@ Boolean writeIndex(VTDGen *vg, FILE *f){
 	 return _writeIndex_L3(1, 
                 vg->encoding, 
                 vg->ns, 
-                TRUE, 
+                VTD_TRUE, 
                 vg->VTDDepth, 
                 3, 
                 vg->rootIndex, 
@@ -3824,7 +3824,7 @@ Boolean writeIndex(VTDGen *vg, FILE *f){
 		 return _writeIndex_L5(1, 
                 vg->encoding, 
                 vg->ns, 
-                TRUE, 
+                VTD_TRUE, 
                 vg->VTDDepth, 
                 5, 
                 vg->rootIndex, 
@@ -3843,12 +3843,12 @@ Boolean writeIndex(VTDGen *vg, FILE *f){
 /* Write VTD+XML into a file */
 Boolean writeIndex2(VTDGen *vg, char *fileName){
 	FILE *f = NULL;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	f = fopen(fileName,"wb");
 	
 	if (f==NULL){
 		throwException2(invalid_argument,"fileName not valid");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	b = writeIndex(vg,f);
 	fclose(f);
@@ -3880,19 +3880,19 @@ Long getIndexSize(VTDGen *vg){
 /* offset shift in xml should be zero*/
 void writeSeparateIndex(VTDGen *vg, char *VTDIndexFile){
 	FILE *f = NULL;
-	//Boolean b = FALSE;
+	//Boolean b = VTD_FALSE;
 	f = fopen(VTDIndexFile,"wb");
 	
 	if (f==NULL){
 		throwException2(invalid_argument,"fileName not valid");
-		//return FALSE;
+		//return VTD_FALSE;
 	}
 
 	if (vg->shallowDepth)
 		_writeSeparateIndex_L3( (Byte)2, 
                 vg->encoding, 
                 vg->ns, 
-                TRUE, 
+                VTD_TRUE, 
                 vg->VTDDepth, 
                 3, 
                 vg->rootIndex, 
@@ -3908,7 +3908,7 @@ void writeSeparateIndex(VTDGen *vg, char *VTDIndexFile){
 		_writeSeparateIndex_L5( (Byte)2, 
                 vg->encoding, 
                 vg->ns, 
-                TRUE, 
+                VTD_TRUE, 
                 vg->VTDDepth, 
                 3, 
                 vg->rootIndex, 
@@ -3929,7 +3929,7 @@ void writeSeparateIndex(VTDGen *vg, char *VTDIndexFile){
 /* Load the separate VTD index and XmL file.*/
 VTDNav* loadSeparateIndex(VTDGen *vg, char *XMLFile, char *VTDIndexFile){
 	FILE *vf = NULL, *xf=NULL;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	struct stat s;
 	unsigned int xsize;
 
@@ -3948,7 +3948,7 @@ VTDNav* loadSeparateIndex(VTDGen *vg, char *XMLFile, char *VTDIndexFile){
 
 	//get xml file size
 	b=_readSeparateIndex(xf, xsize, vf, vg);
-	if (b==TRUE){
+	if (b==VTD_TRUE){
 		return getNav(vg);
 	}else {
 		return NULL;
@@ -4050,21 +4050,21 @@ static Boolean matchXML(VTDGen *vg, int byte_offset){
 			 if (vg->XMLDoc[byte_offset]=='x'
 					&& vg->XMLDoc[byte_offset+1]=='m'
 					&& vg->XMLDoc[byte_offset+2]=='l')
-					return TRUE;		
+					return VTD_TRUE;		
 		}else{
 			 if (vg->encoding==FORMAT_UTF_16LE){
 				if (vg->XMLDoc[byte_offset]=='x' && vg->XMLDoc[byte_offset+1]==0
 					&& vg->XMLDoc[byte_offset+2]=='m' && vg->XMLDoc[byte_offset+3]==0
 					&& vg->XMLDoc[byte_offset+4]=='l' && vg->XMLDoc[byte_offset+5]==0)
-					return TRUE;
+					return VTD_TRUE;
 			} else {
 				if (vg->XMLDoc[byte_offset]== 0 && vg->XMLDoc[byte_offset+1]=='x'
 						&& vg->XMLDoc[byte_offset+2]==0 && vg->XMLDoc[byte_offset+3]=='m'
 						&& vg->XMLDoc[byte_offset+4]==0 && vg->XMLDoc[byte_offset+5]=='l')
-						return TRUE;
+						return VTD_TRUE;
 			}
 		}		
-		return FALSE;
+		return VTD_FALSE;
 }
 
 static Boolean matchURL(VTDGen *vg, int bos1, int len1, int bos2, int len2){
@@ -4075,13 +4075,13 @@ static Boolean matchURL(VTDGen *vg, int bos1, int len1, int bos2, int len2){
 			l1 = _getCharResolved(vg,i1);
 			l2 = _getCharResolved(vg,i2);
 			if ((int)l1!=(int)l2)
-				return FALSE;
+				return VTD_FALSE;
 			i1 += (int)(l1>>32);
 			i2 += (int)(l2>>32);
 		}
 		if (i1==i3 && i2==i4)
-			return TRUE;
-		return FALSE;
+			return VTD_TRUE;
+		return VTD_FALSE;
 }
 
 static int identifyNsURL(VTDGen *vg, int byte_offset, int length){
@@ -4218,22 +4218,22 @@ static Boolean checkPrefix(VTDGen *vg, int os, int len){
 		if (vg->encoding < FORMAT_UTF_16BE){
 			if (len==4	&&	vg->XMLDoc[os]=='x'
 				&& vg->XMLDoc[os+1]=='m' && vg->XMLDoc[os+2]=='l'){
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}else if (vg->encoding == FORMAT_UTF_16BE){
 			if (len==8	&&	vg->XMLDoc[os]==0 && vg->XMLDoc[os+1]=='x'
 				&& vg->XMLDoc[os+2]==0 && vg->XMLDoc[os+3]=='m' 
 				&& vg->XMLDoc[os+4]==0 && vg->XMLDoc[os+5]=='l'){
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}else {
 			if (len==8	&&	vg->XMLDoc[os]=='x' && vg->XMLDoc[os+1]==0
 				&& vg->XMLDoc[os+2]=='m' && vg->XMLDoc[os+3]==0 
 				&& vg->XMLDoc[os+4]=='l' && vg->XMLDoc[os+5]==0){
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}
-		return FALSE;
+		return VTD_FALSE;
 }
 
 static Boolean checkPrefix2(VTDGen *vg, int os, int len){
@@ -4242,7 +4242,7 @@ static Boolean checkPrefix2(VTDGen *vg, int os, int len){
 			if ( len==5 && vg->XMLDoc[os]=='x'
 				&& vg->XMLDoc[os+1]=='m' && vg->XMLDoc[os+2]=='l'
 				&& vg->XMLDoc[os+3]=='n' && vg->XMLDoc[os+4]=='s'){
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}else if (vg->encoding == FORMAT_UTF_16BE){
 			if ( len==10 && vg->XMLDoc[os]==0 && vg->XMLDoc[os+1]=='x'
@@ -4251,7 +4251,7 @@ static Boolean checkPrefix2(VTDGen *vg, int os, int len){
 				&& vg->XMLDoc[os+6]==0 && vg->XMLDoc[os+7]=='n' 
 				&& vg->XMLDoc[os+8]==0 && vg->XMLDoc[os+9]=='s'		
 			){
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}else {
 			if ( len==10 && vg->XMLDoc[os]=='x' && vg->XMLDoc[os+1]==0
@@ -4260,34 +4260,34 @@ static Boolean checkPrefix2(VTDGen *vg, int os, int len){
 				&& vg->XMLDoc[os+6]=='n' && vg->XMLDoc[os+3]==0 
 				&& vg->XMLDoc[os+8]=='s' && vg->XMLDoc[os+5]==0				
 			){
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}
-		return FALSE;
+		return VTD_FALSE;
 }
 
 static void checkAttributeUniqueness(VTDGen *vg){
-	Boolean unique = TRUE;
+	Boolean unique = VTD_TRUE;
 	Boolean unequal;
 	//int prevLen;
 	int i;
 	for (i = 0; i < vg->attr_count; i++) {
 		int prevLen = (int) vg->attr_name_array[i];
-		unequal = FALSE;	
+		unequal = VTD_FALSE;	
 		if (vg->length1 == prevLen) {
 			int prevOffset =
 				(int) (vg->attr_name_array[i] >> 32);
 			if (memcmp(vg->XMLDoc+prevOffset,vg->XMLDoc+vg->temp_offset,prevLen)!=0)
-				unequal = TRUE;
+				unequal = VTD_TRUE;
 			/*for (j = 0; j < prevLen; j++) {
 				if (vg->XMLDoc[prevOffset + j]
 				!= vg->XMLDoc[vg->temp_offset + j]) {
-					unequal = TRUE;
+					unequal = VTD_TRUE;
 					break;
 				}
 			}*/
 		} else
-			unequal = TRUE;
+			unequal = VTD_TRUE;
 		unique = unique && unequal;
 	}
 	if (!unique && vg->attr_count != 0){		
@@ -4295,7 +4295,7 @@ static void checkAttributeUniqueness(VTDGen *vg){
 			"Parse exception in parse()",
 			"Error in attr: Attr name not unique");
 	}
-	unique = TRUE;
+	unique = VTD_TRUE;
 	if (vg->attr_count < vg->anaLen) {
 		vg->attr_name_array[vg->attr_count] =
 			((Long) (vg->temp_offset) << 32) + vg->length1;
@@ -4377,7 +4377,7 @@ static Long _getCharResolved(VTDGen *vg,int byte_offset){
 					ch = getCharUnit(vg,byte_offset);
 
 					if (ch == 'x') {
-						while (TRUE) {
+						while (VTD_TRUE) {
 							byte_offset+=vg->increment;
 							inc+=vg->increment;
 							ch = getCharUnit(vg,byte_offset);
@@ -4394,7 +4394,7 @@ static Long _getCharResolved(VTDGen *vg,int byte_offset){
 							} 
 						}
 					} else {
-						while (TRUE) {
+						while (VTD_TRUE) {
 							ch = getCharUnit(vg,byte_offset);
 							byte_offset+=vg->increment;
 							inc+=vg->increment;
@@ -4864,7 +4864,7 @@ void selectLcDepth(VTDGen *vg,int i){
 	if (i!=3 &&i!=5)
 		throwException2(parse_exception,"LcDepth can only take the value of 3 or 5");
 	if (i==5)
-		vg->shallowDepth = FALSE;
+		vg->shallowDepth = VTD_FALSE;
 }
 
 VTDNav* loadIndex(VTDGen *vg, char *fileName){

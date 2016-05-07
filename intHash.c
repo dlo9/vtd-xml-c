@@ -91,17 +91,17 @@ Boolean isUniqueIntHash(IntHash *ih,int i){
 				"FastIntBuffer allocation failed ");
 		}
 		appendInt(ih->storage[temp],i);
-		return TRUE;
+		return VTD_TRUE;
 	}
 	else{
 		size = ih->storage[temp]->size;
 		for (j=0;j<size;j++){
 			if (i == intAt(ih->storage[temp],j)){
-				return FALSE;
+				return VTD_FALSE;
 			}
 		}
 		appendInt(ih->storage[temp],i);
-		return TRUE;
+		return VTD_TRUE;
 	}
 }
 

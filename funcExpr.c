@@ -55,8 +55,8 @@ static int evalFirstArgumentListNodeSet2(funcExpr *fne, VTDNav *vn);
 		
 static int getStringVal(funcExpr *fne,VTDNav *vn,int i);
 static inline UCSChar *getSystemProperty(funcExpr *fne,VTDNav *vn){return createEmptyString();}
-static inline Boolean isElementAvailable(funcExpr *fne,VTDNav *vn){return FALSE;}
-static inline Boolean isFunctionAvailable(funcExpr *fne,VTDNav *vn){return FALSE;}
+static inline Boolean isElementAvailable(funcExpr *fne,VTDNav *vn){return VTD_FALSE;}
+static inline Boolean isFunctionAvailable(funcExpr *fne,VTDNav *vn){return VTD_FALSE;}
 static UByte* doubleCapacity(UByte *b, size_t cap);
 //static Long getBytes_UTF8(UCSChar *s);
 
@@ -240,7 +240,7 @@ static UCSChar *getLocalName(funcExpr *fne, VTDNav *vn){
 			fne->al->e->reset(fne->al->e,vn);
 			pop2(vn);
 		}
-		if (a == -1 || vn->ns == FALSE)
+		if (a == -1 || vn->ns == VTD_FALSE)
 			return createEmptyString();
 		type = getTokenType(vn,a);
 
@@ -290,7 +290,7 @@ static UCSChar *getNameSpaceURI(funcExpr *fne, VTDNav *vn){
 		size = vn->contextBuf2->size;
 		Try{
 			a = fne->al->e->evalNodeSet(fne->al->e,vn);
-			if (a==-1 || vn->ns == FALSE){
+			if (a==-1 || vn->ns == VTD_FALSE){
 				return createEmptyString();
 			}
 			else {
@@ -354,7 +354,7 @@ static UCSChar *getName(funcExpr *fne, VTDNav *vn){
 			pop2(vn);
 		}
 		Try{
-			if (a == -1 || vn->ns == FALSE){
+			if (a == -1 || vn->ns == VTD_FALSE){
 				return createEmptyString();
 			}
 			else{
@@ -419,7 +419,7 @@ double sum(funcExpr *fne, VTDNav *vn){
 	double n=0;
 	int i1;
 	/*if (argCount(fne) != 1
-		|| fne->al->e->isNodeSet(fne->al->e) == FALSE){
+		|| fne->al->e->isNodeSet(fne->al->e) == VTD_FALSE){
 			e.et = invalid_argument;
 			e.msg = "sum() <funcExpr> 's argument has to be a node set ";
 			Throw e;
@@ -475,7 +475,7 @@ int count(funcExpr *fne, VTDNav *vn){
 	int a = -1;
 
 	/*if (argCount(fne)!=1
-		||(fne->al->e->isNodeSet)(fne->al->e)==FALSE){
+		||(fne->al->e->isNodeSet)(fne->al->e)==VTD_FALSE){
 			e.et = invalid_argument;
 			e.msg = "count <funcExpr> 's argument has to be a node set ";
 			Throw e;
@@ -519,8 +519,8 @@ UCSChar *fname(funcExpr *fne, funcName i){
 			case FN_TRANSLATE:	 	return L"translate";
 			case FN_BOOLEAN: 			return L"boolean";
 			case FN_NOT: 			return L"not";
-			case FN_TRUE: 			return L"true";
-			case FN_FALSE: 			return L"false";
+			case FN_VTD_TRUE: 			return L"true";
+			case FN_VTD_FALSE: 			return L"false";
 			case FN_LANG: 			return L"lang";
 			case FN_NUMBER:			return L"number";
 			case FN_SUM: 			return L"sum";
@@ -587,69 +587,69 @@ funcExpr *createFuncExpr(funcName oc, aList *a){
 	fne->a = 0;
 	fne->opCode = oc;
 	fne->al = a;
-	fne->isBool = fne->isStr= fne->isNum = fne->isNode= FALSE;
+	fne->isBool = fne->isStr= fne->isNum = fne->isNode= VTD_FALSE;
 	fne->a=0;
 	fne->state = XPATH_EVAL_START;
 	fne->xslVN  = fne->newVN = NULL;
 	fne->vg = NULL;
 	fne->argCount1 = argCount(fne);
 	 switch(oc){
-			case FN_LAST: 			fne->isNum = TRUE;break;
-			case FN_POSITION: 		fne->isNum = TRUE;break;
-			case FN_COUNT: 			fne->isNum = TRUE;break;
-			case FN_LOCAL_NAME: 		fne->isStr = TRUE; break;
-			case FN_NAMESPACE_URI: 	fne->isStr = TRUE; break;
-			case FN_NAME: 			fne->isStr = TRUE; break;
-			case FN_STRING: 			fne->isStr = TRUE; break;
-			case FN_CONCAT: 			fne->isStr = TRUE; break;
-			case FN_STARTS_WITH:		fne->isBool= TRUE;break;
-			case FN_CONTAINS: 		fne->isBool= TRUE;break;
-			case FN_SUBSTRING_BEFORE: fne->isStr = TRUE; break;
-			case FN_SUBSTRING_AFTER: 	fne->isStr = TRUE; break;
-			case FN_SUBSTRING: 		fne->isStr = TRUE; break;
-			case FN_STRING_LENGTH: 	fne->isNum = TRUE;break;
-			case FN_NORMALIZE_SPACE: 	fne->isStr = TRUE; break;
-			case FN_TRANSLATE:	 	fne->isStr= TRUE;break;
-			case FN_BOOLEAN: 			fne->isBool =TRUE;break;
-			case FN_NOT: 			    fne->isBool =TRUE;break;
-			case FN_TRUE: 			fne->isBool = TRUE;break;
-			case FN_FALSE: 			fne->isBool = TRUE;break;
-			case FN_LANG: 			fne->isBool = TRUE;break;
-			case FN_NUMBER:			fne->isNum = TRUE;break;
-			case FN_SUM: 			    fne->isNum = TRUE;break;
-			case FN_FLOOR: 			fne->isNum = TRUE;break;
-			case FN_CEILING: 			fne->isNum = TRUE;break;
-			case FN_ROUND:		   fne->isNum = TRUE;break;
-			case FN_ABS:		   fne->isNum = TRUE;break;
-			case FN_ROUND_HALF_TO_EVEN:		   fne->isNum = TRUE;break;
-			case FN_ROUND_HALF_TO_ODD:		   fne->isNum = TRUE;break;
-			case FN_CODE_POINTS_TO_STRING: 	   fne->isStr = TRUE;break;
-			case FN_COMPARE:		   fne->isBool = TRUE; break;
-			case FN_UPPER_CASE:		   fne->isStr = TRUE; break;
-			case FN_LOWER_CASE:		   fne->isStr = TRUE; break;
-			case FN_ENDS_WITH:		   fne->isBool = TRUE; break;
-			case FN_QNAME:		   fne->isStr = TRUE; break;
-			case FN_LOCAL_NAME_FROM_QNAME:		   fne->isStr = TRUE; break;
-			case FN_NAMESPACE_URI_FROM_QNAME:	   fne->isStr = TRUE; break;
-			case FN_NAMESPACE_URI_FOR_PREFIX:	   fne->isStr = TRUE; break;
-			case FN_RESOLVE_QNAME:		   fne->isStr = TRUE; break;
-			case FN_IRI_TO_URI:			   fne->isStr = TRUE; break;
-			case FN_ESCAPE_HTML_URI:	   fne->isStr = TRUE; break;
-			case FN_ENCODE_FOR_URI:	fne->isStr  = TRUE; break;
-			case FN_MATCH_NAME:		fne->isBool  =TRUE; break;
-			case FN_MATCH_LOCAL_NAME: fne->isBool =TRUE;break;
-			case FN_NOT_MATCH_NAME:		fne->isBool  =TRUE; break;
-			case FN_NOT_MATCH_LOCAL_NAME: fne->isBool =TRUE;break;
-			case FN_GENERATE_ID : 	fne->isStr  = TRUE; break;
-			case FN_FORMAT_NUMBER:  	fne->isStr  = TRUE;break;
-			case FN_KEY:				fne->isNode  = TRUE; fne->state = XPATH_EVAL_START; fne->vg = createVTDGen();break;
-			case FN_DOCUMENT:			fne->isNode  = TRUE; fne->state = XPATH_EVAL_START; fne->vg = createVTDGen();break;
-			case FN_CURRENT:			fne->isNode  = TRUE; fne->state = XPATH_EVAL_START; fne->vg = createVTDGen();break;
-			case FN_SYSTEM_PROPERTY: 	fne->isStr  = TRUE; break;
-			case FN_ELEMENT_AVAILABLE: fne->isBool  = TRUE; break;
+			case FN_LAST: 			fne->isNum = VTD_TRUE;break;
+			case FN_POSITION: 		fne->isNum = VTD_TRUE;break;
+			case FN_COUNT: 			fne->isNum = VTD_TRUE;break;
+			case FN_LOCAL_NAME: 		fne->isStr = VTD_TRUE; break;
+			case FN_NAMESPACE_URI: 	fne->isStr = VTD_TRUE; break;
+			case FN_NAME: 			fne->isStr = VTD_TRUE; break;
+			case FN_STRING: 			fne->isStr = VTD_TRUE; break;
+			case FN_CONCAT: 			fne->isStr = VTD_TRUE; break;
+			case FN_STARTS_WITH:		fne->isBool= VTD_TRUE;break;
+			case FN_CONTAINS: 		fne->isBool= VTD_TRUE;break;
+			case FN_SUBSTRING_BEFORE: fne->isStr = VTD_TRUE; break;
+			case FN_SUBSTRING_AFTER: 	fne->isStr = VTD_TRUE; break;
+			case FN_SUBSTRING: 		fne->isStr = VTD_TRUE; break;
+			case FN_STRING_LENGTH: 	fne->isNum = VTD_TRUE;break;
+			case FN_NORMALIZE_SPACE: 	fne->isStr = VTD_TRUE; break;
+			case FN_TRANSLATE:	 	fne->isStr= VTD_TRUE;break;
+			case FN_BOOLEAN: 			fne->isBool =VTD_TRUE;break;
+			case FN_NOT: 			    fne->isBool =VTD_TRUE;break;
+			case FN_VTD_TRUE: 			fne->isBool = VTD_TRUE;break;
+			case FN_VTD_FALSE: 			fne->isBool = VTD_TRUE;break;
+			case FN_LANG: 			fne->isBool = VTD_TRUE;break;
+			case FN_NUMBER:			fne->isNum = VTD_TRUE;break;
+			case FN_SUM: 			    fne->isNum = VTD_TRUE;break;
+			case FN_FLOOR: 			fne->isNum = VTD_TRUE;break;
+			case FN_CEILING: 			fne->isNum = VTD_TRUE;break;
+			case FN_ROUND:		   fne->isNum = VTD_TRUE;break;
+			case FN_ABS:		   fne->isNum = VTD_TRUE;break;
+			case FN_ROUND_HALF_TO_EVEN:		   fne->isNum = VTD_TRUE;break;
+			case FN_ROUND_HALF_TO_ODD:		   fne->isNum = VTD_TRUE;break;
+			case FN_CODE_POINTS_TO_STRING: 	   fne->isStr = VTD_TRUE;break;
+			case FN_COMPARE:		   fne->isBool = VTD_TRUE; break;
+			case FN_UPPER_CASE:		   fne->isStr = VTD_TRUE; break;
+			case FN_LOWER_CASE:		   fne->isStr = VTD_TRUE; break;
+			case FN_ENDS_WITH:		   fne->isBool = VTD_TRUE; break;
+			case FN_QNAME:		   fne->isStr = VTD_TRUE; break;
+			case FN_LOCAL_NAME_FROM_QNAME:		   fne->isStr = VTD_TRUE; break;
+			case FN_NAMESPACE_URI_FROM_QNAME:	   fne->isStr = VTD_TRUE; break;
+			case FN_NAMESPACE_URI_FOR_PREFIX:	   fne->isStr = VTD_TRUE; break;
+			case FN_RESOLVE_QNAME:		   fne->isStr = VTD_TRUE; break;
+			case FN_IRI_TO_URI:			   fne->isStr = VTD_TRUE; break;
+			case FN_ESCAPE_HTML_URI:	   fne->isStr = VTD_TRUE; break;
+			case FN_ENCODE_FOR_URI:	fne->isStr  = VTD_TRUE; break;
+			case FN_MATCH_NAME:		fne->isBool  =VTD_TRUE; break;
+			case FN_MATCH_LOCAL_NAME: fne->isBool =VTD_TRUE;break;
+			case FN_NOT_MATCH_NAME:		fne->isBool  =VTD_TRUE; break;
+			case FN_NOT_MATCH_LOCAL_NAME: fne->isBool =VTD_TRUE;break;
+			case FN_GENERATE_ID : 	fne->isStr  = VTD_TRUE; break;
+			case FN_FORMAT_NUMBER:  	fne->isStr  = VTD_TRUE;break;
+			case FN_KEY:				fne->isNode  = VTD_TRUE; fne->state = XPATH_EVAL_START; fne->vg = createVTDGen();break;
+			case FN_DOCUMENT:			fne->isNode  = VTD_TRUE; fne->state = XPATH_EVAL_START; fne->vg = createVTDGen();break;
+			case FN_CURRENT:			fne->isNode  = VTD_TRUE; fne->state = XPATH_EVAL_START; fne->vg = createVTDGen();break;
+			case FN_SYSTEM_PROPERTY: 	fne->isStr  = VTD_TRUE; break;
+			case FN_ELEMENT_AVAILABLE: fne->isBool  = VTD_TRUE; break;
 			//case FN_FUNCTION_AVAILABLE: isBool  = true; break;
-			default:		fne->isBool = TRUE; break;	
-			//default:		fne->isStr = TRUE; break;	
+			default:		fne->isBool = VTD_TRUE; break;	
+			//default:		fne->isStr = VTD_TRUE; break;	
 	  }
 	return fne;
 }
@@ -684,7 +684,7 @@ int	evalNodeSet_fne (funcExpr *fne,VTDNav *vn){
 						if (wcslen(s) == 0) {
 							fne->newVN = fne->xslVN;
 							fne->newVN->context[0] = -1;
-						} else if (parseFile(fne->vg,TRUE, s1)) {
+						} else if (parseFile(fne->vg,VTD_TRUE, s1)) {
 							fne->newVN = getNav(fne->vg);
 							
 							fne->newVN->context[0] = -1;
@@ -715,7 +715,7 @@ int	evalNodeSet_fne (funcExpr *fne,VTDNav *vn){
 								if (wcslen(s) == 0) {
 									fne->newVN = fne->xslVN;
 									fne->newVN->context[0] = -1;
-								} else if (parseFile(fne->vg,TRUE,s1)) {
+								} else if (parseFile(fne->vg,VTD_TRUE,s1)) {
 									fne->newVN = getNav(fne->vg);
 									fne->newVN->context[0] = -1;
 									fne->newVN->URIName = s;
@@ -792,7 +792,7 @@ double	evalNumber_fne (funcExpr *fne,VTDNav *vn){
 			    				if (ac == 0){
 									exception e;
 			    				    Try{
-			    				        if (vn->atTerminal == TRUE){
+			    				        if (vn->atTerminal == VTD_TRUE){
 			    				            tokenType type = getTokenType(vn,vn->LN);
 
 											if (type == TOKEN_ATTR_NAME
@@ -915,7 +915,7 @@ UCSChar* evalString_fne (funcExpr *fne, VTDNav *vn){
 			case FN_FORMAT_NUMBER: return formatNumber(fne,vn);
 			case FN_SYSTEM_PROPERTY: return getSystemProperty(fne,vn);
 			default: if (isBoolean_fne(fne)){
-			    		if (evalBoolean_fne(fne,vn)== TRUE)
+			    		if (evalBoolean_fne(fne,vn)== VTD_TRUE)
 			    		    tmp = wcsdup(L"true");
 			    		else
 			    		    tmp = wcsdup(L"false");
@@ -927,18 +927,18 @@ UCSChar* evalString_fne (funcExpr *fne, VTDNav *vn){
 					 } else {
 						 double d1 = 0;
 						 double d = evalNumber_fne(fne,vn);
-						 Boolean b = FALSE;
+						 Boolean b = VTD_FALSE;
 							if (d != d){
 								tmp = wcsdup(L"NaN");
-								b = TRUE;
+								b = VTD_TRUE;
 							}
 							else if ( d == 1/d1){
 								tmp = wcsdup(L"Infinity");
-								b = TRUE;
+								b = VTD_TRUE;
 							}
 							else if (d == -1/d1){
 								tmp = wcsdup(L"-Infinity");
-								b = TRUE;
+								b = VTD_TRUE;
 							}	else
 								tmp = malloc(sizeof(UCSChar)<<8);
 
@@ -976,18 +976,18 @@ Boolean evalBoolean_fne (funcExpr *fne,VTDNav *vn){
 				}*/
 				return contains_fe(fne,vn);
 
-			case FN_TRUE:
+			case FN_VTD_TRUE:
 				/*if (argCount(fne)!=0){
 					throwException2(invalid_argument,
 						"true()'s <funcExpr> argument count is invalid");
 				}*/
-				return TRUE;
-			case FN_FALSE:
+				return VTD_TRUE;
+			case FN_VTD_FALSE:
 				if (argCount(fne)!=0){
 					throwException2(invalid_argument,
 						"false()'s <funcExpr> argument count is invalid");
 				}
-				return FALSE;
+				return VTD_FALSE;
 			case FN_BOOLEAN:
 				/*if (argCount(fne)!=1){
 					throwException2(invalid_argument,
@@ -1027,8 +1027,8 @@ Boolean evalBoolean_fne (funcExpr *fne,VTDNav *vn){
 				if (isNumerical_fne(fne)){
 					double d = evalNumber_fne(fne, vn);
 					if (d==0 || d!=d)
-						return FALSE;
-					return TRUE;
+						return VTD_FALSE;
+					return VTD_TRUE;
 				}else{
 					UCSChar *tmp = evalString_fne(fne, vn);
 					size_t len = wcslen(tmp);
@@ -1051,22 +1051,22 @@ Boolean isString_fne (funcExpr *fne){
 }
 
 Boolean isNodeSet_fne (funcExpr *fne){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean requireContextSize_fne(funcExpr *fne){
 	    if (fne->opCode == FN_LAST)
-	        return TRUE;
+	        return VTD_TRUE;
 	    else {
 			aList *temp = fne->al;
 	        while(temp!=NULL){
 	            if (temp->e->requireContextSize(temp->e)){
-	                return TRUE;
+	                return VTD_TRUE;
 	            }
 	            temp = temp->next;
 	        }
 	    }
-	    return FALSE;
+	    return VTD_FALSE;
 }
 
 void	reset_fne(funcExpr *fne, VTDNav *vn){
@@ -1114,7 +1114,7 @@ void   toString_fne(funcExpr *fne, UCSChar* string){
 	}
 }
 static Boolean contains_fe(funcExpr *fne, VTDNav *vn){
-	Boolean b=FALSE;
+	Boolean b=VTD_FALSE;
 	exception ee;
 	UCSChar* s1=NULL;
 	UCSChar* s2 = fne->al->next->e->evalString(fne->al->next->e,vn);
@@ -1122,7 +1122,7 @@ static Boolean contains_fe(funcExpr *fne, VTDNav *vn){
 		//UCSChar* s1 = al->e->evalString( vn);
 		int a = evalFirstArgumentListNodeSet(fne,vn);
 		if (a==-1)
-			return FALSE;
+			return VTD_FALSE;
 		Try {
 			int t=getTokenType(vn,a);
 			if (t!=TOKEN_STARTING_TAG && t!=TOKEN_DOCUMENT)
@@ -1133,16 +1133,16 @@ static Boolean contains_fe(funcExpr *fne, VTDNav *vn){
 			return b;
 		}Catch(ee){
 			free(s2);
-			return FALSE;
+			return VTD_FALSE;
 		}		
 	}
 	
 	s1 = fne->al->e->evalString(fne->al->e, vn);
-	//Boolean b = FALSE;
+	//Boolean b = VTD_FALSE;
 	if (s1 == NULL || s2 == NULL)
-		return FALSE;
+		return VTD_FALSE;
 	if (wcsstr(s1,s2)!=NULL)
-		b = TRUE;
+		b = VTD_TRUE;
 	free(s1);
 	free(s2);
     return b;
@@ -1188,7 +1188,7 @@ static UCSChar* concat(funcExpr *fne, VTDNav *vn){
 }
 /* can be optimized to test whether the argument returns a VTD index */
 static Boolean startsWith_fe(funcExpr *fne, VTDNav *vn){
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	exception ee;
 	UCSChar* s1,*s2 = fne->al->next->e->evalString(fne->al->next->e,vn);
 	if (fne->al->e->isNodeSet(fne->al)){
@@ -1208,7 +1208,7 @@ static Boolean startsWith_fe(funcExpr *fne, VTDNav *vn){
 					return b;
 	        	}Catch(ee){
 					free( s2);
-					return FALSE;
+					return VTD_FALSE;
 	        	}
 	        	
 	        }								
@@ -1218,14 +1218,14 @@ static Boolean startsWith_fe(funcExpr *fne, VTDNav *vn){
 	
 	
 	if (wcsstr(s1,s2)==s1)
-		b = TRUE;
+		b = VTD_TRUE;
 	free(s1);
 	free(s2);
     return b;
 }
 /* can be optimized to test whether the argument returns a VTD index */
 static Boolean endsWith_fe(funcExpr *fne, VTDNav *vn){
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	exception ee;size_t l1,l2;
 	UCSChar* s1=NULL,*s2 = fne->al->next->e->evalString(fne->al->next->e,vn);
 	if (fne->al->e->isNodeSet(fne->al->e)){
@@ -1243,7 +1243,7 @@ static Boolean endsWith_fe(funcExpr *fne, VTDNav *vn){
 				return b;
 			}Catch(ee){
 				free( s2);
-				return FALSE;
+				return VTD_FALSE;
 			}
 			
 			
@@ -1257,7 +1257,7 @@ static Boolean endsWith_fe(funcExpr *fne, VTDNav *vn){
 	
 	if (wcsstr(s1+(l1-l2),s2)== (s1+l1-l2)){
 		//
-		b = TRUE;
+		b = VTD_TRUE;
 
 	}
 	free(s1);
@@ -1537,8 +1537,8 @@ static UCSChar* normalize(UCSChar *s){
 static Boolean isWS(UCSChar c)
 {
 	if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
-		return TRUE;
-	return FALSE;
+		return VTD_TRUE;
+	return VTD_FALSE;
 }
 
 int adjust_fne(funcExpr *fne, int n){
@@ -1555,7 +1555,7 @@ int adjust_fne(funcExpr *fne, int n){
 
 Boolean lang(funcExpr *fne, VTDNav *vn, UCSChar* s){
 	exception ee;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	push2(vn);
 	Try {
 		while (getCurrentDepth(vn) >= 0) {
@@ -1672,16 +1672,16 @@ static double roundHalfToEven(funcExpr *fne, VTDNav *vn) {
 
 Boolean isFinal_fne(funcExpr *e){
 	aList* temp = e->al;
-	Boolean s= FALSE;
+	Boolean s= VTD_FALSE;
 	if (temp ==NULL)
-		return FALSE;
+		return VTD_FALSE;
 	if (temp->e==NULL)
-		return FALSE;
-	s=TRUE;
+		return VTD_FALSE;
+	s=VTD_TRUE;
 	while(temp!=NULL){
 		s= s && temp->e->isFinal(temp->e);
 		if (!s)
-			return FALSE;
+			return VTD_FALSE;
 		temp = temp->next;
 	}
 	return s;	
@@ -1738,8 +1738,8 @@ Boolean checkArgumentCount(funcExpr *e){
 		case FN_TRANSLATE:	 	return e->argCount1 ==3;
 		case FN_BOOLEAN: 			return e->argCount1 ==1;
 		case FN_NOT: 			    return e->argCount1 ==1;
-		case FN_TRUE: 			return e->argCount1 ==0;
-		case FN_FALSE: 			return e->argCount1 ==0;
+		case FN_VTD_TRUE: 			return e->argCount1 ==0;
+		case FN_VTD_FALSE: 			return e->argCount1 ==0;
 		case FN_LANG: 			return (e->argCount1==1);
 		case FN_NUMBER:			return e->argCount1==1;
 		case FN_SUM: 			    return (e->argCount1==1 && e->al->e->isNodeSet(e->al->e));
@@ -1781,7 +1781,7 @@ Boolean checkArgumentCount(funcExpr *e){
 		case FN_ELEMENT_AVAILABLE: return e->argCount1==1 && e->al->e->isString(e->al->e);
 		case FN_FUNCTION_AVAILABLE: return e->argCount1==1 && e->al->e->isString(e->al->e);
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 }
 	
 
@@ -1872,7 +1872,7 @@ int evalFirstArgumentListNodeSet2(funcExpr *e, VTDNav *vn){
 
 Boolean matchName(funcExpr *e, VTDNav *vn){
 	int a,type;exception ee;UCSChar *s1;
-	Boolean b=FALSE;
+	Boolean b=VTD_FALSE;
 	if (e->argCount1 == 1) {
 		a = getCurrentIndex(vn);
 		type = getTokenType(vn,a);
@@ -1883,17 +1883,17 @@ Boolean matchName(funcExpr *e, VTDNav *vn){
 				Try {
 					b= matchRawTokenString(vn,a, s1);
 				} Catch (ee) {
-					b =FALSE;
+					b =VTD_FALSE;
 				}
 				free( s1);
 				return b;
 		} else
-			return FALSE;
+			return VTD_FALSE;
 	} else if (e->argCount1 == 2) {
 		a = evalFirstArgumentListNodeSet2(e,vn);
 		s1 = e->al->next->e->evalString(e->al->next->e,vn);
 		Try{
-			if (a == -1 || vn->ns == FALSE)
+			if (a == -1 || vn->ns == VTD_FALSE)
 				b = (wcscmp(L"",s1) == 0);
 			//return false;
 			else {
@@ -1908,15 +1908,15 @@ Boolean matchName(funcExpr *e, VTDNav *vn){
 			return b;
 		} Catch (ee) {
 		}
-		return FALSE;
+		return VTD_FALSE;
 	} else
 		throwException2(invalid_argument,
 		"matchName()'s argument count is invalid");
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean matchLocalName(funcExpr *e,VTDNav *vn){
-	Boolean b= FALSE;int index,type; UCSChar *s1;exception ee;
+	Boolean b= VTD_FALSE;int index,type; UCSChar *s1;exception ee;
 	 if (e->argCount1== 1){
 	        Try{
 	            index = getCurrentIndex(vn);
@@ -1944,13 +1944,13 @@ Boolean matchLocalName(funcExpr *e,VTDNav *vn){
 				free( s1);
 				return b;
 	        }Catch(ee){
-	        	 return FALSE; // this will never occur
+	        	 return VTD_FALSE; // this will never occur
 	        }
 	        
 	    } else if (e->argCount1 == 2){
 	        int a=evalFirstArgumentListNodeSet2(e,vn);
 	        s1 = e->al->next->e->evalString(e->al->next->e,vn);
-			if (a == -1 || vn->ns == FALSE)
+			if (a == -1 || vn->ns == VTD_FALSE)
 			    b= (wcscmp(L"",s1)==0);
 			type = getTokenType(vn,a);
 			if (type==TOKEN_STARTING_TAG || type== TOKEN_ATTR_NAME){
@@ -1990,7 +1990,7 @@ Boolean matchLocalName(funcExpr *e,VTDNav *vn){
 	    } else 
 	        throwException2
 			(invalid_argument,"match-local-name()'s argument count is invalid");
-		return FALSE;
+		return VTD_FALSE;
 }
 
 UByte *doubleCapacity(UByte *b, size_t cap){

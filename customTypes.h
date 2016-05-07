@@ -60,8 +60,8 @@ typedef long long Long;
 typedef char Byte;
 typedef unsigned char UByte;
 // VTD-XML's own definition of Boolean
-typedef enum Bool {FALSE, 
-					  TRUE} 
+typedef enum Bool {VTD_FALSE, 
+					  VTD_TRUE} 
 					Boolean;
 
 // VTD navigation parameters

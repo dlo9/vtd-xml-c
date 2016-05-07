@@ -305,10 +305,10 @@ int* toIntArray(FastIntBuffer *fib){
 Boolean resizeFIB(FastIntBuffer *fib, int newSz){
 	 if (newSz <= fib->capacity && newSz >=0){
 		 fib->size = newSz;
-		 return TRUE;
+		 return VTD_TRUE;
 	 }	 
 	 else
-		 return FALSE;
+		 return VTD_FALSE;
 }
 
 

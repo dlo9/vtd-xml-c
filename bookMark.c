@@ -89,7 +89,7 @@ VTDNav* getNav4BookMark(BookMark *bm){
 Boolean setCursorPosition(BookMark *bm, VTDNav *vn){
 	int i=0;
 	if (bm->vn1 != vn || bm->ba == NULL || bm->ba[0] == -2)
-		return FALSE;
+		return VTD_FALSE;
 	for (i = 0; i < vn->nestingLevel; i++) {
 		vn->context[i] = bm->ba[i];
 	}
@@ -103,9 +103,9 @@ Boolean setCursorPosition(BookMark *bm, VTDNav *vn){
 		vn->l3lower = bm->ba[vn->nestingLevel + 5];
 		vn->l3upper = bm->ba[vn->nestingLevel + 6];
 		if (bm->ba[vn->nestingLevel+7] < 0){
-			vn->atTerminal = TRUE;		    
+			vn->atTerminal = VTD_TRUE;		    
 		} else
-			vn->atTerminal = FALSE;
+			vn->atTerminal = VTD_FALSE;
 
 		vn->LN = bm->ba[vn->nestingLevel+7] & 0x7fffffff;
 	}else{
@@ -124,13 +124,13 @@ Boolean setCursorPosition(BookMark *bm, VTDNav *vn){
 		vnl->l4lower = bm->ba[vn->nestingLevel + 11];
 		vnl->l4upper = bm->ba[vn->nestingLevel + 12];
 		if (bm->ba[vn->nestingLevel+13] < 0){
-			vn->atTerminal = TRUE;		    
+			vn->atTerminal = VTD_TRUE;		    
 		} else
-			vn->atTerminal = FALSE;
+			vn->atTerminal = VTD_FALSE;
 
 		vn->LN = bm->ba[vn->nestingLevel+13] & 0x7fffffff;
 	}
-	return TRUE;
+	return VTD_TRUE;
 }
 Boolean setCursorPosition2(BookMark *bm){
 	return setCursorPosition(bm,bm->vn1);
@@ -144,7 +144,7 @@ Boolean setCursorPosition2(BookMark *bm){
 Boolean recordCursorPosition(BookMark *bm, VTDNav *vn){
 	int i;
 	if (vn == NULL)
-		return FALSE;
+		return VTD_FALSE;
 	if (vn== bm->vn1){
 	}else {
 		bind4BookMark(bm,vn);
@@ -163,7 +163,7 @@ Boolean recordCursorPosition(BookMark *bm, VTDNav *vn){
 		bm->ba[vn->nestingLevel + 6]= vn->l3upper ;
 		//ba[vn.nestingLevel + 7]=(vn.atTerminal == true)?1:0;
 		bm->ba[vn->nestingLevel + 7]= 
-			(vn->atTerminal == TRUE)? 
+			(vn->atTerminal == VTD_TRUE)? 
 			(vn->LN | 0x80000000) : vn->LN ;
 	}
 	else{
@@ -182,11 +182,11 @@ Boolean recordCursorPosition(BookMark *bm, VTDNav *vn){
 		bm->ba[vn->nestingLevel + 11]= vnl->l5lower ;
 		bm->ba[vn->nestingLevel + 12]= vnl->l5upper ;
 		bm->ba[vn->nestingLevel + 13]= 
-			(vn->atTerminal == TRUE)? 
+			(vn->atTerminal == VTD_TRUE)? 
 			(vn->LN | 0x80000000) : vn->LN ;
 
 	}
-	return TRUE;
+	return VTD_TRUE;
 }
 
 /**
@@ -203,7 +203,7 @@ Boolean recordCursorPosition2(BookMark *bm){
 */
 Boolean equal4BookMark(BookMark *bm1, BookMark *bm2){
 	if (bm1 == bm2)
-		return TRUE;
+		return VTD_TRUE;
 	return deepEqual4BookMark(bm1,bm2);
 }
 /**
@@ -230,17 +230,17 @@ Boolean deepEqual4BookMark(BookMark *bm1, BookMark *bm2){
 				if (bm1->ba[bm1->vn1->nestingLevel+7] < 0){
 					if (bm1->ba[bm1->vn1->nestingLevel+7]
 					!= bm2->ba[bm1->vn1->nestingLevel+7])
-						return FALSE;
+						return VTD_FALSE;
 				}
 			}else{
 				if (bm1->ba[bm1->vn1->nestingLevel+13] < 0){
 					if (bm1->ba[bm1->vn1->nestingLevel+13]
 					!= bm2->ba[bm1->vn1->nestingLevel+13])
-						return FALSE;
+						return VTD_FALSE;
 				}
 			}
-			return TRUE;
+			return VTD_TRUE;
 		}
 	}
-	return FALSE;
+	return VTD_FALSE;
 }

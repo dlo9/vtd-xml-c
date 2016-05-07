@@ -375,8 +375,8 @@ Long* toLongArray(FastLongBuffer *flb){
 Boolean resizeFLB(FastLongBuffer *flb, int newSz){
 	if (newSz <= flb->capacity && newSz >=0){	
 		flb->size = newSz;
-		return TRUE; 
+		return VTD_TRUE; 
 	}
 	else	
-		return FALSE;  
+		return VTD_FALSE;  
 }

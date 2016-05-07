@@ -86,19 +86,19 @@ Boolean evalBoolean_ue (unaryExpr *ue,VTDNav *vn){
 }
 
 Boolean isBoolean_ue (unaryExpr *ue){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNumerical_ue (unaryExpr *ue){
-	return TRUE;
+	return VTD_TRUE;
 }
 
 Boolean isString_ue (unaryExpr *ue){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNodeSet_ue (unaryExpr *ue){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean requireContextSize_ue(unaryExpr *ue){

@@ -367,13 +367,13 @@ not([ \t\r\n])*"("		{  	isName = 1;
 
 true([ \t\r\n])*"("		{  	isName = 1; 
 			 	unput('(');
-				yylval.fname = FN_TRUE;
+				yylval.fname = FN_VTD_TRUE;
 				return FNAME;	
 			}
 
 false([ \t\r\n])*"("		{  	isName = 1; 
 			 	unput('(');
-				yylval.fname = FN_FALSE;
+				yylval.fname = FN_VTD_FALSE;
 				return FNAME;	
 			}
 

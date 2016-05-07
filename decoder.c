@@ -128,7 +128,7 @@ void iso_8859_2_chars_init(){
 		iso_8859_2_chars[0xFE] = (char) (0x0163); /*LATIN SMALL LETTER T WITH CEDILLA*/
 		iso_8859_2_chars[0xFF] = (char) (0x02D9); /*	DOT ABOVE*/
 
-		iso_8859_2_chars_ready = TRUE;
+		iso_8859_2_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_3_chars_init(){
@@ -233,7 +233,7 @@ void iso_8859_3_chars_init(){
 		iso_8859_3_chars[0xFD] = (char) (0x016D); /*	LATIN SMALL LETTER U WITH BREVE*/
 		iso_8859_3_chars[0xFE] = (char) (0x015D); /*	LATIN SMALL LETTER S WITH CIRCUMFLEX*/
 		iso_8859_3_chars[0xFF] = (char) (0x02D9); /**/
-		iso_8859_3_chars_ready = TRUE;
+		iso_8859_3_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_4_chars_init(){
@@ -346,7 +346,7 @@ void iso_8859_4_chars_init(){
 		iso_8859_4_chars[0xFD] = (char) (0x0169);
 		iso_8859_4_chars[0xFE] = (char) (0x016B);
 		iso_8859_4_chars[0xFF] = (char) (0x02D9);
-		iso_8859_4_chars_ready = TRUE;
+		iso_8859_4_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_5_chars_init(){
@@ -458,7 +458,7 @@ void iso_8859_5_chars_init(){
 		iso_8859_5_chars[0xFD] = (char) (0x00A7);
 		iso_8859_5_chars[0xFE] = (char) (0x045E);
 		iso_8859_5_chars[0xFF] = (char) (0x045F);
-		iso_8859_5_chars_ready = TRUE;
+		iso_8859_5_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_6_chars_init(){
@@ -527,7 +527,7 @@ void iso_8859_6_chars_init(){
 		iso_8859_6_chars[0xF2] = (char) (0x0652);
 
 
-		iso_8859_6_chars_ready = TRUE;
+		iso_8859_6_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_7_chars_init(){
@@ -635,7 +635,7 @@ void iso_8859_7_chars_init(){
 		iso_8859_7_chars[0xFE] = (char) (0x03CE);
 
 
-		iso_8859_7_chars_ready = TRUE;
+		iso_8859_7_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_8_chars_init(){
@@ -702,7 +702,7 @@ void iso_8859_8_chars_init(){
 		iso_8859_8_chars[0xFA] = (char) (0x05EA);
 
 
-		iso_8859_8_chars_ready = TRUE;
+		iso_8859_8_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_9_chars_init(){
@@ -817,7 +817,7 @@ void iso_8859_9_chars_init(){
 		iso_8859_9_chars[0xFF] = (char) (0x00FF);
 
 
-		iso_8859_9_chars_ready = TRUE;
+		iso_8859_9_chars_ready = VTD_TRUE;
 	}
 }
 void iso_8859_10_chars_init(){
@@ -931,7 +931,7 @@ void iso_8859_10_chars_init(){
 		iso_8859_10_chars[0xFF] = (char) (0x0138);
 
 
-		iso_8859_10_chars_ready = TRUE;
+		iso_8859_10_chars_ready = VTD_TRUE;
 	}
 }
 
@@ -1037,7 +1037,7 @@ void iso_8859_11_chars_init(){
 		iso_8859_11_chars[0xFA] = (char) (0x0E5A); //THAI CHARACTER ANGKHANKHU
 		iso_8859_11_chars[0xFB] = (char) (0x0E5B); //THAI CHARACTER KHOMUT
 
-		iso_8859_11_chars_ready = TRUE;
+		iso_8859_11_chars_ready = VTD_TRUE;
 	}
 }
 
@@ -1151,7 +1151,7 @@ void iso_8859_13_chars_init(){
 		iso_8859_13_chars[0xFD] = (char) (0x017C); //LATIN SMALL LETTER Z WITH DOT ABOVE
 		iso_8859_13_chars[0xFE] = (char) (0x017E); //LATIN SMALL LETTER Z WITH CARON
 		iso_8859_13_chars[0xFF] = (char) (0x2019);
-		iso_8859_13_chars_ready = TRUE;
+		iso_8859_13_chars_ready = VTD_TRUE;
 	}
 }
 
@@ -1267,7 +1267,7 @@ void iso_8859_14_chars_init(){
 		iso_8859_14_chars[0xFE] = (char) (0x0177); //LATIN SMALL LETTER Y WITH CIRCUMFLEX
 		iso_8859_14_chars[0xFF] = (char) (0x00FF); //LATIN SMALL LETTER Y WITH DIAERESIS
 
-		iso_8859_14_chars_ready = TRUE;
+		iso_8859_14_chars_ready = VTD_TRUE;
 	}
 }
 
@@ -1290,7 +1290,7 @@ void iso_8859_15_chars_init(){
 		iso_8859_15_chars[0xBC] = (char) (0x0152);
 		iso_8859_15_chars[0xBD] = (char) (0x0153);
 		iso_8859_15_chars[0xBE] = (char) (0x0178);
-		iso_8859_15_chars_ready = TRUE;
+		iso_8859_15_chars_ready = VTD_TRUE;
 	}
 }
 
@@ -1433,7 +1433,7 @@ void windows_1250_chars_init(){
 		windows_1250_chars[0xFE] = (char) (0x0163); /* LATIN SMALL LETTER T WITH CEDILLA*/
 		windows_1250_chars[0xFF] = (char) (0x02D9); /* DOT ABOVE*/
 
-		windows_1250_chars_ready = TRUE;
+		windows_1250_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1251_chars_init(){
@@ -1577,7 +1577,7 @@ void windows_1251_chars_init(){
 		windows_1251_chars[0xFE] = (char) (0x044E); /* CYRILLIC SMALL LETTER YU*/
 		windows_1251_chars[0xFF] = (char) (0x044F); /* CYRILLIC SMALL LETTER YA*/
 
-		windows_1250_chars_ready = TRUE;
+		windows_1250_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1252_chars_init(){
@@ -1717,7 +1717,7 @@ void windows_1252_chars_init(){
 		windows_1252_chars[0xFE] = (char) (0x00FE); /* LATIN SMALL LETTER THORN*/
 		windows_1252_chars[0xFF] = (char) (0x00FF); /* LATIN SMALL LETTER Y WITH DIAERESIS*/
 
-		windows_1252_chars_ready = TRUE;
+		windows_1252_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1253_chars_init(){
@@ -1845,7 +1845,7 @@ void windows_1253_chars_init(){
 		windows_1253_chars[0xFD] = (char) (0x03CD); /* GREEK SMALL LETTER UPSILON WITH TONOS*/
 		windows_1253_chars[0xFE] = (char) (0x03CE); /* GREEK SMALL LETTER OMEGA WITH TONOS*/
 
-		windows_1253_chars_ready = TRUE;
+		windows_1253_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1254_chars_init(){
@@ -1983,7 +1983,7 @@ void windows_1254_chars_init(){
 		windows_1254_chars[0xFE] = (char) (0x015F); /* LATIN SMALL LETTER S WITH CEDILLA*/
 		windows_1254_chars[0xFF] = (char) (0x00FF); /* LATIN SMALL LETTER Y WITH DIAERESIS*/
 
-		windows_1254_chars_ready = TRUE;
+		windows_1254_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1255_chars_init(){
@@ -2105,7 +2105,7 @@ void windows_1255_chars_init(){
 		windows_1255_chars[0xFD] = (char) (0x200E); /* LEFT-TO-RIGHT MARK*/
 		windows_1255_chars[0xFE] = (char) (0x200F); /* RIGHT-TO-LEFT MARK*/
 
-		windows_1255_chars_ready = TRUE;
+		windows_1255_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1256_chars_init(){
@@ -2249,7 +2249,7 @@ void windows_1256_chars_init(){
 		windows_1256_chars[0xFD] = (char) (0x200E); /* LEFT-TO-RIGHT MARK*/
 		windows_1256_chars[0xFE] = (char) (0x200F); /* RIGHT-TO-LEFT MARK*/
 		windows_1256_chars[0xFF] = (char) (0x06D2); /* ARABIC LETTER YEH BARREE*/
-		windows_1256_chars_ready = TRUE;
+		windows_1256_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1257_chars_init(){
@@ -2382,7 +2382,7 @@ void windows_1257_chars_init(){
 		windows_1257_chars[0xFE] = (char) (0x017E); /* LATIN SMALL LETTER Z WITH CARON*/
 		windows_1257_chars[0xFF] = (char) (0x02D9); /* DOT ABOVE*/
 
-		windows_1257_chars_ready = TRUE;
+		windows_1257_chars_ready = VTD_TRUE;
 	}
 }
 void windows_1258_chars_init(){
@@ -2518,6 +2518,6 @@ void windows_1258_chars_init(){
 		windows_1258_chars[0xFE] = (char) (0x20AB); /* DONG SIGN*/
 		windows_1258_chars[0xFF] = (char) (0x00FF); /* LATIN SMALL LETTER Y WITH DIAERESIS*/
 
-		windows_1258_chars_ready = TRUE;
+		windows_1258_chars_ready = VTD_TRUE;
 	}
 }

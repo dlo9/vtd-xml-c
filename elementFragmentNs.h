@@ -29,7 +29,7 @@ typedef struct elementFragmentNs {
   int stLen;
 } ElementFragmentNs;
 
-static Boolean ws_init = FALSE;
+static Boolean ws_init = VTD_FALSE;
 static UByte ws[5]= {0,' ',0,'=',0};
 ElementFragmentNs* createElementFragmentNs();
 void freeElementFragmentNs(ElementFragmentNs *ef);

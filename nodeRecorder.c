@@ -96,7 +96,7 @@ void record(NodeRecorder *nr){
                     nr->count++;
                     break;
                 case 0:
-                    if (nr->vn->atTerminal == FALSE)
+                    if (nr->vn->atTerminal == VTD_FALSE)
                     {
                         appendInt(nr->fib,0);
                         nr->count++;
@@ -108,11 +108,11 @@ void record(NodeRecorder *nr){
                     }
                     nr->size++;
                     nr->position++;
-                    if (nr->vn->atTerminal == TRUE)
+                    if (nr->vn->atTerminal == VTD_TRUE)
                         appendInt(nr->fib,nr->vn->LN);
                     break;
                 case 1:
-                    if (nr->vn->atTerminal == FALSE)
+                    if (nr->vn->atTerminal == VTD_FALSE)
                     {
                         appendInt(nr->fib,1);
                         appendInt(nr->fib,nr->vn->context[1]);
@@ -133,7 +133,7 @@ void record(NodeRecorder *nr){
                     }
                     break;
                 case 2:
-                    if (nr->vn->atTerminal == FALSE)
+                    if (nr->vn->atTerminal == VTD_FALSE)
                     {
                         appendInt(nr->fib,2);
                         nr->count += 7;
@@ -152,12 +152,12 @@ void record(NodeRecorder *nr){
                     nr->size++;
                     nr->position++;
 
-                    if (nr->vn->atTerminal == TRUE)
+                    if (nr->vn->atTerminal == VTD_TRUE)
                         appendInt(nr->fib,nr->vn->LN);
 
                     break;
                 case 3:
-                    if (nr->vn->atTerminal == FALSE)
+                    if (nr->vn->atTerminal == VTD_FALSE)
                     {
                         appendInt(nr->fib,3);
                         nr->count += 11;
@@ -180,13 +180,13 @@ void record(NodeRecorder *nr){
                     nr->size++;
                     nr->position++;
 
-                    if (nr->vn->atTerminal == TRUE)
+                    if (nr->vn->atTerminal == VTD_TRUE)
                         appendInt(nr->fib,nr->vn->LN);
 
                     break;
 				default:
 					if (nr->vn->shallowDepth){
-						if (nr->vn->atTerminal == FALSE)
+						if (nr->vn->atTerminal == VTD_FALSE)
 						{
 							i = nr->vn->context[0];
 							appendInt(nr->fib,i);
@@ -222,7 +222,7 @@ void record(NodeRecorder *nr){
 						switch (vnl->context[0]) {
 				case 4:
 
-					if (vnl->atTerminal == FALSE) {
+					if (vnl->atTerminal == VTD_FALSE) {
 						appendInt(nr->fib,4);
 						nr->count += 15;
 					} else {
@@ -246,12 +246,12 @@ void record(NodeRecorder *nr){
 					nr->size++;
 					nr->position++;
 
-					if (vnl->atTerminal == TRUE)
+					if (vnl->atTerminal == VTD_TRUE)
 						appendInt(nr->fib,vnl->LN);
 
 					break;
 				case 5:
-					if (vnl->atTerminal == FALSE) {
+					if (vnl->atTerminal == VTD_FALSE) {
 						appendInt(nr->fib,5);
 						nr->count += 19;
 					} else {
@@ -279,12 +279,12 @@ void record(NodeRecorder *nr){
 					nr->size++;
 					nr->position++;
 
-					if (vnl->atTerminal == TRUE)
+					if (vnl->atTerminal == VTD_TRUE)
 						appendInt(nr->fib,vnl->LN);
 
 					break;   
 				default:
-					if (vnl->atTerminal == FALSE) {
+					if (vnl->atTerminal == VTD_FALSE) {
 						i = vnl->context[0];
 						appendInt(nr->fib,i);
 						nr->count += i + 14;
@@ -337,7 +337,7 @@ int iterateNodeRecorder(NodeRecorder *nr){
 	{
 		i = intAt(nr->fib,nr->count);
 		b = (i >= 0);
-		if (b == FALSE)
+		if (b == VTD_FALSE)
 		{
 			i = i & 0x7fffffff;
 		}
@@ -345,21 +345,21 @@ int iterateNodeRecorder(NodeRecorder *nr){
 		{
 		case 0xff:
 			nr->vn->context[0] = -1;
-			nr->vn->atTerminal = FALSE;
+			nr->vn->atTerminal = VTD_FALSE;
 			nr->count++;
 			break;
 
 		case 0:
 			nr->vn->context[0] = 0;
-			if (b == FALSE)
+			if (b == VTD_FALSE)
 			{
-				nr->vn->atTerminal = TRUE;
+				nr->vn->atTerminal = VTD_TRUE;
 				nr->vn->LN = intAt(nr->fib,nr->count + 1);
 				nr->count += 2;
 			}
 			else
 			{
-				nr->vn->atTerminal = FALSE;
+				nr->vn->atTerminal = VTD_FALSE;
 				nr->count++;
 			}
 
@@ -369,15 +369,15 @@ int iterateNodeRecorder(NodeRecorder *nr){
 			nr->vn->context[0] = 1;
 			nr->vn->context[1] = intAt(nr->fib,nr->count + 1);
 			nr->vn->l1index = intAt(nr->fib,nr->count + 2);
-			if (b == FALSE)
+			if (b == VTD_FALSE)
 			{
-				nr->vn->atTerminal = TRUE;
+				nr->vn->atTerminal = VTD_TRUE;
 				nr->vn->LN = intAt(nr->fib,nr->count + 3);
 				nr->count += 4;
 			}
 			else
 			{
-				nr->vn->atTerminal = FALSE;
+				nr->vn->atTerminal = VTD_FALSE;
 				nr->count += 3;
 			}
 
@@ -391,15 +391,15 @@ int iterateNodeRecorder(NodeRecorder *nr){
 			nr->vn->l2lower = intAt(nr->fib,nr->count + 4);
 			nr->vn->l2upper = intAt(nr->fib,nr->count + 5);
 			nr->vn->l2index = intAt(nr->fib,nr->count + 6);
-			if (b == FALSE)
+			if (b == VTD_FALSE)
 			{
-				nr->vn->atTerminal = TRUE;
+				nr->vn->atTerminal = VTD_TRUE;
 				nr->vn->LN = intAt(nr->fib,nr->count + 7);
 				nr->count += 8;
 			}
 			else
 			{
-				nr->vn->atTerminal = FALSE;
+				nr->vn->atTerminal = VTD_FALSE;
 				nr->count += 7;
 			}
 
@@ -417,15 +417,15 @@ int iterateNodeRecorder(NodeRecorder *nr){
 			nr->vn->l3lower = intAt(nr->fib,nr->count + 8);
 			nr->vn->l3upper = intAt(nr->fib,nr->count + 9);
 			nr->vn->l3index = intAt(nr->fib,nr->count + 10);
-			if (b == FALSE)
+			if (b == VTD_FALSE)
 			{
-				nr->vn->atTerminal = TRUE;
+				nr->vn->atTerminal = VTD_TRUE;
 				nr->vn->LN = intAt(nr->fib,nr->count + 11);
 				nr->count += 12;
 			}
 			else
 			{
-				nr->vn->atTerminal = FALSE;
+				nr->vn->atTerminal = VTD_FALSE;
 				nr->count += 11;
 			}
 
@@ -445,15 +445,15 @@ int iterateNodeRecorder(NodeRecorder *nr){
 			nr->vn->l3lower = intAt(nr->fib,nr->count + i + 4);
 			nr->vn->l3upper = intAt(nr->fib,nr->count + i + 5);
 			nr->vn->l3index = intAt(nr->fib,nr->count + i + 6);
-			if (b == FALSE)
+			if (b == VTD_FALSE)
 			{
-				nr->vn->atTerminal = TRUE;
+				nr->vn->atTerminal = VTD_TRUE;
 				nr->vn->LN = intAt(nr->fib,nr->count + 11);
 				nr->count += i + 9;
 			}
 			else
 			{
-				nr->vn->atTerminal = FALSE;
+				nr->vn->atTerminal = VTD_FALSE;
 				nr->count += i + 8;
 			}
 			break;
@@ -477,12 +477,12 @@ int iterateNodeRecorder(NodeRecorder *nr){
 						vnl->l4lower = intAt(nr->fib,nr->count + 12);
 						vnl->l4upper = intAt(nr->fib,nr->count + 13);
 						vnl->l4index = intAt(nr->fib,nr->count + 14);
-						if (b == FALSE) {
-							vnl->atTerminal = TRUE;
+						if (b == VTD_FALSE) {
+							vnl->atTerminal = VTD_TRUE;
 							vnl->LN = intAt(nr->fib,nr->count + 15);
 							nr->count += 16;
 						} else {
-							vnl->atTerminal = FALSE;
+							vnl->atTerminal = VTD_FALSE;
 							nr->count += 15;
 						}
 
@@ -508,12 +508,12 @@ int iterateNodeRecorder(NodeRecorder *nr){
 						vnl->l5lower = intAt(nr->fib,nr->count + 16);
 						vnl->l5upper = intAt(nr->fib,nr->count + 17);
 						vnl->l5index = intAt(nr->fib,nr->count + 18);
-						if (b == FALSE) {
-							vnl->atTerminal = TRUE;
+						if (b == VTD_FALSE) {
+							vnl->atTerminal = VTD_TRUE;
 							vnl->LN = intAt(nr->fib,nr->count + 19);
 							nr->count += 20;
 						} else {
-							vnl->atTerminal = FALSE;
+							vnl->atTerminal = VTD_FALSE;
 							nr->count += 19;
 						}
 
@@ -537,12 +537,12 @@ int iterateNodeRecorder(NodeRecorder *nr){
 						vnl->l5lower = intAt(nr->fib,nr->count + i + 10);
 						vnl->l5upper = intAt(nr->fib,nr->count + i + 11);
 						vnl->l5index = intAt(nr->fib,nr->count + i + 12);
-						if (b == FALSE) {
-							vnl->atTerminal = TRUE;
+						if (b == VTD_FALSE) {
+							vnl->atTerminal = VTD_TRUE;
 							vnl->LN = intAt(nr->fib,nr->count + i + 13);
 							nr->count += i + 15;
 						} else {
-							vnl->atTerminal = FALSE;
+							vnl->atTerminal = VTD_FALSE;
 							nr->count += i + 14;
 						}
 						break;

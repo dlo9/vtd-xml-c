@@ -46,8 +46,8 @@ static int reverseInt(int i){
 Boolean isLittleEndian(){
 	int a = 0xaabbccdd;
 	if ( ((Byte *)(&a))[0] == (Byte)0xdd)
-		return TRUE;
-	return FALSE;
+		return VTD_TRUE;
+	return VTD_FALSE;
 }
 /*writeIndex writes VTD+XML into a file
   This function throws index_write_exception*/
@@ -79,7 +79,7 @@ Boolean _writeIndex_L3(Byte version,
 				|| f == NULL)
 			{
 				throwException2(invalid_argument, "writeIndex's argument invalid");
-				return FALSE;	
+				return VTD_FALSE;	
 			}
 
 			if (vtdBuffer->size == 0){
@@ -92,14 +92,14 @@ Boolean _writeIndex_L3(Byte version,
 			
 			ba[0] = (Byte) version; // version # is 1 
 			ba[1] = (Byte) encodingType;
-            if (littleEndian == FALSE)
+            if (littleEndian == VTD_FALSE)
                 ba[2] = (Byte)(ns ? 0xe0 : 0xa0); // big endien
             else
                 ba[2] = (Byte)(ns ? 0xc0 : 0x80);
 			ba[3] = (Byte) nestDepth;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// second 4 bytes
 			ba[0] = 0;
@@ -108,36 +108,36 @@ Boolean _writeIndex_L3(Byte version,
 			ba[3] = (Byte) (rootIndex & 0xff);
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// 2 reserved 32-bit words set to zero
 			ba[1] = ba[2] = ba[3] = 0;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// write XML doc in bytes	
 			l = docLen;
 			if (fwrite((UByte*) (&l), 1 , 8,f)!=8){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
             //dos.Write(xmlDoc, docOffset, docLen);
 			if (fwrite((UByte*)(xmlDoc+docOffset), 1, docLen,f)!=docLen){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			//dos.Write(xmlDoc, docOffset, docLen);
 			// zero padding to make it integer multiple of 64 bits
@@ -147,7 +147,7 @@ Boolean _writeIndex_L3(Byte version,
 				for (; t > 0; t--){
 					if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 				}
 			}
@@ -157,14 +157,14 @@ Boolean _writeIndex_L3(Byte version,
 			l = vtdBuffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < vtdBuffer->size; i++)
 			{
 				l = longAt(vtdBuffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L1 
@@ -172,53 +172,53 @@ Boolean _writeIndex_L3(Byte version,
 			l = l1Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l1Buffer->size; i++)
 			{
 				l = longAt(l1Buffer,i);
 				if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L2
 			l = l2Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l2Buffer->size; i++)
 			{
 				l = longAt(l2Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L3
 			l = l3Buffer->size;
 			if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l3Buffer->size; i++)
 			{
 				int s = intAt(l3Buffer,i);
 				if (fwrite((UByte*)&s, 1 , 4, f)!=4){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// pad zero if # of l3 entry is odd
 			if ((l3Buffer->size & 1) != 0){
 				if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 			}
 			//fclose(f);
-			return TRUE;
+			return VTD_TRUE;
 }
 /*readIndex loads VTD+XML into VTDGen
   this function throws index_read_exception*/
@@ -234,24 +234,24 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 	if (f == NULL || vg == NULL)
 	{
 		throwException2(invalid_argument,"Invalid argument(s) for readIndex()");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	
 	// first byte
 	if (fread(ba,1,1,f) != 1 ){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
     
 	if (ba[0]!=1){
 		throwException2(index_read_exception,"version # error");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	// no check on version number for now
 	// second byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 	vg->encoding = ba[0];
@@ -259,7 +259,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 	// third byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if ((ba[0] & 0x80) != 0)
 		intLongSwitch = 1;
@@ -267,9 +267,9 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 	else
 		intLongSwitch = 0;
 	if ((ba[0] & 0x40) != 0)
-		vg->ns = TRUE;
+		vg->ns = VTD_TRUE;
 	else
-		vg->ns = FALSE;
+		vg->ns = VTD_FALSE;
 	if ((ba[0] & 0x20) != 0)
 		endian = 1;
 	else
@@ -280,52 +280,52 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 	// fourth byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	vg->VTDDepth = ba[0];
 
 	// 5th and 6th byte
 	if (fread(ba,1,2,f) != 2){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	LCLevel = (((int) ba[0]) << 8) | ba[1];
 	if (LCLevel != 4 && LCLevel !=6)
 	{
 		throwException2(index_read_exception,"LC levels must be at least 3");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (LCLevel ==4)
-		vg->shallowDepth = TRUE;
+		vg->shallowDepth = VTD_TRUE;
 	else
-		vg->shallowDepth = FALSE;
+		vg->shallowDepth = VTD_FALSE;
 	// 7th and 8th byte
 	if (fread(ba,1,2,f) != 2){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	vg->rootIndex = (((int) ba[0]) << 8) | ba[1];
 
 	// skip a long
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	
 	// read XML size
 	if (littleEndian && (endian == 0)
-		|| (littleEndian == FALSE) && (endian == 1))
+		|| (littleEndian == VTD_FALSE) && (endian == 1))
 		size = (int)l;
 	else
 		size = (int)reverseLong(l);
@@ -335,11 +335,11 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 	XMLDoc = malloc(size);
 	if (XMLDoc == NULL){
 		throwException2(out_of_mem,"Byte array allocation failed");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (fread(XMLDoc,1,size,f)!= size){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//dis.Read(XMLDoc,0,size);
 	if ((size & 0x7) != 0)
@@ -349,7 +349,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		{
 			if (fread(ba,1,1,f) != 1){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			t--;
 		}
@@ -358,20 +358,20 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 	setDoc(vg,XMLDoc,size);
 
 	if ( (littleEndian && (endian == 0))
-		|| (littleEndian == FALSE && endian == 1))
+		|| (littleEndian == VTD_FALSE && endian == 1))
 	{
 		int vtdSize,l1Size,l2Size,l3Size,l4Size,l5Size;
 		// read vtd records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		vtdSize = (int) l;
 		while (vtdSize > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->VTDBuffer ,l);
 			vtdSize--;
@@ -379,14 +379,14 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read L1 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l1Size = (int) l;
 		while (l1Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l1Buffer,l);
 			l1Size--;
@@ -394,14 +394,14 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read L2 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l2Size = (int) l;
 		while (l2Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l2Buffer, l);
 			l2Size--;
@@ -409,7 +409,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read L3 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l3Size = (int) l;
 		if (vg->shallowDepth){
@@ -420,7 +420,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->l3Buffer,size);
 					l3Size--;
@@ -432,7 +432,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendLong((FastLongBuffer *)vg->l3Buffer,(int)(l >> 32));
 					l3Size--;
@@ -443,7 +443,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l3Buffer, l);
 				l3Size--;
@@ -451,21 +451,21 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l4Size = (int) l;
 			while (l4Size > 0)
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l4Buffer, l);
 				l4Size--;
 			}
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l5Size = (int) l;
 			if (intLongSwitch == 1)
@@ -475,7 +475,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->_l5Buffer,size);
 					l5Size--;
@@ -487,7 +487,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendLong((FastLongBuffer *)vg->_l5Buffer,(int)(l >> 32));
 					l5Size--;
@@ -503,14 +503,14 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read vtd records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		vtdSize = (int) reverseLong(l);
 		while (vtdSize > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->VTDBuffer,reverseLong(l));
 			vtdSize--;
@@ -518,14 +518,14 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read L1 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l1Size = (int) reverseLong(l);
 		while (l1Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l1Buffer,reverseLong(l));
 			l1Size--;
@@ -533,14 +533,14 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read L2 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l2Size = (int) reverseLong(l);
 		while (l2Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l2Buffer, reverseLong(l));
 			l2Size--;
@@ -548,7 +548,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		// read L3 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l3Size = (int) reverseLong(l);
 		if (vg->shallowDepth){
@@ -559,7 +559,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->l3Buffer,reverseInt(size));
 					l3Size--;
@@ -571,7 +571,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->l3Buffer,reverseInt((int) (l >> 32)));
 					l3Size--;
@@ -581,28 +581,28 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 			while (l3Size > 0){
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l3Buffer, reverseLong(l));
 				l3Size--;
 			}
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l4Size = (int) reverseLong(l);
 			while (l4Size > 0)
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l4Buffer, reverseLong(l));
 				l4Size--;
 			}
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l5Size = (int) reverseLong(l);
 			if (intLongSwitch == 1)
@@ -612,7 +612,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->_l5Buffer,reverseInt(size));
 					l5Size--;
@@ -624,7 +624,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->_l5Buffer,reverseInt((int) (l >> 32)));
 					l5Size--;
@@ -633,7 +633,7 @@ Boolean _readIndex(FILE *f, VTDGen *vg){
 		}
 	}
 	//fclose(f);
-	return TRUE;
+	return VTD_TRUE;
 	
 }
 
@@ -649,13 +649,13 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 	if (ba == NULL || vg == NULL)
 	{
 		throwException2(invalid_argument,"Invalid argument(s) for readIndex()");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	
 	// first byte
 	if (len < 32){
 		throwException2(index_read_exception,"Invalid Index error");
-		return FALSE;
+		return VTD_FALSE;
 	}	
 
 	vg->encoding = ba[1];
@@ -670,9 +670,9 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 	else
 		intLongSwitch = 0;
 	if ((ba[2] & 0x40) != 0)
-		vg->ns = TRUE;
+		vg->ns = VTD_TRUE;
 	else
-		vg->ns = FALSE;
+		vg->ns = VTD_FALSE;
 	if ((ba[2] & 0x20) != 0)
 		endian = 1;
 	else
@@ -689,12 +689,12 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 	if (LCLevel !=4 && LCLevel !=6)
 	{
 		throwException2(index_read_exception,"LC levels must be at least 3");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (LCLevel ==4)
-		vg->shallowDepth = TRUE;
+		vg->shallowDepth = VTD_TRUE;
 	else
-		vg->shallowDepth = FALSE;
+		vg->shallowDepth = VTD_FALSE;
 
 	// 7th and 8th byte
 	vg->rootIndex = (((int) ba[6]) << 8) | ba[7];
@@ -705,14 +705,14 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 	
 	// read XML size
 	if (littleEndian && (endian == 0)
-		|| (littleEndian == FALSE) && (endian == 1))
+		|| (littleEndian == VTD_FALSE) && (endian == 1))
 		size = (int)l;
 	else
 		size = (int)reverseLong(l);
 
 	if (len < 32+size){
 		throwException2(index_read_exception,"Invalid Index error");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	setDoc2(vg,ba,len,32,size);
 	//dis.Read(XMLDoc,0,size);
@@ -723,13 +723,13 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 
 	count = 32 + size +t;
 	if ( (littleEndian && (endian == 0))
-		|| (littleEndian == FALSE && endian == 1))
+		|| (littleEndian == VTD_FALSE && endian == 1))
 	{
 		int vtdSize,l1Size,l2Size,l3Size,l4Size,l5Size;
 		// read vtd records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -738,7 +738,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		{
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -748,7 +748,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read L1 LC records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -757,7 +757,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		{
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -767,7 +767,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read L2 LC records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -776,7 +776,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		{
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -786,7 +786,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read L3 LC records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -800,7 +800,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 					int i;
 					if (len < count+4){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					i = ((int*)(ba+count))[0];
 					count+=4;
@@ -814,7 +814,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 				{
 					if (len < count+8){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					l = ((Long*)(ba+count))[0];
 					count+=8;
@@ -827,7 +827,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 			{
 				if (len < count+8){
 					throwException2(index_read_exception,"Invalid Index error");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				l = ((Long*)(ba+count))[0];
 				count+=8;
@@ -842,7 +842,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 			{
 				if (len < count+8){
 					throwException2(index_read_exception,"Invalid Index error");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				l = ((Long*)(ba+count))[0];
 				count+=8;
@@ -860,7 +860,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 					int i;
 					if (len < count+4){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					i = ((int*)(ba+count))[0];
 					count+=4;
@@ -874,7 +874,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 				{
 					if (len < count+8){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					l = ((Long*)(ba+count))[0];
 					count+=8;
@@ -892,7 +892,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read vtd records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -901,7 +901,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		{
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -911,7 +911,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read L1 LC records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -920,7 +920,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		{
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -930,7 +930,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read L2 LC records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -939,7 +939,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		{
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -949,7 +949,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		// read L3 LC records
 		if (len < count+8){
 			throwException2(index_read_exception,"Invalid Index error");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l = ((Long*)(ba+count))[0];
 		count+=8;
@@ -963,7 +963,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 				{
 					if (len < count+4){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					i = ((int*)(ba+count))[0];
 					count+=4;
@@ -977,7 +977,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 				{
 					if (len < count+8){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					l = ((Long*)(ba+count))[0];
 					count+=8;
@@ -990,7 +990,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 			{
 				if (len < count+8){
 					throwException2(index_read_exception,"Invalid Index error");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				l = ((Long*)(ba+count))[0];
 				count+=8;
@@ -1000,7 +1000,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 			// read L3 LC records
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -1010,7 +1010,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 			{
 				if (len < count+8){
 					throwException2(index_read_exception,"Invalid Index error");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				l = ((Long*)(ba+count))[0];
 				count+=8;
@@ -1020,7 +1020,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 			// read L3 LC records
 			if (len < count+8){
 				throwException2(index_read_exception,"Invalid Index error");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l = ((Long*)(ba+count))[0];
 			count+=8;
@@ -1034,7 +1034,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 				{
 					if (len < count+4){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					i = ((int*)(ba+count))[0];
 					count+=4;
@@ -1048,7 +1048,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 				{
 					if (len < count+8){
 						throwException2(index_read_exception,"Invalid Index error");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					l = ((Long*)(ba+count))[0];
 					count+=8;
@@ -1059,7 +1059,7 @@ Boolean _readIndex2(UByte *ba, int len, VTDGen *vg){
 		}
 	}
 	//fclose(f);
-	return TRUE;
+	return VTD_TRUE;
 }
 Long adjust(Long l,int i){
        Long l1 = (l & 0xffffffffLL)+ i;
@@ -1094,7 +1094,7 @@ Boolean _writeSeparateIndex_L3(Byte version,
 				|| f == NULL)
 			{
 				throwException2(invalid_argument, "writeSeparateIndex's argument invalid");
-				return FALSE;	
+				return VTD_FALSE;	
 			}
 
 			if (vtdBuffer->size == 0){
@@ -1107,14 +1107,14 @@ Boolean _writeSeparateIndex_L3(Byte version,
 			
 			ba[0] = (Byte) version; // version # is 2 
 			ba[1] = (Byte) encodingType;
-            if (littleEndian == FALSE)
+            if (littleEndian == VTD_FALSE)
                 ba[2] = (Byte)(ns ? 0xe0 : 0xa0); // big endien
             else
                 ba[2] = (Byte)(ns ? 0xc0 : 0x80);
 			ba[3] = (Byte) nestDepth;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// second 4 bytes
 			ba[0] = 0;
@@ -1123,54 +1123,54 @@ Boolean _writeSeparateIndex_L3(Byte version,
 			ba[3] = (Byte) (rootIndex & 0xff);
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// 2 reserved 32-bit words set to zero
 			ba[1] = ba[2] = ba[3] = 0;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// write XML doc in bytes	
 			l = docLen;
 			if (fwrite((UByte*) (&l), 1 , 8,f)!=8){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 
             //dos.Write(xmlDoc, docOffset, docLen);
 			/*if (fwrite((UByte*)(xmlDoc+docOffset), 1, docLen,f)!=docLen){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}*/
 			//dos.Write(xmlDoc, docOffset, docLen);
 			// zero padding to make it integer multiple of 64 bits
@@ -1180,7 +1180,7 @@ Boolean _writeSeparateIndex_L3(Byte version,
 				for (; t > 0; t--){
 					if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 				}
 			}*/
@@ -1190,14 +1190,14 @@ Boolean _writeSeparateIndex_L3(Byte version,
 			l = vtdBuffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < vtdBuffer->size; i++)
 			{
 				l = longAt(vtdBuffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L1 
@@ -1205,53 +1205,53 @@ Boolean _writeSeparateIndex_L3(Byte version,
 			l = l1Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l1Buffer->size; i++)
 			{
 				l = longAt(l1Buffer,i);
 				if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L2
 			l = l2Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l2Buffer->size; i++)
 			{
 				l = longAt(l2Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L3
 			l = l3Buffer->size;
 			if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l3Buffer->size; i++)
 			{
 				int s = intAt(l3Buffer,i);
 				if (fwrite((UByte*)&s, 1 , 4, f)!=4){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// pad zero if # of l3 entry is odd
 			if ((l3Buffer->size & 1) != 0){
 				if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 			}
 			//fclose(f);
-			return TRUE;
+			return VTD_TRUE;
 
 }
 
@@ -1267,24 +1267,24 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	if (f == NULL || vg == NULL)
 	{
 		throwException2(invalid_argument,"Invalid argument(s) for readIndex()");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	
 	// first byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (ba[0]!=2){
 		throwException2(index_read_exception,"version # error");
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 	// no check on version number for now
 	// second byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 	vg->encoding = ba[0];
@@ -1292,7 +1292,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	// third byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if ((ba[0] & 0x80) != 0)
 		intLongSwitch = 1;
@@ -1300,9 +1300,9 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	else
 		intLongSwitch = 0;
 	if ((ba[0] & 0x40) != 0)
-		vg->ns = TRUE;
+		vg->ns = VTD_TRUE;
 	else
-		vg->ns = FALSE;
+		vg->ns = VTD_FALSE;
 	if ((ba[0] & 0x20) != 0)
 		endian = 1;
 	else
@@ -1314,51 +1314,51 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	// fourth byte
 	if (fread(ba,1,1,f) != 1){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	vg->VTDDepth = ba[0];
 
 	// 5th and 6th byte
 	if (fread(ba,1,2,f) != 2){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	LCLevel = (((int) ba[0]) << 8) | ba[1];
 	if (LCLevel != 4 && LCLevel!=6)
 	{
 		throwException2(index_read_exception,"LC levels must be at least 3");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (LCLevel ==4)
-		vg->shallowDepth = TRUE;
+		vg->shallowDepth = VTD_TRUE;
 	else
-		vg->shallowDepth = FALSE;
+		vg->shallowDepth = VTD_FALSE;
 	// 7th and 8th byte
 	if (fread(ba,1,2,f) != 2){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	vg->rootIndex = (((int) ba[0]) << 8) | ba[1];
 
 	// skip a long
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	// read XML size
 	if (littleEndian && (endian == 0)
-		|| (littleEndian == FALSE) && (endian == 1))
+		|| (littleEndian == VTD_FALSE) && (endian == 1))
 		size = (int)l;
 	else
 		size = (int)reverseLong(l);
@@ -1370,12 +1370,12 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	//Console.WriteLine(" l ==>" + l);
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//Console.WriteLine(" l ==>" + l);
 	if (fread(&l,1,8,f) != 8){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 	// read XML bytes the assumption is that there is no offset shift
@@ -1383,11 +1383,11 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	XMLDoc = malloc(size);
 	if (XMLDoc == NULL){
 		throwException2(out_of_mem,"Byte array allocation failed");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	if (fread(XMLDoc,1,size,xml)!= size){
 		throwException2(index_read_exception,"fread error occurred");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	//dis.Read(XMLDoc,0,size);
 	/*if ((size & 0x7) != 0)
@@ -1397,7 +1397,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		{
 			if (fread(ba,1,1,xml) != 1){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			t--;
 		}
@@ -1406,21 +1406,21 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 	setDoc(vg,XMLDoc,size);
 
 	if ( (littleEndian && (endian == 0))
-		|| (littleEndian == FALSE && endian == 1))
+		|| (littleEndian == VTD_FALSE && endian == 1))
 	{
 		int vtdSize,l1Size,l2Size,l3Size,l4Size, l5Size;
 		// read vtd records
 		l=0;
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		vtdSize = (int) l;
 		while (vtdSize > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->VTDBuffer ,l);
 			vtdSize--;
@@ -1428,14 +1428,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read L1 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l1Size = (int) l;
 		while (l1Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l1Buffer,l);
 			l1Size--;
@@ -1443,14 +1443,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read L2 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l2Size = (int) l;
 		while (l2Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l2Buffer, l);
 			l2Size--;
@@ -1458,7 +1458,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read L3 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l3Size = (int) l;
 		if (vg->shallowDepth){
@@ -1469,7 +1469,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->l3Buffer,size);
 					l3Size--;
@@ -1481,7 +1481,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendLong((FastLongBuffer *)vg->l3Buffer,(int)(l >> 32));
 					l3Size--;
@@ -1492,7 +1492,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l3Buffer,l);
 				l3Size--;
@@ -1500,14 +1500,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 			// read L2 LC records
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l4Size = (int) l;
 			while (l2Size > 0)
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l4Buffer, l);
 				l4Size--;
@@ -1515,7 +1515,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 			// read L3 LC records
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l5Size = (int) l;
 			if (intLongSwitch == 1)
@@ -1525,7 +1525,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->_l5Buffer,size);
 					l5Size--;
@@ -1537,7 +1537,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendLong((FastLongBuffer *)vg->_l3Buffer,(int)(l >> 32));
 					l5Size--;
@@ -1552,14 +1552,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read vtd records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		vtdSize = (int) reverseLong(l);
 		while (vtdSize > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->VTDBuffer,reverseLong(l));
 			vtdSize--;
@@ -1567,14 +1567,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read L1 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l1Size = (int) reverseLong(l);
 		while (l1Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l1Buffer,reverseLong(l));
 			l1Size--;
@@ -1582,14 +1582,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read L2 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l2Size = (int) reverseLong(l);
 		while (l2Size > 0)
 		{
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			appendLong(vg->l2Buffer, reverseLong(l));
 			l2Size--;
@@ -1597,7 +1597,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		// read L3 LC records
 		if (fread(&l,1,8,f) != 8){
 			throwException2(index_read_exception,"fread error occurred");
-			return FALSE;
+			return VTD_FALSE;
 		}
 		l3Size = (int) reverseLong(l);
 		if (vg->shallowDepth){
@@ -1608,7 +1608,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 				{
 					if (fread(&size,1,4,f) != 4){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->l3Buffer,reverseInt(size));
 					l3Size--;
@@ -1620,7 +1620,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 				{
 					if (fread(&l,1,8,f) != 8){
 						throwException2(index_read_exception,"fread error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					}
 					appendInt(vg->l3Buffer,reverseInt((int) (l >> 32)));
 					l3Size--;
@@ -1631,7 +1631,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l3Buffer,reverseLong(l));
 				l3Size--;
@@ -1639,14 +1639,14 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 			// read L2 LC records
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l4Size = (int) reverseLong(l);
 			while (l4Size > 0)
 			{
 				if (fread(&l,1,8,f) != 8){
 					throwException2(index_read_exception,"fread error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 				appendLong(vg->_l4Buffer, reverseLong(l));
 				l4Size--;
@@ -1654,7 +1654,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 			// read L3 LC records
 			if (fread(&l,1,8,f) != 8){
 				throwException2(index_read_exception,"fread error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			l5Size = (int) reverseLong(l);
 			if (vg->shallowDepth){
@@ -1665,7 +1665,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 					{
 						if (fread(&size,1,4,f) != 4){
 							throwException2(index_read_exception,"fread error occurred");
-							return FALSE;
+							return VTD_FALSE;
 						}
 						appendInt(vg->_l5Buffer,reverseInt(size));
 						l5Size--;
@@ -1677,7 +1677,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 					{
 						if (fread(&l,1,8,f) != 8){
 							throwException2(index_read_exception,"fread error occurred");
-							return FALSE;
+							return VTD_FALSE;
 						}
 						appendInt(vg->_l5Buffer,reverseInt((int) (l >> 32)));
 						l5Size--;
@@ -1687,7 +1687,7 @@ Boolean _readSeparateIndex(FILE *xml, int XMLSize, FILE *f, VTDGen *vg){
 		}
 	}
 	//fclose(f);
-	return TRUE;
+	return VTD_TRUE;
 	
 }
 
@@ -1724,7 +1724,7 @@ Boolean _writeIndex_L5(Byte version,
 				|| f == NULL)
 			{
 				throwException2(invalid_argument, "writeIndex's argument invalid");
-				return FALSE;	
+				return VTD_FALSE;	
 			}
 
 			if (vtdBuffer->size == 0){
@@ -1737,14 +1737,14 @@ Boolean _writeIndex_L5(Byte version,
 			
 			ba[0] = (Byte) version; // version # is 1 
 			ba[1] = (Byte) encodingType;
-            if (littleEndian == FALSE)
+            if (littleEndian == VTD_FALSE)
                 ba[2] = (Byte)(ns ? 0xe0 : 0xa0); // big endien
             else
                 ba[2] = (Byte)(ns ? 0xc0 : 0x80);
 			ba[3] = (Byte) nestDepth;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// second 4 bytes
 			ba[0] = 0;
@@ -1753,36 +1753,36 @@ Boolean _writeIndex_L5(Byte version,
 			ba[3] = (Byte) (rootIndex & 0xff);
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// 2 reserved 32-bit words set to zero
 			ba[1] = ba[2] = ba[3] = 0;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// write XML doc in bytes	
 			l = docLen;
 			if (fwrite((UByte*) (&l), 1 , 8,f)!=8){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
             //dos.Write(xmlDoc, docOffset, docLen);
 			if (fwrite((UByte*)(xmlDoc+docOffset), 1, docLen,f)!=docLen){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			//dos.Write(xmlDoc, docOffset, docLen);
 			// zero padding to make it integer multiple of 64 bits
@@ -1792,7 +1792,7 @@ Boolean _writeIndex_L5(Byte version,
 				for (; t > 0; t--){
 					if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 				}
 			}
@@ -1802,14 +1802,14 @@ Boolean _writeIndex_L5(Byte version,
 			l = vtdBuffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < vtdBuffer->size; i++)
 			{
 				l = longAt(vtdBuffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L1 
@@ -1817,28 +1817,28 @@ Boolean _writeIndex_L5(Byte version,
 			l = l1Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l1Buffer->size; i++)
 			{
 				l = longAt(l1Buffer,i);
 				if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L2
 			l = l2Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l2Buffer->size; i++)
 			{
 				l = longAt(l2Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 
@@ -1846,14 +1846,14 @@ Boolean _writeIndex_L5(Byte version,
 			l = l3Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l3Buffer->size; i++)
 			{
 				l = longAt(l3Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 
@@ -1861,14 +1861,14 @@ Boolean _writeIndex_L5(Byte version,
 			l = l4Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l4Buffer->size; i++)
 			{
 				l = longAt(l4Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 
@@ -1876,25 +1876,25 @@ Boolean _writeIndex_L5(Byte version,
 			l = l5Buffer->size;
 			if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l5Buffer->size; i++)
 			{
 				int s = intAt(l5Buffer,i);
 				if (fwrite((UByte*)&s, 1 , 4, f)!=4){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// pad zero if # of l5 entry is odd
 			if ((l5Buffer->size & 1) != 0){
 				if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 			}
 			//fclose(f);
-			return TRUE;
+			return VTD_TRUE;
 }
 
 Boolean _writeSeparateIndex_L5(Byte version, 
@@ -1928,7 +1928,7 @@ Boolean _writeSeparateIndex_L5(Byte version,
 				|| f == NULL)
 			{
 				throwException2(invalid_argument, "writeSeparateIndex's argument invalid");
-				return FALSE;	
+				return VTD_FALSE;	
 			}
 
 			if (vtdBuffer->size == 0){
@@ -1941,14 +1941,14 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			
 			ba[0] = (Byte) version; // version # is 2 
 			ba[1] = (Byte) encodingType;
-            if (littleEndian == FALSE)
+            if (littleEndian == VTD_FALSE)
                 ba[2] = (Byte)(ns ? 0xe0 : 0xa0); // big endien
             else
                 ba[2] = (Byte)(ns ? 0xc0 : 0x80);
 			ba[3] = (Byte) nestDepth;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// second 4 bytes
 			ba[0] = 0;
@@ -1957,54 +1957,54 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			ba[3] = (Byte) (rootIndex & 0xff);
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// 2 reserved 32-bit words set to zero
 			ba[1] = ba[2] = ba[3] = 0;
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			// write XML doc in bytes	
 			l = docLen;
 			if (fwrite((UByte*) (&l), 1 , 8,f)!=8){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			if (fwrite(ba,1,4,f)!=4){
 				throwException2(index_write_exception,"fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 
             //dos.Write(xmlDoc, docOffset, docLen);
 			/*if (fwrite((UByte*)(xmlDoc+docOffset), 1, docLen,f)!=docLen){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}*/
 			//dos.Write(xmlDoc, docOffset, docLen);
 			// zero padding to make it integer multiple of 64 bits
@@ -2014,7 +2014,7 @@ Boolean _writeSeparateIndex_L5(Byte version,
 				for (; t > 0; t--){
 					if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 				}
 			}*/
@@ -2024,14 +2024,14 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			l = vtdBuffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < vtdBuffer->size; i++)
 			{
 				l = longAt(vtdBuffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L1 
@@ -2039,28 +2039,28 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			l = l1Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l1Buffer->size; i++)
 			{
 				l = longAt(l1Buffer,i);
 				if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// write L2
 			l = l2Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l2Buffer->size; i++)
 			{
 				l = longAt(l2Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 
@@ -2068,14 +2068,14 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			l = l3Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l3Buffer->size; i++)
 			{
 				l = longAt(l3Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 
@@ -2083,14 +2083,14 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			l = l4Buffer->size;
 			if (fwrite((UByte*) &l, 1 ,8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l4Buffer->size; i++)
 			{
 				l = longAt(l4Buffer,i);
 				if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 
@@ -2099,23 +2099,23 @@ Boolean _writeSeparateIndex_L5(Byte version,
 			l = l5Buffer->size;
 			if (fwrite((UByte*) &l, 1 , 8,f)!=8){
 				throwException2(index_write_exception, "fwrite error occurred");
-				return FALSE;
+				return VTD_FALSE;
 			}
 			for (i = 0; i < l5Buffer->size; i++)
 			{
 				int s = intAt(l5Buffer,i);
 				if (fwrite((UByte*)&s, 1 , 4, f)!=4){
 					throwException2(index_write_exception, "fwrite error occurred");
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			// pad zero if # of l5 entry is odd
 			if ((l5Buffer->size & 1) != 0){
 				if (fwrite(ba,1,1,f)!=1){
 						throwException2(index_write_exception, "fwrite error occurred");
-						return FALSE;
+						return VTD_FALSE;
 					};
 			}
 			//fclose(f);
-			return TRUE;
+			return VTD_TRUE;
 }

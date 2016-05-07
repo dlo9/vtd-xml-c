@@ -371,14 +371,14 @@ void XMLChar_init()
 	// Initialize Character
 	init_Character();
 
-	isReady = TRUE;
+	isReady = VTD_TRUE;
 	}
 } 
 
 static void init_Character()
 {
 	// initialize Character
-	if (isCharacterReady == FALSE){
+	if (isCharacterReady == VTD_FALSE){
 		int i;
 		for (i=0;i<0x100;i++){
 			if ( i>='0' && i<='9' ){
@@ -391,7 +391,7 @@ static void init_Character()
 			else
 				Character[i]= -1;		
 		}
-		isCharacterReady = TRUE;
+		isCharacterReady = VTD_TRUE;
 	}
 }
 
@@ -401,7 +401,7 @@ int Character_digit(int ch, int radix){
 		throwException2(invalid_argument,
 			"radix out of range ( <2 or > 36 )");
 	}
-	if (isCharacterReady == FALSE)
+	if (isCharacterReady == VTD_FALSE)
 		init_Character();
 
 	i = Character[ch & 0xff];

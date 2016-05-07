@@ -41,11 +41,11 @@ filterExpr *createFilterExpr(expr *e1, Predicate *pr){
 	fe->toString = (to_String)&toString_fe;
 	fe->adjust = (adjust_)&adjust_fe;
 	fe->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
-	fe->needReordering = TRUE;
+	fe->needReordering = VTD_TRUE;
 	fe->e = e1;
 	fe->p = pr;
-	fe->first_time = TRUE;
-	fe->out_of_range=FALSE;
+	fe->first_time = VTD_TRUE;
+	fe->out_of_range=VTD_FALSE;
 	pr->e=(expr *)fe;
 
 	return fe;
@@ -61,7 +61,7 @@ void freeFilterExpr(filterExpr *fe){
 int	evalNodeSet_fe (filterExpr *fe,VTDNav *vn){
 	int i,a;
 	if (fe->first_time && fe->p->requireContext){
-		fe->first_time = FALSE;
+		fe->first_time = VTD_FALSE;
 		i = 0;
 		fe->e->adjust(fe->e,vn->vtdSize);
 		while(fe->e->evalNodeSet(fe->e,vn)!=-1)
@@ -73,7 +73,7 @@ int	evalNodeSet_fe (filterExpr *fe,VTDNav *vn){
 	if (fe->out_of_range)
 		return -1;
 	while (a!=-1){
-		if (eval_p(fe->p,vn)==TRUE){
+		if (eval_p(fe->p,vn)==VTD_TRUE){
 			//p.reset();
 			return a;
 		}else {
@@ -182,7 +182,7 @@ UCSChar* evalString_fe  (filterExpr *fe,VTDNav *vn){
 
 Boolean evalBoolean_fe (filterExpr *fe,VTDNav *vn){
 	exception e;
-	Boolean a = FALSE;
+	Boolean a = VTD_FALSE;
 	int size;
 	push2(vn);
 	//record stack size
@@ -198,25 +198,25 @@ Boolean evalBoolean_fe (filterExpr *fe,VTDNav *vn){
 	return a;
 }
 Boolean isBoolean_fe (filterExpr *fe){
-	return FALSE;
+	return VTD_FALSE;
 }
 Boolean isNumerical_fe (filterExpr *fe){
-	return FALSE;
+	return VTD_FALSE;
 }
 Boolean isString_fe (filterExpr *fe){
-	return FALSE;
+	return VTD_FALSE;
 }
 Boolean isNodeSet_fe (filterExpr *fe){
-	return TRUE;
+	return VTD_TRUE;
 }
 Boolean requireContextSize_fe(filterExpr *fe){
-	return FALSE;
+	return VTD_FALSE;
 }
 void reset_fe(filterExpr *fe, VTDNav *vn){
 	reset2_fe(fe,vn);
 	//vn.contextStack2.size = stackSize;
 	//position = 1;
-	fe->first_time = TRUE;
+	fe->first_time = VTD_TRUE;
 }
 void setContextSize_fe(filterExpr *fe,int s){
 }
@@ -229,7 +229,7 @@ void toString_fe(filterExpr *fe, UCSChar* string){
 	toString_p(fe->p,string);
 }
 void reset2_fe(filterExpr *fe, VTDNav *vn){
-	fe->out_of_range =FALSE;
+	fe->out_of_range =VTD_FALSE;
 	fe->e->reset(fe->e,vn);
 	reset_p(fe->p,vn);
 }

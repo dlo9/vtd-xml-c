@@ -91,7 +91,7 @@ Boolean load(ContextBuffer *cb, int* output){
 	int startingOffset, len, first_index, last_index,i;
 	//exception e;
 	if (cb->size < cb->incSize) {
-        return FALSE;
+        return VTD_FALSE;
     }
 
     startingOffset = cb->size - cb->incSize;
@@ -135,7 +135,7 @@ Boolean load(ContextBuffer *cb, int* output){
     }
 
     cb->size -= cb->incSize;
-    return TRUE;
+    return VTD_TRUE;
 }
 
 

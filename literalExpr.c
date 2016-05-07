@@ -90,23 +90,23 @@ Boolean evalBoolean_le (literalExpr *le,VTDNav *vn){
 }
 
 Boolean isBoolean_le (literalExpr *le){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNumerical_le (literalExpr *le){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isString_le (literalExpr *le){
-	return TRUE;
+	return VTD_TRUE;
 }
 
 Boolean isNodeSet_le (literalExpr *le){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean requireContextSize_le(literalExpr *le){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 void	reset_le(literalExpr *le, VTDNav *vn){
@@ -127,7 +127,7 @@ int adjust_le(literalExpr *le, int n){
 	return 0;
 }
 
-Boolean isFinal_le(literalExpr *e){return TRUE;}
+Boolean isFinal_le(literalExpr *e){return VTD_TRUE;}
 void markCacheable_le(literalExpr *e){}
 void markCacheable2_le(literalExpr *e){}
 void clearCache_le(literalExpr *e){}

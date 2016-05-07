@@ -64,20 +64,20 @@ double	evalNumber_ne (numberExpr *ne,VTDNav *vn){
 }
 
 UCSChar* evalString_ne  (numberExpr *ne,VTDNav *vn){
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	double d = 0;
 	UCSChar *tmp;
 	if (ne->dval != ne->dval){
 		tmp = wcsdup(L"NaN");
-		b = TRUE;
+		b = VTD_TRUE;
 	}
 	else if ( ne->dval == 1/d){
 		tmp = wcsdup(L"Infinity");
-		b= TRUE;
+		b= VTD_TRUE;
 	}
 	else if (ne->dval == -1/d){
 		tmp = wcsdup(L"-Infinity");
-		b = TRUE;
+		b = VTD_TRUE;
 	}	else
 	tmp = malloc(sizeof(UCSChar)<<8);
 
@@ -98,28 +98,28 @@ UCSChar* evalString_ne  (numberExpr *ne,VTDNav *vn){
 Boolean evalBoolean_ne (numberExpr *ne,VTDNav *vn){
 	if (ne->dval == 0
 		|| ne->dval!=ne->dval)
-		return FALSE;
-	return TRUE;
+		return VTD_FALSE;
+	return VTD_TRUE;
 }
 
 Boolean isBoolean_ne (numberExpr *ne){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNumerical_ne (numberExpr *ne){
-	return TRUE;
+	return VTD_TRUE;
 }
 
 Boolean isString_ne (numberExpr *ne){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNodeSet_ne (numberExpr *ne){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean requireContextSize_ne(numberExpr *ne){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 void	reset_ne(numberExpr *ne, VTDNav *vn){
@@ -141,7 +141,7 @@ int adjust_ne(numberExpr *ne, int n){
 	return 0;
 }
 
-Boolean isFinal_ne(numberExpr *e){return TRUE;}
+Boolean isFinal_ne(numberExpr *e){return VTD_TRUE;}
 void markCacheable_ne(numberExpr *e){}
 void markCacheable2_ne(numberExpr *e){}
 void clearCache_ne(numberExpr *e){}

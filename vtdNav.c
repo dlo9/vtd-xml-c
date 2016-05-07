@@ -89,7 +89,7 @@ static VTDNav *_duplicateNav_L5(VTDNav_L5 *vn);
 /* ClineNav duplicates an instance of VTDNav, also copies node position over */
 static VTDNav *_cloneNav_L5(VTDNav_L5 *vn);
 static void _recoverNode_L5(VTDNav_L5 *vn, int index);
-//if ns is FALSE, return FALSE immediately
+//if ns is VTD_FALSE, return VTD_FALSE immediately
 //static int _iterateNS_L5(VTDNav_L5 *vn, int dp, UCSChar *URL, UCSChar *ln);
 
 // This function is called by selectElement_P in autoPilot
@@ -351,14 +351,14 @@ VTDNav *createVTDNav(int r, encoding_t enc, Boolean ns, int depth,
 
 						 vn->ns = ns;
 
-						 if (ns == TRUE)
+						 if (ns == VTD_TRUE)
 							 vn->offsetMask = MASK_TOKEN_OFFSET1;
 						 else 
 							 vn->offsetMask = MASK_TOKEN_OFFSET2;
 
 
 
-						 vn->atTerminal = FALSE;
+						 vn->atTerminal = VTD_FALSE;
 						 vn->context = (int *)malloc(vn->nestingLevel*sizeof(int));
 						 if (vn->context == NULL){
 							 throwException2(out_of_mem,							 
@@ -407,7 +407,7 @@ VTDNav *createVTDNav(int r, encoding_t enc, Boolean ns, int depth,
 						 vn->bufLen = xLen;
 						 vn->br = br;
 						 vn->LN = 0;
-						 vn->shallowDepth = TRUE;
+						 vn->shallowDepth = VTD_TRUE;
 						 vn->maxLCDepthPlusOne = 4;
 						 vn->name=NULL;
 						 vn->localName=NULL;
@@ -426,7 +426,7 @@ void _freeVTDNav(VTDNav *vn)
 	if (vn!=NULL){
 		freeContextBuffer(vn->contextBuf);
 		freeContextBuffer(vn->contextBuf2);
-		if (vn->br == FALSE && vn->master){
+		if (vn->br == VTD_FALSE && vn->master){
 			freeFastLongBuffer(vn->vtdBuffer);
 			freeFastLongBuffer(vn->l1Buffer);
 			freeFastLongBuffer(vn->l2Buffer);
@@ -491,7 +491,7 @@ int getAttrVal(VTDNav *vn, UCSChar *an){
 	else 
 		return -1;
 
-	if (vn->ns == FALSE) {
+	if (vn->ns == VTD_FALSE) {
 		while ((type == TOKEN_ATTR_NAME || type == TOKEN_ATTR_NS)) {
 			if (matchRawTokenString3(vn,index,
 				an)) { // ns node visible only ns is disabled
@@ -643,7 +643,7 @@ static Long getCharResolved(VTDNav *vn,int offset){
 				ch = getCharUnit(vn,offset);
 
 				if (ch == 'x') {
-					while (TRUE) {
+					while (VTD_TRUE) {
 						offset++;
 						inc++;
 						ch = getCharUnit(vn,offset);
@@ -665,7 +665,7 @@ static Long getCharResolved(VTDNav *vn,int offset){
 						//throw new NavException("Illegal char in a char reference");
 					}
 				} else {
-					while (TRUE) {
+					while (VTD_TRUE) {
 
 						ch = getCharUnit(vn,offset);
 						offset++;
@@ -834,13 +834,13 @@ Long getElementFragment(VTDNav *vn){
 	// for root element
 	if (depth == 0) {
 		int temp = vn->vtdBuffer->size - 1;
-		Boolean b = FALSE;
+		Boolean b = VTD_FALSE;
 		int so2 = 0;
 		while (getTokenDepth(vn,temp) == -1) {
 			temp--; // backward scan
-			b = TRUE;
+			b = VTD_TRUE;
 		}
-		if (b == FALSE)
+		if (b == VTD_FALSE)
 			so2 =
 			(vn->encoding <= FORMAT_WIN_1258)
 			? (vn->docOffset + vn->docLen - 1)
@@ -970,13 +970,13 @@ Long getContentFragment(VTDNav *vn){
 		// for root element
 		if (depth == 0) {
 			int temp = vn->vtdBuffer->size - 1;
-			Boolean b = FALSE;
+			Boolean b = VTD_FALSE;
 			int so2 = 0;
 			while (getTokenDepth(vn,temp) == -1) {
 				temp--; // backward scan
-				b = TRUE;
+				b = VTD_TRUE;
 			}
-			if (b == FALSE)
+			if (b == VTD_FALSE)
 				so2 =
 					(vn->encoding <= FORMAT_WIN_1258 )
 						? (vn->docOffset + vn->docLen - 1)
@@ -1085,7 +1085,7 @@ int getText(VTDNav *vn){
 		else
 			return -1;
 
-		while (TRUE) {
+		while (VTD_TRUE) {
 			if (type == TOKEN_CHARACTER_DATA || type == TOKEN_CDATA_VAL) {
 				if (depth == getTokenDepth(vn,index))
 					return index;
@@ -1136,7 +1136,7 @@ int getTokenLength(VTDNav *vn, int index){
 			case TOKEN_STARTING_TAG :
 				i = longAt(vn->vtdBuffer, index);
 
-				return (vn->ns == FALSE)
+				return (vn->ns == VTD_FALSE)
 					? (int) ((i & MASK_TOKEN_QN_LEN) >> 32)
 					: ((int) ((i & MASK_TOKEN_QN_LEN)
 					>> 32)
@@ -1181,28 +1181,28 @@ Boolean hasAttr(VTDNav *vn, UCSChar *an){
 	int index = (vn->context[0] != 0) ? vn->context[vn->context[0]] + 1 : vn->rootIndex + 1;
 
 	if (vn->context[0]==-1) 
-		return FALSE;
+		return VTD_FALSE;
 
 	if (index >= size)
-		return FALSE;
+		return VTD_FALSE;
 
 	type = getTokenType(vn,index);
-	if (vn->ns == FALSE) {
+	if (vn->ns == VTD_FALSE) {
 		if (wcscmp(an,L"*")==0) {
 			if (type == TOKEN_ATTR_NAME || type == TOKEN_ATTR_NS)
-				return TRUE;
+				return VTD_TRUE;
 			else
-				return FALSE;
+				return VTD_FALSE;
 		} else {
 			while (index < size
 				&& (type == TOKEN_ATTR_NAME
 				|| type == TOKEN_ATTR_NS)) { // ns tokens becomes visible
 					if (matchRawTokenString(vn,index, an))
-						return TRUE;
+						return VTD_TRUE;
 					index += 2;
 					type = getTokenType(vn,index);
 			}
-			return FALSE;
+			return VTD_FALSE;
 		}
 	} else {
 		if (wcscmp(an,L"*")==0) {
@@ -1210,23 +1210,23 @@ Boolean hasAttr(VTDNav *vn, UCSChar *an){
 				&& (getTokenType(vn,index) == TOKEN_ATTR_NAME
 				|| getTokenType(vn,index) == TOKEN_ATTR_NS)) {
 					if (type == TOKEN_ATTR_NAME)
-						// TOKEN_ATTR_NS is invisible when ns == TRUE
-						return TRUE;
+						// TOKEN_ATTR_NS is invisible when ns == VTD_TRUE
+						return VTD_TRUE;
 					index += 2;
 					type = getTokenType(vn,index);
 			}
-			return FALSE;
+			return VTD_FALSE;
 
 		} else {
 			while (index < size
 				&& (type == TOKEN_ATTR_NAME || type == TOKEN_ATTR_NS)) {
 					if (type == TOKEN_ATTR_NAME
 						&& matchRawTokenString(vn,index, an))
-						return TRUE;
+						return VTD_TRUE;
 					index += 2;
 					type = getTokenType(vn,index);
 			}
-			return FALSE;
+			return VTD_FALSE;
 		}
 	}
 }
@@ -1235,7 +1235,7 @@ Boolean hasAttr(VTDNav *vn, UCSChar *an){
 //matching namespace URL and localname.
 Boolean hasAttrNS(VTDNav *vn, UCSChar *URL, UCSChar *localName){
 	if (vn->context[0]==-1)
-		return FALSE;
+		return VTD_FALSE;
 	return (getAttrValNS(vn,URL, localName) != -1);
 }
 
@@ -1283,26 +1283,26 @@ int iterate(VTDNav *vn, int dp, UCSChar *en,Boolean special){
 				if (special || matchElement(vn, en)) {
 					if (dp < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} else {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		}
 		index++;
 	}
-	return FALSE;
+	return VTD_FALSE;
 }
 
 //This method is similar to getElementByName in DOM except it doesn't
 //return the nodeset, instead it iterates over those nodes .
 //When URL is "*" it will match any namespace
-//if ns is FALSE, return FALSE immediately
+//if ns is VTD_FALSE, return VTD_FALSE immediately
 int iterateNS(VTDNav *vn, int dp, UCSChar *URL, UCSChar *ln){
 	int index;
 	tokenType tt;
-	if (vn->ns == FALSE)
-		return FALSE;
+	if (vn->ns == VTD_FALSE)
+		return VTD_FALSE;
 
 	index = getCurrentIndex(vn) + 1;
 	while (index < vn->vtdSize) {
@@ -1322,16 +1322,16 @@ int iterateNS(VTDNav *vn, int dp, UCSChar *URL, UCSChar *ln){
 				if (matchElementNS(vn,URL, ln)) {
 					if (dp < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} else {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		}
 		index++;
 
 	}
-	return FALSE;
+	return VTD_FALSE;
 }
 
 
@@ -1359,8 +1359,8 @@ Boolean iterate_preceding(VTDNav *vn,UCSChar *en, int* a, int endIndex){
 							vn->context[depth] = index;
 						if (depth < vn->maxLCDepthPlusOne)
 							resolveLC(vn);
-						vn->atTerminal = FALSE;
-						return TRUE;
+						vn->atTerminal = VTD_FALSE;
+						return VTD_TRUE;
 					}else{
 						vn->context[depth] = index;
 						index++;
@@ -1382,7 +1382,7 @@ Boolean iterate_preceding(VTDNav *vn,UCSChar *en, int* a, int endIndex){
 			}
 			index++;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 }
 
 // This function is called by selectElementNS_P in autoPilot
@@ -1409,8 +1409,8 @@ Boolean iterate_precedingNS(VTDNav *vn,UCSChar *URL, UCSChar *ln, int* a,int end
 					if (matchElementNS(vn,ln,URL)){						
 						if (depth < vn->maxLCDepthPlusOne)
 							resolveLC(vn);
-						vn->atTerminal = FALSE;
-						return TRUE;
+						vn->atTerminal = VTD_FALSE;
+						return VTD_TRUE;
 					}else{
 						vn->context[depth] = index;
 						index++;
@@ -1432,7 +1432,7 @@ Boolean iterate_precedingNS(VTDNav *vn,UCSChar *URL, UCSChar *ln, int* a,int end
 			}
 			index++;
 		}
-		return FALSE;
+		return VTD_FALSE;
 }
 
 
@@ -1460,12 +1460,12 @@ Boolean iterate_following(VTDNav *vn,UCSChar *en, Boolean special){
 				if (special || matchElement(vn,en)) {
 					if (depth < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			}
 			index++;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 }
 
 
@@ -1493,12 +1493,12 @@ Boolean iterate_followingNS(VTDNav *vn, UCSChar *URL, UCSChar *ln){
 				if (matchElementNS(vn,URL, ln)) {
 					if (depth < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 		}
 		index++;
 	}
-	return FALSE;
+	return VTD_FALSE;
 }
 
 
@@ -1512,9 +1512,9 @@ Boolean matchElement(VTDNav *vn, UCSChar *en){
 
 	// throw new IllegalArgumentException(" Element name can't be null ");
 	if (wcscmp(en,L"*") == 0 && vn->context[0] !=-1)
-		return TRUE;
+		return VTD_TRUE;
 	if (vn->context[0]==-1)
-		return FALSE;
+		return VTD_FALSE;
 	return matchRawTokenString3(vn,
 		(vn->context[0] == 0) ? vn->rootIndex : vn->context[vn->context[0]],
 		en);
@@ -1525,7 +1525,7 @@ Boolean matchElement(VTDNav *vn, UCSChar *en){
 //ln is the localname that, when set to *, matches any localname
 Boolean matchElementNS(VTDNav *vn, UCSChar *URL, UCSChar *ln){
 	if (vn->context[0]==-1)
-		return FALSE;
+		return VTD_FALSE;
 	else {
 		int i =
 			getTokenLength(vn, (vn->context[0] != 0) ? vn->context[vn->context[0]] : vn->rootIndex);
@@ -1545,16 +1545,16 @@ Boolean matchElementNS(VTDNav *vn, UCSChar *URL, UCSChar *ln){
 			offset,
 			fullLen,
 			ln))) { // no prefix, search for xmlns
-				if (((URL != NULL) ? wcscmp(URL,L"*")==0 : FALSE)
-					|| (resolveNS2(vn, URL, offset, preLen) == TRUE))
-					return TRUE;
+				if (((URL != NULL) ? wcscmp(URL,L"*")==0 : VTD_FALSE)
+					|| (resolveNS2(vn, URL, offset, preLen) == VTD_TRUE))
+					return VTD_TRUE;
 
 				if ( preLen==3 
     			&& matchRawTokenString1(vn,offset, preLen,L"xml")
     			&& wcscmp(URL,L"http://www.w3.org/XML/1998/namespace"))
-    			return TRUE;   
+    			return VTD_TRUE;   
 		}
-		return FALSE;
+		return VTD_FALSE;
 	}
 }
 
@@ -1645,20 +1645,20 @@ static Boolean matchTokenString1(VTDNav *vn, int offset, int len, UCSChar *s){
 		for (i = 0; i < l && offset < endOffset; i++) {
 			if ((vn->XMLDoc[offset] & 0xff) != '&') {
 				if (s[i] != (vn->XMLDoc[offset] & 0xff))
-					return FALSE;
+					return VTD_FALSE;
 				offset++;
 			} else {
 				l1 = getCharResolved(vn,offset);
 				if (s[i] != (int)l1) {
-					return FALSE;
+					return VTD_FALSE;
 				}
 				offset += (int)(l1>>32);
 			}
 		}
 		if (i == l && offset == endOffset)
-			return TRUE;
+			return VTD_TRUE;
 		else
-			return FALSE;
+			return VTD_FALSE;
 	} else {
 		int i = 0;
 		l = (int)wcslen(s);
@@ -1666,14 +1666,14 @@ static Boolean matchTokenString1(VTDNav *vn, int offset, int len, UCSChar *s){
 			l1 = getCharResolved(vn,offset);
 			offset += (int)(l1>>32);
 			if (s[i] != (int)l1) {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		}
 		if (i == l && offset == endOffset)
-			return TRUE;
+			return VTD_TRUE;
 		else
-			return FALSE;
-	} //return TRUE;
+			return VTD_FALSE;
+	} //return VTD_TRUE;
 }
 
 //Match a string against a "non-extractive" token represented by a 
@@ -2236,8 +2236,8 @@ static Long parseLong2(VTDNav *vn, int index, int radix){
 Boolean _pop(VTDNav *vn){
 	Boolean b = load(vn->contextBuf,vn->stackTemp);
 	int i;
-	if (b == FALSE)
-		return FALSE;
+	if (b == VTD_FALSE)
+		return VTD_FALSE;
 	for ( i = 0; i < vn->nestingLevel; i++) {
 		vn->context[i] = vn->stackTemp[i];
 	}
@@ -2250,7 +2250,7 @@ Boolean _pop(VTDNav *vn){
 	vn->l3upper = vn->stackTemp[vn->nestingLevel + 6];
 	vn->atTerminal = (vn->stackTemp[vn->nestingLevel + 7] == 1);
 	vn->LN  = vn->stackTemp[vn->nestingLevel + 8];
-	return TRUE;
+	return VTD_TRUE;
 }
 
 
@@ -2260,8 +2260,8 @@ Boolean _pop(VTDNav *vn){
 Boolean _pop2(VTDNav *vn){
 	Boolean b = load(vn->contextBuf2,vn->stackTemp);
 	int i;
-	if (b == FALSE)
-		return FALSE;
+	if (b == VTD_FALSE)
+		return VTD_FALSE;
 	for ( i = 0; i < vn->nestingLevel; i++) {
 		vn->context[i] = vn->stackTemp[i];
 	}
@@ -2274,7 +2274,7 @@ Boolean _pop2(VTDNav *vn){
 	vn->l3upper = vn->stackTemp[vn->nestingLevel + 6];
 	vn->atTerminal = (vn->stackTemp[vn->nestingLevel + 7] == 1);
 	vn->LN  = vn->stackTemp[vn->nestingLevel + 8];
-	return TRUE;
+	return VTD_TRUE;
 }
 
 //Store the context info into the contextBuf.
@@ -2297,7 +2297,7 @@ Boolean _push(VTDNav *vn){
 		vn->stackTemp[vn->nestingLevel + 7]=0;
 	vn->stackTemp[vn->nestingLevel + 8] = vn->LN;
 	store(vn->contextBuf,vn->stackTemp);
-	return TRUE;
+	return VTD_TRUE;
 }
 
 //Store the context info into the contextBuf2.
@@ -2321,7 +2321,7 @@ Boolean _push2(VTDNav *vn){
 		vn->stackTemp[vn->nestingLevel + 7]=0;
 	vn->stackTemp[vn->nestingLevel + 8] = vn->LN;
 	store(vn->contextBuf2,vn->stackTemp);
-	return TRUE;
+	return VTD_TRUE;
 }
 
 
@@ -2346,7 +2346,7 @@ static Boolean resolveNS(VTDNav *vn, UCSChar *URL){
 	int i, offset, preLen;
 
 	if (vn->context[0]==-1)
-		return FALSE;
+		return VTD_FALSE;
 	i =
 		getTokenLength(vn,(vn->context[0] != 0) ? vn->context[vn->context[0]] : vn->rootIndex);
 	offset =
@@ -2357,13 +2357,13 @@ static Boolean resolveNS(VTDNav *vn, UCSChar *URL){
 	switch(i){
 							 case 0: if (URL== NULL){
 								 if (getTokenLength(vn,i)==0)
-								 return TRUE;
+								 return VTD_TRUE;
 									 } else {
-										 return FALSE;
+										 return VTD_FALSE;
 									 }
 							 default:
 								 if (URL == NULL){
-									 return FALSE;
+									 return VTD_FALSE;
 								 }
 								 else {
 									 return matchTokenString2(vn,i,URL);
@@ -2378,13 +2378,13 @@ static Boolean resolveNS2(VTDNav *vn, UCSChar *URL, int offset, int len){
 	i = lookupNS2(vn, offset, len);
 	switch(i){
 							 case 0: if (URL== NULL){
-								 return TRUE;
+								 return VTD_TRUE;
 									 } else {
-										 return FALSE;
+										 return VTD_FALSE;
 									 }
 							 default:
 								 if (URL == NULL){
-									 return FALSE;
+									 return VTD_FALSE;
 								 }
 								 else {
 									 return matchTokenString(vn,i,URL);
@@ -2419,7 +2419,7 @@ void _sampleState(VTDNav *vn, FastIntBuffer *fib){
 }
 // A generic navigation method.
 // Move the current to the element according to the direction constants
-// If no such element, no position change and return FALSE (0).
+// If no such element, no position change and return VTD_FALSE (0).
 /* Legal direction constants are 	<br>
 * <pre>		ROOT            0  </pre>
 * <pre>		PARENT          1  </pre>
@@ -2439,32 +2439,32 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 					}*/
 					vn->context[0] = 0;
 				}
-				vn->atTerminal = FALSE;
+				vn->atTerminal = VTD_FALSE;
 				//vn->l1index = vn->l2index = vn->l3index = -1;
-				return TRUE;
+				return VTD_TRUE;
 			case PARENT :
-				if (vn->atTerminal == TRUE){
-					vn->atTerminal = FALSE;
-					return TRUE;
+				if (vn->atTerminal == VTD_TRUE){
+					vn->atTerminal = VTD_FALSE;
+					return VTD_TRUE;
 				}
 				if (vn->context[0] > 0) {
 					//vn->context[vn->context[0]] = vn->context[vn->context[0] + 1] = 0xffffffff;
 					//vn->context[vn->context[0]] = -1;
 					vn->context[0]--;
-					return TRUE;
+					return VTD_TRUE;
 				} else if (vn->context[0]==0){
 					vn->context[0]=-1;
-					return TRUE;
+					return VTD_TRUE;
 				}else {
-					return FALSE;
+					return VTD_FALSE;
 				}
 			case FIRST_CHILD :
 			case LAST_CHILD :
-				if (vn->atTerminal) return FALSE;
+				if (vn->atTerminal) return VTD_FALSE;
 				switch (vn->context[0]) {
 			case -1:
 				vn->context[0] = 0;
-				return TRUE;
+				return VTD_TRUE;
 			case 0 :
 				if (vn->l1Buffer->size > 0) {
 					vn->context[0] = 1;
@@ -2474,13 +2474,13 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 						: (vn->l1Buffer->size - 1);
 					vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
 					//(int) (vtdToken >> 32);
-					return TRUE;
+					return VTD_TRUE;
 				} else
-					return FALSE;
+					return VTD_FALSE;
 			case 1 :
 				vn->l2lower = lower32At(vn->l1Buffer,vn->l1index);
 				if (vn->l2lower == -1) {
-					return FALSE;
+					return VTD_FALSE;
 				}
 				vn->context[0] = 2;
 				vn->l2upper = vn->l2Buffer->size - 1;
@@ -2496,12 +2496,12 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 				vn->l2index =
 					(direction == FIRST_CHILD) ? vn->l2lower : vn->l2upper;
 				vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-				return TRUE;
+				return VTD_TRUE;
 
 			case 2 :
 				vn->l3lower = lower32At(vn->l2Buffer,vn->l2index);
 				if (vn->l3lower == -1) {
-					return FALSE;
+					return VTD_FALSE;
 				}
 				vn->context[0] = 3;
 				size = vn->l2Buffer->size;
@@ -2519,7 +2519,7 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 					(direction == FIRST_CHILD) ? vn->l3lower : vn->l3upper;
 				vn->context[3] = intAt(vn->l3Buffer,vn->l3index);
 
-				return TRUE;
+				return VTD_TRUE;
 
 			default :
 				if (direction == FIRST_CHILD) {
@@ -2541,17 +2541,17 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 								(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 
 							if (depth <= vn->context[0]) {
-								return FALSE;
+								return VTD_FALSE;
 							} else if (depth == (vn->context[0] + 1)) {
 								vn->context[0] += 1;
 								vn->context[vn->context[0]] = index;
-								return TRUE;
+								return VTD_TRUE;
 							}
 						}
 
 						index++;
 					} // what condition  
-					return FALSE;
+					return VTD_FALSE;
 				} else {
 					int index = vn->context[vn->context[0]] + 1;
 					int last_index = -1;
@@ -2581,11 +2581,11 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 					}
 
 					if (last_index == -1) {
-						return FALSE;
+						return VTD_FALSE;
 					} else {
 						vn->context[0] += 1;
 						vn->context[vn->context[0]] = last_index;
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				}
@@ -2596,50 +2596,50 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 				switch (vn->context[0]) {
 			case -1:
 			case 0 :
-				return FALSE;
+				return VTD_FALSE;
 			case 1 :
 				if (direction == NEXT_SIBLING) {
 					if (vn->l1index + 1 >= vn->l1Buffer->size) {
-						return FALSE;
+						return VTD_FALSE;
 					}
 
 					vn->l1index++; // global incremental
 				} else {
 					if (vn->l1index - 1 < 0) {
-						return FALSE;
+						return VTD_FALSE;
 					}
 					vn->l1index--; // global incremental
 				}
 				vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
-				return TRUE;
+				return VTD_TRUE;
 			case 2 :
 				if (direction == NEXT_SIBLING) {
 					if (vn->l2index + 1 > vn->l2upper) {
-						return FALSE;
+						return VTD_FALSE;
 					}
 					vn->l2index++;
 				} else {
 					if (vn->l2index - 1 < vn->l2lower) {
-						return FALSE;
+						return VTD_FALSE;
 					}
 					vn->l2index--;
 				}
 				vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-				return TRUE;
+				return VTD_TRUE;
 			case 3 :
 				if (direction == NEXT_SIBLING) {
 					if (vn->l3index + 1 > vn->l3upper) {
-						return FALSE;
+						return VTD_FALSE;
 					}
 					vn->l3index++;
 				} else {
 					if (vn->l3index - 1 < vn->l3lower) {
-						return FALSE;
+						return VTD_FALSE;
 					}
 					vn->l3index--;
 				}
 				vn->context[3] = intAt(vn->l3Buffer,vn->l3index);
-				return TRUE;
+				return VTD_TRUE;
 			default :
 				//int index = context[context[0]] + 1;
 
@@ -2659,15 +2659,15 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 								(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 
 							if (depth < vn->context[0]) {
-								return FALSE;
+								return VTD_FALSE;
 							} else if (depth == (vn->context[0])) {
 								vn->context[vn->context[0]] = index;
-								return TRUE;
+								return VTD_TRUE;
 							}
 						}
 						index++;
 					}
-					return FALSE;
+					return VTD_FALSE;
 				} else {
 					int index = vn->context[vn->context[0]] - 1;
 					while (index > vn->context[vn->context[0] - 1]) {
@@ -2684,21 +2684,21 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 								(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 
 							/*if (depth < vn->context[0]) {
-							return FALSE;
+							return VTD_FALSE;
 							} else */
 							if (depth == (vn->context[0])) {
 								vn->context[vn->context[0]] = index;
-								return TRUE;
+								return VTD_TRUE;
 							}
 						}
 						index--;
 					} // what condition          	    
-					return FALSE;
+					return VTD_FALSE;
 				}
 				}
 
 			default :
-				return FALSE;
+				return VTD_FALSE;
 	}
 
 }
@@ -2707,7 +2707,7 @@ Boolean _toElement(VTDNav *vn, navDir direction){
 * A generic navigation method.
 * Move the current to the element according to the direction 
 * constants and the element name
-* If no such element, no position change and return FALSE (0).
+* If no such element, no position change and return VTD_FALSE (0).
 * "*" matches any element
 * Legal direction constants are 	<br>
 * <pre>		ROOT            0  </pre>
@@ -2724,7 +2724,7 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 	int temp=-1;
 	int d=-1;
 	int val = 0;
-	Boolean b= FALSE; 
+	Boolean b= VTD_FALSE; 
 	if (en == NULL){
 		throwException2(invalid_argument,
 			"inavlid argument for toElement2");
@@ -2739,47 +2739,47 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 				return toElement(vn,PARENT);
 
 			case FIRST_CHILD :
-				if (vn->atTerminal)return FALSE;
-				if (toElement(vn,FIRST_CHILD) == FALSE)
-					return FALSE;
+				if (vn->atTerminal)return VTD_FALSE;
+				if (toElement(vn,FIRST_CHILD) == VTD_FALSE)
+					return VTD_FALSE;
 				// check current element name
-				if (matchElement(vn,en) == FALSE) {
-					if (toElement2(vn,NEXT_SIBLING, en) == TRUE)
-						return TRUE;
+				if (matchElement(vn,en) == VTD_FALSE) {
+					if (toElement2(vn,NEXT_SIBLING, en) == VTD_TRUE)
+						return VTD_TRUE;
 					else {
 						//toParentElement();
 						//vn->context[vn->context[0]] = 0xffffffff;
 						vn->context[0]--;
-						return FALSE;
+						return VTD_FALSE;
 					}
 				} else
-					return TRUE;
+					return VTD_TRUE;
 
 			case LAST_CHILD :
-				if (vn->atTerminal)return FALSE;
-				if (toElement(vn,LAST_CHILD) == FALSE)
-					return FALSE;
-				if (matchElement(vn,en) == FALSE){
-					if (toElement2(vn,PREV_SIBLING, en) == TRUE)
-						return TRUE;
+				if (vn->atTerminal)return VTD_FALSE;
+				if (toElement(vn,LAST_CHILD) == VTD_FALSE)
+					return VTD_FALSE;
+				if (matchElement(vn,en) == VTD_FALSE){
+					if (toElement2(vn,PREV_SIBLING, en) == VTD_TRUE)
+						return VTD_TRUE;
 					else {
 						//vn->context[vn->context[0]] = 0xffffffff;
 						vn->context[0]--;
 						//toParentElement();
-						return FALSE;
+						return VTD_FALSE;
 					}
 				} else
-					return TRUE;
+					return VTD_TRUE;
 
 			case NEXT_SIBLING :
 				if (vn->atTerminal){					
 					if (nodeToElement(vn,NEXT_SIBLING)){
-						b=TRUE;
+						b=VTD_TRUE;
 						if (matchElement(vn,en)){
-							return TRUE;
+							return VTD_TRUE;
 						}					
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}
 				
 				if (!b){
@@ -2789,7 +2789,7 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 					switch(d)
 					{
 					case -1:
-					case 0: return FALSE;
+					case 0: return VTD_FALSE;
 					case 1: val = vn->l1index; break;
 					case 2: val = vn->l2index; break;
 					case 3: val = vn->l3index; break;
@@ -2798,16 +2798,16 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 					}
 				}
 				//if (d == 0)
-				//	return FALSE;
+				//	return VTD_FALSE;
 				while (toElement(vn,NEXT_SIBLING)) {
 					if (matchElement(vn,en)) {
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				if (b){
 					vn->context[0]--;//LN value should not change
-					vn->atTerminal=TRUE;
-					return FALSE;
+					vn->atTerminal=VTD_TRUE;
+					return VTD_FALSE;
 				} else {
 					switch(d)
 					{
@@ -2818,18 +2818,18 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 						break;
 					}
 					vn->context[d] = temp;
-					return FALSE;
+					return VTD_FALSE;
 				}
 
 			case PREV_SIBLING :
 				if (vn->atTerminal){					
 					if (nodeToElement(vn,PREV_SIBLING)){
-						b=TRUE;
+						b=VTD_TRUE;
 						if (matchElement(vn,en)){
-							return TRUE;
+							return VTD_TRUE;
 						}					
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}				
 				if (!b){
 					d = vn->context[0];
@@ -2837,7 +2837,7 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 					switch(d)
 					{
 					case -1:
-					case 0: return FALSE;
+					case 0: return VTD_FALSE;
 					case 1: val = vn->l1index; break;
 					case 2: val = vn->l2index; break;
 					case 3: val = vn->l3index; break;
@@ -2846,16 +2846,16 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 					}
 				}
 				//if (d == 0)
-				//	return FALSE;
+				//	return VTD_FALSE;
 				while (toElement(vn,PREV_SIBLING)) {
 					if (matchElement(vn,en)) {
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				if (b){
 					vn->context[0]--;//LN value should not change
-					vn->atTerminal=TRUE;
-					return FALSE;
+					vn->atTerminal=VTD_TRUE;
+					return VTD_FALSE;
 				} else{	
 					switch(d)
 					{
@@ -2866,18 +2866,18 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 						break;
 					}
 					vn->context[d] = temp;
-					return FALSE;
+					return VTD_FALSE;
 				}
 
 			default :
-				return FALSE;
+				return VTD_FALSE;
 				//throw new NavException("illegal navigation options");
 	}
 }
 /*	
 * A generic navigation function with namespace support.
 * Move the current to the element according to the direction constants and the prefix and local names
-* If no such element, no position change and return FALSE(0).
+* If no such element, no position change and return VTD_FALSE(0).
 * URL * matches any namespace, including undefined namespaces
 * a null URL means hte namespace prefix is undefined for the element
 * ln *  matches any localname
@@ -2890,16 +2890,16 @@ Boolean _toElement2(VTDNav *vn, navDir direction, UCSChar *en){
 * <pre>		PREV_SIBLING    5  </pre>
 * <br>
 * for ROOT and PARENT, element name will be ignored.
-* If not ns enabled, return FALSE immediately with no position change.
+* If not ns enabled, return VTD_FALSE immediately with no position change.
 */
 Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 	//int size;
 	int temp=-1;
 	int d=-1;
 	int val = 0;
-	Boolean b=FALSE;
-	if (vn->ns == FALSE)
-		return FALSE;
+	Boolean b=VTD_FALSE;
+	if (vn->ns == VTD_FALSE)
+		return VTD_FALSE;
 	switch (direction) {
 			case ROOT :
 				return toElement(vn,ROOT);
@@ -2908,47 +2908,47 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 				return toElement(vn,PARENT);
 
 			case FIRST_CHILD :
-				if (vn->atTerminal)return FALSE;
-				if (toElement(vn,FIRST_CHILD) == FALSE)
-					return FALSE;
+				if (vn->atTerminal)return VTD_FALSE;
+				if (toElement(vn,FIRST_CHILD) == VTD_FALSE)
+					return VTD_FALSE;
 				// check current element name
-				if (matchElementNS(vn,URL, ln) == FALSE) {
-					if (toElementNS(vn,NEXT_SIBLING, URL, ln) == TRUE )
-						return TRUE;
+				if (matchElementNS(vn,URL, ln) == VTD_FALSE) {
+					if (toElementNS(vn,NEXT_SIBLING, URL, ln) == VTD_TRUE )
+						return VTD_TRUE;
 					else {
 						//toParentElement();
 						//vn->context[vn->context[0]] = 0xffffffff;
 						vn->context[0]--;
-						return FALSE;
+						return VTD_FALSE;
 					}
 				} else
-					return TRUE;
+					return VTD_TRUE;
 
 			case LAST_CHILD :
-				if (vn->atTerminal)return FALSE;
-				if (toElement(vn,LAST_CHILD) == FALSE)
-					return FALSE;
-				if (matchElementNS(vn, URL, ln) == FALSE) {
-					if (toElementNS(vn, PREV_SIBLING, URL, ln) == TRUE)
-						return TRUE;
+				if (vn->atTerminal)return VTD_FALSE;
+				if (toElement(vn,LAST_CHILD) == VTD_FALSE)
+					return VTD_FALSE;
+				if (matchElementNS(vn, URL, ln) == VTD_FALSE) {
+					if (toElementNS(vn, PREV_SIBLING, URL, ln) == VTD_TRUE)
+						return VTD_TRUE;
 					else {
 						//vn->context[vn->context[0]] = 0xffffffff;
 						vn->context[0]--;
 						//toParentElement();
-						return FALSE;
+						return VTD_FALSE;
 					}
 				} else
-					return TRUE;
+					return VTD_TRUE;
 
 			case NEXT_SIBLING :
 				if (vn->atTerminal){					
 					if (nodeToElement(vn,NEXT_SIBLING)){
-						b=TRUE;
+						b=VTD_TRUE;
 						if (matchElementNS(vn,URL,ln)){
-							return TRUE;
+							return VTD_TRUE;
 						}					
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}
 				if (!b){
 					d = vn->context[0];
@@ -2956,7 +2956,7 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 					switch(d)
 					{
 					case -1:
-					case 0: return FALSE;
+					case 0: return VTD_FALSE;
 					case 1: val = vn->l1index; break;
 					case 2: val = vn->l2index; break;
 					case 3: val = vn->l3index; break;
@@ -2965,16 +2965,16 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 					}
 				}
 				//if (d == 0)
-				//	return FALSE;
+				//	return VTD_FALSE;
 				while (toElement(vn,NEXT_SIBLING)) {
 					if (matchElementNS(vn,URL, ln)) {
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				if (b){					
 					vn->context[0]--;//LN value should not change
-					vn->atTerminal=TRUE;
-					return FALSE;
+					vn->atTerminal=VTD_TRUE;
+					return VTD_FALSE;
 				}
 				else{
 					switch(d)
@@ -2986,18 +2986,18 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 						break;
 					}
 					vn->context[d] = temp;
-					return FALSE;
+					return VTD_FALSE;
 				}
 
 			case PREV_SIBLING :
 				if (vn->atTerminal){
 					if (nodeToElement(vn,PREV_SIBLING)){
-						b=TRUE;
+						b=VTD_TRUE;
 						if (matchElementNS(vn,URL,ln)){
-							return TRUE;
+							return VTD_TRUE;
 						}					
 					}else
-						return FALSE;
+						return VTD_FALSE;
 					}
 				if (!b){
 					d = vn->context[0];
@@ -3005,7 +3005,7 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 					switch(d)
 					{
 					case -1: 
-					case  0: return FALSE;
+					case  0: return VTD_FALSE;
 					case 1: val = vn->l1index; break;
 					case 2: val = vn->l2index; break;
 					case 3: val = vn->l3index; break;
@@ -3014,16 +3014,16 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 					}
 				}
 				//if (d == 0)
-				//	return FALSE;
+				//	return VTD_FALSE;
 				while (toElement(vn,PREV_SIBLING)) {
 					if (matchElementNS(vn,URL, ln)) {
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				if (b){
 					vn->context[0]--;//LN value should not change
-					vn->atTerminal=TRUE;
-					return FALSE;
+					vn->atTerminal=VTD_TRUE;
+					return VTD_FALSE;
 				}else {
 					switch(d)
 					{
@@ -3034,10 +3034,10 @@ Boolean _toElementNS(VTDNav *vn, navDir direction, UCSChar *URL, UCSChar *ln){
 						break;
 					}
 					vn->context[d] = temp;
-					return FALSE;
+					return VTD_FALSE;
 				}
 			default :
-				return FALSE;
+				return VTD_FALSE;
 				//throw new NavException("illegal navigation options");
 	}
 
@@ -3077,7 +3077,7 @@ UCSChar *toNormalizedString(VTDNav *vn, int index){
 
 		// trim off the leading whitespaces
 
-		while (TRUE) {
+		while (VTD_TRUE) {
 			int temp = offset;
 			l = getChar(vn,offset);
 			ch = (int)l;
@@ -3089,7 +3089,7 @@ UCSChar *toNormalizedString(VTDNav *vn, int index){
 			}
 		}
 
-		d = FALSE;
+		d = VTD_FALSE;
 		k = 0;
 		while (offset <= endOffset) {
 			l= getCharResolved(vn,offset);
@@ -3097,9 +3097,9 @@ UCSChar *toNormalizedString(VTDNav *vn, int index){
 			offset += (int)(l>>32);
 
 			if (isWS(ch)&& getCharUnit(vn,offset - 1) != ';') {
-				d = TRUE;
+				d = VTD_TRUE;
 			} else {
-				if (d == FALSE)
+				if (d == VTD_FALSE)
 					//sb.append((char) ch); // java only supports 16 bit unicode
 					s[k++] = ch;
 				else {
@@ -3107,7 +3107,7 @@ UCSChar *toNormalizedString(VTDNav *vn, int index){
 					s[k++] = (UCSChar) ' ';
 					//sb.append((char) ch);
 					s[k++] = (UCSChar) ch;
-					d = FALSE;
+					d = VTD_FALSE;
 				}
 			}
 		}
@@ -3305,9 +3305,9 @@ static int lookupNS2(VTDNav *vn, int offset, int len){
 	Long l; 
 	int i,k;
 	tokenType type;
-	Boolean hasNS = FALSE;
+	Boolean hasNS = VTD_FALSE;
 	int size = vn->vtdBuffer->size;
-	// look for a match in the current hiearchy and return TRUE
+	// look for a match in the current hiearchy and return VTD_TRUE
 	for (i = vn->context[0]; i >= 0; i--) {
 		int s = (i != 0) ? vn->context[i] : vn->rootIndex;
 		switch (NSval(vn,s)) { // checked the ns marking
@@ -3330,21 +3330,21 @@ static int lookupNS2(VTDNav *vn, int offset, int len){
 									return s+1;
 								} else if ((fullLen - preLen - 1) == len) {
 									// prefix length identical to local part of ns declaration
-									Boolean a = TRUE;
+									Boolean a = VTD_TRUE;
 									int j;
 									for (j = 0; j < len; j++) {
 										if (getCharUnit(vn,os + preLen + 1 + j)
 											!= getCharUnit(vn,offset + j)) {
-												a = FALSE;
+												a = VTD_FALSE;
 												break;
 										}
 									}
-									if (a == TRUE) {
+									if (a == VTD_TRUE) {
 										return s+1;
 									}
 								}
 							}
-							//return (URL != null) ? TRUE : FALSE;
+							//return (URL != null) ? VTD_TRUE : VTD_FALSE;
 							s += 2;
 							type = getTokenType(vn,s);
 					}
@@ -3365,11 +3365,11 @@ static int lookupNS2(VTDNav *vn, int offset, int len){
 							int preLen = ((temp >> 16) & 0xffff);
 							int fullLen = temp & 0xffff;
 							int os = getTokenOffset(vn, k);
-							hasNS = TRUE;
+							hasNS = VTD_TRUE;
 							// xmlns found
 							if (temp == 5 && len == 0) {
 								l = longAt(vn->vtdBuffer,s);
-								hasNS = FALSE;
+								hasNS = VTD_FALSE;
 
 								modifyEntryFLB(vn->vtdBuffer,
 									s,
@@ -3377,18 +3377,18 @@ static int lookupNS2(VTDNav *vn, int offset, int len){
 								return k+1;
 							} else if ((fullLen - preLen - 1) == len) {
 								// prefix length identical to local part of ns declaration
-								Boolean a = TRUE;
+								Boolean a = VTD_TRUE;
 								int j;
 								for (j = 0; j < len; j++) {
 									if (getCharUnit(vn, os + preLen + 1 + j)
 										!= getCharUnit(vn, offset + j)) {
-											a = FALSE;
+											a = VTD_FALSE;
 											break;
 									}
 								}
-								if (a == TRUE) {
+								if (a == VTD_TRUE) {
 									l = longAt(vn->vtdBuffer,s);
-									//hasNS = FALSE;
+									//hasNS = VTD_FALSE;
 
 									modifyEntryFLB(vn->vtdBuffer,
 										s,
@@ -3398,7 +3398,7 @@ static int lookupNS2(VTDNav *vn, int offset, int len){
 								}
 							}
 						}
-						//return (URL != null) ? TRUE : FALSE;
+						//return (URL != null) ? VTD_TRUE : VTD_FALSE;
 						k += 2;
 						if (k>=size)
 							break;
@@ -3407,7 +3407,7 @@ static int lookupNS2(VTDNav *vn, int offset, int len){
 					l = longAt(vn->vtdBuffer, s);
 
 					if (hasNS) {
-						hasNS = FALSE;
+						hasNS = VTD_FALSE;
 						modifyEntryFLB(vn->vtdBuffer, s, l | 0x00000000c0000000L);
 					} else {
 						modifyEntryFLB(vn->vtdBuffer, s, l | 0x0000000080000000L);
@@ -3424,7 +3424,7 @@ int lookupNS(VTDNav *vn){
 	int i, offset, preLen;
 
 	if (vn->context[0]==-1)
-		return FALSE;
+		return VTD_FALSE;
 	i =
 		getTokenLength(vn,(vn->context[0] != 0) ? vn->context[vn->context[0]] : vn->rootIndex);
 	offset =
@@ -3536,7 +3536,7 @@ Boolean overWrite(VTDNav *vn, int index, UByte* ba, int offset, int len){
 		|| index >= vn->vtdSize
 		|| offset < 0){
 			throwException2(invalid_argument,"Illegal argument for overwrite");
-			return FALSE;
+			return VTD_FALSE;
 	}
 	if (vn->encoding >= FORMAT_UTF_16BE
 		&& (((len & 1) == 1)
@@ -3544,7 +3544,7 @@ Boolean overWrite(VTDNav *vn, int index, UByte* ba, int offset, int len){
 	{
 		// for UTF 16, len and offset must be integer multiple
 		// of 2
-		return FALSE;
+		return VTD_FALSE;
 	}
 	t = getTokenType(vn,index);
 	if (t == TOKEN_CHARACTER_DATA
@@ -3554,7 +3554,7 @@ Boolean overWrite(VTDNav *vn, int index, UByte* ba, int offset, int len){
 		int os, length,temp,k;
 		length = getTokenLength(vn,index);
 		if (length < len)
-			return FALSE;
+			return VTD_FALSE;
 		os = getTokenOffset(vn,index);
 		temp = length - len;
 		// get XML doc
@@ -3583,9 +3583,9 @@ Boolean overWrite(VTDNav *vn, int index, UByte* ba, int offset, int len){
 				k += 2;
 			}
 		}
-		return TRUE;
+		return VTD_TRUE;
 	}
-	return FALSE;
+	return VTD_FALSE;
 }
 
 int compareRawTokenString2(VTDNav *vn, int offset, int len, UCSChar *s){
@@ -3765,7 +3765,7 @@ Boolean _writeIndex_VTDNav(VTDNav *vn, FILE *f){
 	return _writeIndex_L3(1, 
                 vn->encoding, 
                 vn->ns, 
-                TRUE, 
+                VTD_TRUE, 
 				vn->nestingLevel-1, 
                 3, 
                 vn->rootIndex, 
@@ -3780,12 +3780,12 @@ Boolean _writeIndex_VTDNav(VTDNav *vn, FILE *f){
 }
 Boolean _writeIndex2_VTDNav(VTDNav *vn, char *fileName){
 	FILE *f = NULL;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	f = fopen(fileName,"wb");
 	
 	if (f==NULL){
 		throwException2(invalid_argument,"fileName not valid");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	b = writeIndex_VTDNav(vn,f);
 	fclose(f);
@@ -3815,7 +3815,7 @@ Long getIndexSize2(VTDNav *vn){
 // compensated element 
 ElementFragmentNs *getElementFragmentNs(VTDNav *vn){
 
-	if (vn->ns == FALSE){  
+	if (vn->ns == VTD_FALSE){  
 		throwException2(nav_exception,"getElementFragmentNS can only be called when ns is tured on");
 		return NULL;
 	}else {
@@ -3872,14 +3872,14 @@ ElementFragmentNs *getElementFragmentNs(VTDNav *vn){
 					while(k<vn->vtdSize){ 
 						type = getTokenType(vn,k);
 						if (type==TOKEN_ATTR_NAME || type==TOKEN_ATTR_NS){
-							Boolean unique = TRUE;
+							Boolean unique = VTD_TRUE;
 							if (type == TOKEN_ATTR_NS){
 								int z = 0;
 								for (z=0;z<fib->size;z++){
 									//System.out.println("fib size ==> "+fib.size());
 									//if (fib->size==4);
 									if (matchTokens(vn, intAt(fib,z),vn,k)){
-										unique = FALSE;
+										unique = VTD_FALSE;
 										break;
 									} 
 
@@ -3943,7 +3943,7 @@ int getNormalizedStringLength(VTDNav *vn, int index){
 		endOffset = len + offset - 1; // point to the last character
 
 		// trim off the leading whitespaces
-		while (TRUE) {
+		while (VTD_TRUE) {
 			int temp = offset;
 			l = getChar(vn,offset);
 			ch = (int)l;
@@ -3955,7 +3955,7 @@ int getNormalizedStringLength(VTDNav *vn, int index){
 			}
 		}
 
-		d = FALSE;
+		d = VTD_FALSE;
 		k = 0;
 		while (offset <= endOffset) {
 			l= getCharResolved(vn,offset);
@@ -3963,15 +3963,15 @@ int getNormalizedStringLength(VTDNav *vn, int index){
 			offset += (int)(l>>32);
 
 			if (isWS(ch)&& getCharUnit(vn,offset - 1) != ';') {
-				d = TRUE;
+				d = VTD_TRUE;
 			} else {
-				if (d == FALSE)
+				if (d == VTD_FALSE)
 					//sb.append((char) ch); // java only supports 16 bit unicode
 					len1++;
 				else {
 					//sb.append(' ');
 					len1 = len1+2;
-					d = FALSE;
+					d = VTD_FALSE;
 				}
 			}
 		}
@@ -4042,9 +4042,9 @@ Long getOffsetAfterHead(VTDNav *vn){
 
 		if (i+1==j)
 	    {
-			offset = getTokenOffset(vn,i)+((vn->ns==FALSE)?getTokenLength(vn,i):(getTokenLength(vn,i)&0xff));
+			offset = getTokenOffset(vn,i)+((vn->ns==VTD_FALSE)?getTokenLength(vn,i):(getTokenLength(vn,i)&0xff));
  	    }else {
-			offset = getTokenOffset(vn,j-1)+((vn->ns==FALSE)?getTokenLength(vn,j-1):(getTokenLength(vn,j-1)&0xff))+1;
+			offset = getTokenOffset(vn,j-1)+((vn->ns==VTD_FALSE)?getTokenLength(vn,j-1):(getTokenLength(vn,j-1)&0xff))+1;
 	    }
 
  	    while(getCharUnit(vn,offset)!='>'){
@@ -4062,18 +4062,18 @@ Long getOffsetAfterHead(VTDNav *vn){
 /* Write the VTDs and LCs into an Separate index file*/
 Boolean _writeSeparateIndex_VTDNav(VTDNav *vn, char *VTDIndexFile){
 	FILE *f = NULL;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	f = fopen(VTDIndexFile,"wb");
 	
 	if (f==NULL){
 		throwException2(invalid_argument,"fileName not valid");
-		//return FALSE;
+		//return VTD_FALSE;
 	}
 
 	b=_writeSeparateIndex_L3( (Byte)2, 
                 vn->encoding, 
                 vn->ns, 
-                TRUE, 
+                VTD_TRUE, 
 				vn->nestingLevel-1, 
                 3, 
                 vn->rootIndex, 
@@ -4111,7 +4111,7 @@ Boolean startsWith(VTDNav *vn, int index, UCSChar *s){
 	//       System.out.print("currentOffset :" + currentOffset);
 	l = wcslen(s);
 	if (l> (size_t)len)
-		return FALSE;
+		return VTD_FALSE;
 	//System.out.println(s);
 	for (i = 0; i < l && offset < endOffset; i++) {
 		if (b)
@@ -4120,10 +4120,10 @@ Boolean startsWith(VTDNav *vn, int index, UCSChar *s){
 			l1 = getChar(vn, offset);
 		i1 = s[i];
 		if (i1 != (int) l1)
-			return FALSE;
+			return VTD_FALSE;
 		offset += (int) (l1 >> 32);
 	}	    
-	return TRUE;
+	return VTD_TRUE;
 
 }
 
@@ -4149,10 +4149,10 @@ Boolean endsWith(VTDNav *vn, int index, UCSChar *s){
 	//       System.out.print("currentOffset :" + currentOffset);
 	l = wcslen(s);
 	if (l>len)
-		return FALSE;
+		return VTD_FALSE;
 	i2 = (size_t)getStringLength(vn,index);
 	if (l> i2)
-		return FALSE;
+		return VTD_FALSE;
 	i2 = i2 - l; // calculate the # of chars to be skipped
 	// eat away first several chars
 	for (i = 0; i < i2; i++) {
@@ -4170,10 +4170,10 @@ Boolean endsWith(VTDNav *vn, int index, UCSChar *s){
 			l1 = getChar(vn,offset);
 		i1 = s[i];
 		if (i1 != (int) l1)
-			return FALSE;
+			return VTD_FALSE;
 		offset += (int) (l1 >> 32);
 	}	    
-	return TRUE;
+	return VTD_TRUE;
 }
 
 /*Test whether a given token contains s. notie that this function
@@ -4199,7 +4199,7 @@ Boolean contains(VTDNav *vn, int index, UCSChar *s){
 	int gOffset = offset;
 	l = wcslen(s);
 	if (l> len)
-		return FALSE;
+		return VTD_FALSE;
 	//System.out.println(s);
 	while( offset<endOffset){
 		gOffset = offset;
@@ -4216,9 +4216,9 @@ Boolean contains(VTDNav *vn, int index, UCSChar *s){
 				break;				
 		}
 		if (i==l)
-			return TRUE;
+			return VTD_TRUE;
 	}
-	return FALSE;
+	return VTD_FALSE;
 }
 
 
@@ -4544,7 +4544,7 @@ VTDNav* _duplicateNav(VTDNav *vn){
 		vn->docOffset,
 		vn->docLen,
 		vn->br);	
-	vn1->master = FALSE;
+	vn1->master = VTD_FALSE;
 	return vn1;
 }
 
@@ -4564,7 +4564,7 @@ VTDNav *_cloneNav(VTDNav *vn){
 		vn->docOffset,
 		vn->docLen,
 		vn->br);	
-	vn1->master = FALSE;
+	vn1->master = VTD_FALSE;
 	vn1->atTerminal = vn->atTerminal;
 	vn1->LN = vn->LN;
 	if (vn->context[0]!=-1)
@@ -4617,27 +4617,27 @@ void _recoverNode(VTDNav *vn, int index){
 			vn->context[0]=-1;
 			if (index != 0){
 				vn->LN = index;
-				vn->atTerminal = TRUE;
+				vn->atTerminal = VTD_TRUE;
 			}else
-				vn->atTerminal = FALSE;
+				vn->atTerminal = VTD_FALSE;
 			return;
 		case 0:
 			vn->context[0]=0;
 			if (index != vn->rootIndex){
 				vn->LN = index;
-				vn->atTerminal = TRUE;
+				vn->atTerminal = VTD_TRUE;
 				if (type> TOKEN_ATTR_NS)
 					sync(vn,0,index);
 			}else
-				vn->atTerminal = FALSE;
+				vn->atTerminal = VTD_FALSE;
 			return;		
 	}
 	vn->context[0]=d;
 	if (type != TOKEN_STARTING_TAG){
 		vn->LN = index;
-		vn->atTerminal = TRUE;
+		vn->atTerminal = VTD_TRUE;
 	}else
-		vn->atTerminal = FALSE;
+		vn->atTerminal = VTD_FALSE;
 	// search LC level 1
 	recoverNode_l1(vn,index);
 
@@ -4806,7 +4806,7 @@ int compareNormalizedTokenString2(VTDNav *vn,int offset, int len,
 			UCSChar *s) {
 		int i,i1, l, temp;
 		Long l1,l2;
-		//boolean b = FALSE;
+		//boolean b = VTD_FALSE;
 		// this.currentOffset = offset;
 		int endOffset = offset + len;
 
@@ -4855,7 +4855,7 @@ Long getSiblingElementFragments(VTDNav *vn,int i){
 		if (i<=0)
 			throwException2(invalid_argument," # of sibling can be less or equal to 0");
 		// get starting char offset
-		if(vn->atTerminal==TRUE)
+		if(vn->atTerminal==VTD_TRUE)
 			return -1L;
 		// so is the char offset
 		so = getTokenOffset(vn,getCurrentIndex(vn))-1;
@@ -4920,13 +4920,13 @@ UCSChar* toNormalizedString2(VTDNav *vn, int index){
 		
 		
 
-		//boolean d = FALSE;
+		//boolean d = VTD_FALSE;
 		while (offset <= endOffset) {
 			l = getCharResolved(vn,offset);
 			ch = (int)l;
 			offset += (int)(l>>32);
 			if (isWS(ch) && (l>>32)<=2) {
-				//d = TRUE;
+				//d = VTD_TRUE;
 				s[k++] = (UCSChar)' ';
 				//sb.append(' ');
 			} else{
@@ -4939,7 +4939,7 @@ UCSChar* toNormalizedString2(VTDNav *vn, int index){
 
 
 UCSChar *getPrefixString(VTDNav *vn, int i){
-	if (vn->ns == FALSE)
+	if (vn->ns == VTD_FALSE)
 			return NULL;
 	{
 		tokenType type = getTokenType(vn,i);
@@ -4977,7 +4977,7 @@ void _freeVTDNav_L5(VTDNav_L5 *vn){
 	if (vn!=NULL){
 	freeContextBuffer (vn->contextBuf);
 	freeContextBuffer(vn->contextBuf2);
-	if (vn->br == FALSE && vn->master){
+	if (vn->br == VTD_FALSE && vn->master){
 		freeFastLongBuffer (vn->vtdBuffer);
 		freeFastLongBuffer(vn->l1Buffer);
 		freeFastLongBuffer(vn->l2Buffer);
@@ -5081,12 +5081,12 @@ VTDNav_L5 *createVTDNav_L5(int r, encoding_t enc, Boolean ns, int depth,
 
 							   vn->ns = ns;
 
-							   if (ns == TRUE)
+							   if (ns == VTD_TRUE)
 								   vn->offsetMask = MASK_TOKEN_OFFSET1;
 							   else 
 								   vn->offsetMask = MASK_TOKEN_OFFSET2;
 
-							   vn->atTerminal = FALSE;					
+							   vn->atTerminal = VTD_FALSE;					
 							   vn->context = (int *)malloc(vn->nestingLevel*sizeof(int));
 							   if (vn->context == NULL){
 								   throwException2(out_of_mem,							 
@@ -5136,7 +5136,7 @@ VTDNav_L5 *createVTDNav_L5(int r, encoding_t enc, Boolean ns, int depth,
 							   vn->bufLen = xLen;
 							   vn->br = br;
 							   vn->LN = 0;
-							   vn->shallowDepth = FALSE;
+							   vn->shallowDepth = VTD_FALSE;
 							   vn->maxLCDepthPlusOne = 6;
 							   vn->name=NULL;
 							   vn->localName=NULL;
@@ -5168,16 +5168,16 @@ VTDNav_L5 *createVTDNav_L5(int r, encoding_t enc, Boolean ns, int depth,
 				if (special || matchElement((VTDNav *)vn,en)) {
 					if (dp< 6)
 						resolveLC((VTDNav *)vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} else {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		}
 		index++;
 
 	}
-	return FALSE;
+	return VTD_FALSE;
 }*/
 
 /* DupliateNav duplicates an instance of VTDNav but doesn't retain the original node position*/
@@ -5197,7 +5197,7 @@ VTDNav *_duplicateNav_L5(VTDNav_L5 *vn){
 		vn->docOffset,
 		vn->docLen,
 		vn->br);	
-	vn1->master = FALSE;
+	vn1->master = VTD_FALSE;
 	return (VTDNav *)vn1;
 }
 
@@ -5218,7 +5218,7 @@ VTDNav *_cloneNav_L5(VTDNav_L5 *vn){
 		vn->docOffset,
 		vn->docLen,
 		vn->br);	
-	vn1->master = FALSE;
+	vn1->master = VTD_FALSE;
 	vn1->atTerminal = vn->atTerminal;
 	vn1->LN = vn->LN;
 	if (vn->context[0]!=-1)
@@ -5277,21 +5277,21 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 			vn->context[0]=-1;
 			if (index != 0){
 				vn->LN = index;
-				vn->atTerminal = TRUE;
+				vn->atTerminal = VTD_TRUE;
 			}			
 			return;
 		case 0:
 			vn->context[0]=0;
 			if (index != vn->rootIndex){
 				vn->LN = index;
-				vn->atTerminal = TRUE;
+				vn->atTerminal = VTD_TRUE;
 			}
 			return;		
 	}
 	vn->context[0]=d;
 	if (type != TOKEN_STARTING_TAG){
 		vn->LN = index;
-		vn->atTerminal = TRUE;
+		vn->atTerminal = VTD_TRUE;
 	}
 	// search LC level 1
 	recoverNode_l1((VTDNav *)vn,index);
@@ -5350,12 +5350,12 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 //This method is similar to getElementByName in DOM except it doesn't
 //return the nodeset, instead it iterates over those nodes .
 //When URL is "*" it will match any namespace
-//if ns is FALSE, return FALSE immediately
+//if ns is VTD_FALSE, return VTD_FALSE immediately
 /*int _iterateNS_L5(VTDNav_L5 *vn, int dp, UCSChar *URL, UCSChar *ln){
 	int index;
 	tokenType tokenType;
-	if (vn->ns == FALSE)
-		return FALSE;
+	if (vn->ns == VTD_FALSE)
+		return VTD_FALSE;
 
 	index = getCurrentIndex((VTDNav *)vn) + 1;
 	while (index < vn->vtdSize) {
@@ -5374,15 +5374,15 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 				if (matchElementNS((VTDNav *)vn,URL, ln)) {
 					if (dp < 6)
 						resolveLC((VTDNav *)vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} else {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		}
 		index++;
 	}
-	return FALSE;
+	return VTD_FALSE;
 }*/
 
 
@@ -5417,12 +5417,12 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 				if (index!= a[depth] && (special || matchElement((VTDNav *)vn,en))) {
 					if (depth <6)
 						resolveLC((VTDNav *)vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} 
 			index--;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 }*/
 
 // This function is called by selectElementNS_P in autoPilot
@@ -5457,12 +5457,12 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 				if (index != a[depth] && matchElementNS((VTDNav *)vn,URL,ln)) {	
 					if (depth <6)
 						resolveLC((VTDNav *)vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} 
 			index--;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 }*/
 // This function is called by selectElement_F in autoPilot
 /*Boolean _iterate_following_L5(VTDNav_L5 *vn,UCSChar *en, Boolean special){
@@ -5477,12 +5477,12 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 				if (special || matchElement((VTDNav *)vn,en)) {	
 					if (depth <6)
 					  resolveLC((VTDNav *)vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} 
 			index++;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 }*/
 // This function is called by selectElementNS_F in autoPilot
 /*Boolean _iterate_followingNS_L5(VTDNav_L5 *vn, UCSChar *URL, UCSChar *ln){
@@ -5497,12 +5497,12 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 				if (matchElementNS((VTDNav *)vn,URL,ln)) {	
 					if (depth <6)
 						resolveLC((VTDNav *)vn);
-					return TRUE;
+					return VTD_TRUE;
 				}
 			} 
 			index++;
 		}
-		return FALSE;
+		return VTD_FALSE;
 }*/
 
 //Load the context info from ContextBuffer.
@@ -5510,8 +5510,8 @@ void _recoverNode_L5(VTDNav_L5 *vn, int index){
 Boolean _pop_L5(VTDNav_L5 *vn){
 	Boolean b =load(vn->contextBuf,vn->stackTemp);
 	int i;
-	if (b == FALSE)
-		return FALSE;
+	if (b == VTD_FALSE)
+		return VTD_FALSE;
 	for (i = 0; i < vn->nestingLevel; i++) {
 		vn->context[i] = vn->stackTemp[i];
 	}
@@ -5531,14 +5531,14 @@ Boolean _pop_L5(VTDNav_L5 *vn){
 	vn->l5upper = vn->stackTemp[vn->nestingLevel + 12];
 	vn->atTerminal = (vn->stackTemp[vn->nestingLevel + 13] == 1);
 	vn->LN = vn->stackTemp[vn->nestingLevel+14];
-	return TRUE;
+	return VTD_TRUE;
 }
 
 Boolean _pop2_L5(VTDNav_L5 *vn){
 	Boolean b =load(vn->contextBuf2,vn->stackTemp);
 	int i;
-	if (b == FALSE)
-		return FALSE;
+	if (b == VTD_FALSE)
+		return VTD_FALSE;
 	for (i = 0; i < vn->nestingLevel; i++) {
 		vn->context[i] = vn->stackTemp[i];
 	}
@@ -5558,7 +5558,7 @@ Boolean _pop2_L5(VTDNav_L5 *vn){
 	vn->l5upper = vn->stackTemp[vn->nestingLevel + 12];
 	vn->atTerminal = (vn->stackTemp[vn->nestingLevel + 13] == 1);
 	vn->LN = vn->stackTemp[vn->nestingLevel+14];
-	return TRUE;
+	return VTD_TRUE;
 }
 //Store the context info into the ContextBuffer.
 //Info saved including LC and current state of the context 
@@ -5587,7 +5587,7 @@ Boolean _push_L5(VTDNav_L5 *vn){
 		vn->stackTemp[vn->nestingLevel + 13] =0;
 	vn->stackTemp[vn->nestingLevel+14] = vn->LN; 
 	store(vn->contextBuf,vn->stackTemp);
-	return TRUE;
+	return VTD_TRUE;
 }
 
 Boolean _push2_L5(VTDNav_L5 *vn){
@@ -5615,7 +5615,7 @@ Boolean _push2_L5(VTDNav_L5 *vn){
 		vn->stackTemp[vn->nestingLevel + 13] =0;
 	vn->stackTemp[vn->nestingLevel+14] = vn->LN; 
 	store(vn->contextBuf2,vn->stackTemp);
-	return TRUE;
+	return VTD_TRUE;
 }
 void _sampleState_L5(VTDNav_L5 *vn, FastIntBuffer *fib){
 		if (vn->context[0]>=1)
@@ -5662,34 +5662,34 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
                      */
 					vn->context[0] = 0;
 				}
-				vn->atTerminal = FALSE;
+				vn->atTerminal = VTD_FALSE;
 				vn->l1index = vn->l2index = vn->l3index = -1;
-				return TRUE;
+				return VTD_TRUE;
 			case PARENT :
-				if (vn->atTerminal == TRUE){
-					vn->atTerminal = FALSE;
-					return TRUE;
+				if (vn->atTerminal == VTD_TRUE){
+					vn->atTerminal = VTD_FALSE;
+					return VTD_TRUE;
 				}
 				if (vn->context[0] > 0) {
 					//context[context[0]] = context[context[0] + 1] =
                     // 0xffffffff;
 					vn->context[vn->context[0]] = -1;
 					vn->context[0]--;
-					return TRUE;
+					return VTD_TRUE;
 				}else if (vn->context[0]==0){
 					vn->context[0]=-1; //to be compatible with XPath Data model
-					return TRUE;
+					return VTD_TRUE;
  				}
 				else {
-					return FALSE;
+					return VTD_FALSE;
 				}
 			case FIRST_CHILD :
 			case LAST_CHILD :
-				if (vn->atTerminal) return FALSE;
+				if (vn->atTerminal) return VTD_FALSE;
 				switch (vn->context[0]) {
 				    case -1:
 				    	vn->context[0] = 0;
-				    	return TRUE;
+				    	return VTD_TRUE;
 					case 0 :
 						if (vn->l1Buffer->size > 0) {
 							vn->context[0] = 1;
@@ -5699,13 +5699,13 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 									: (vn->l1Buffer->size - 1);
 							vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
 							//(int) (vtdToken >> 32);
-							return TRUE;
+							return VTD_TRUE;
 						} else
-							return FALSE;
+							return VTD_FALSE;
 					case 1 :
 						vn->l2lower = lower32At(vn->l1Buffer,vn->l1index);
 						if (vn->l2lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 2;
 						vn->l2upper = vn->l2Buffer->size - 1;
@@ -5722,12 +5722,12 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 						vn->l2index =
 							(direction == FIRST_CHILD) ? vn->l2lower : vn->l2upper;
 						vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 2 :
 						vn->l3lower = lower32At(vn->l2Buffer,vn->l2index);
 						if (vn->l3lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 3;
 						vn->l3upper = vn->_l3Buffer->size - 1;
@@ -5744,12 +5744,12 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 						vn->l3index =
 							(direction == FIRST_CHILD) ? vn->l3lower : vn->l3upper;
 						vn->context[3] = upper32At(vn->_l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 3 :
 						vn->l4lower = lower32At(vn->_l3Buffer,vn->l3index);
 						if (vn->l4lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 4;
 						vn->l4upper = vn->l4Buffer->size - 1;
@@ -5766,12 +5766,12 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 						vn->l4index =
 							(direction == FIRST_CHILD) ? vn->l4lower : vn->l4upper;
 						vn->context[4] = upper32At(vn->l4Buffer,vn->l4index);
-						return TRUE;
+						return VTD_TRUE;
 
 					case 4 :
 						vn->l5lower = lower32At(vn->l4Buffer,vn->l4index);
 						if (vn->l5lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 5;
 
@@ -5790,7 +5790,7 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 							(direction == FIRST_CHILD) ? vn->l5lower : vn->l5upper;
 						vn->context[5] = intAt(vn->l5Buffer,vn->l5index);
 
-						return TRUE;
+						return VTD_TRUE;
 
 					default :
 						if (direction == FIRST_CHILD) {
@@ -5807,17 +5807,17 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 									int depth =
 										(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 									if (depth <= vn->context[0]) {
-										return FALSE;
+										return VTD_FALSE;
 									} else if (depth == (vn->context[0] + 1)) {
 										vn->context[0] += 1;
 										vn->context[vn->context[0]] = index;
-										return TRUE;
+										return VTD_TRUE;
 									}
 								}
 
 								index++;
 							} // what condition
-							return FALSE;
+							return VTD_FALSE;
 						} else {
 							int index = vn->context[vn->context[0]] + 1;
 							int last_index = -1;
@@ -5841,95 +5841,95 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 								index++;
 							}
 							if (last_index == -1) {
-								return FALSE;
+								return VTD_FALSE;
 							} else {
 								vn->context[0] += 1;
 								vn->context[vn->context[0]] = last_index;
-								return TRUE;
+								return VTD_TRUE;
 							}
 						}
 				}
 
 			case NEXT_SIBLING :
 			case PREV_SIBLING :
-				if(vn->atTerminal)return FALSE;
+				if(vn->atTerminal)return VTD_FALSE;
 				switch (vn->context[0]) {
 					case -1:
 					case 0 :
-						return FALSE;
+						return VTD_FALSE;
 					case 1 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l1index + 1 >= vn->l1Buffer->size) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 
 							vn->l1index++; // global incremental
 						} else {
 							if (vn->l1index - 1 < 0) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l1index--; // global incremental
 						}
 						vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
-						return TRUE;
+						return VTD_TRUE;
 					case 2 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l2index + 1 > vn->l2upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l2index++;
 						} else {
 							if (vn->l2index - 1 < vn->l2lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l2index--;
 						}
 						vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 3 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l3index + 1 > vn->l3upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l3index++;
 						} else {
 							if (vn->l3index - 1 < vn->l3lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l3index--;
 						}
 						vn->context[3] = upper32At(vn->_l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 4 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l4index + 1 > vn->l4upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l4index++;
 						} else {
 							if (vn->l4index - 1 < vn->l4lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l4index--;
 						}
 						vn->context[4] = upper32At(vn->l4Buffer,vn->l4index);
-						return TRUE;
+						return VTD_TRUE;
 					case 5 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l5index + 1 > vn->l5upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l5index++;
 						} else {
 							if (vn->l5index - 1 < vn->l5lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l5index--;
 						}
 						vn->context[5] = intAt(vn->l5Buffer,vn->l5index);
-						return TRUE;
+						return VTD_TRUE;
 					default :
 						//int index = context[context[0]] + 1;
 
@@ -5946,15 +5946,15 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 									int depth =
 										(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 									if (depth < vn->context[0]) {
-										return FALSE;
+										return VTD_FALSE;
 									} else if (depth == (vn->context[0])) {
 										vn->context[vn->context[0]] = index;
-										return TRUE;
+										return VTD_TRUE;
 									}
 								}
 								index++;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						} else {
 							int index = vn->context[vn->context[0]] - 1;
 							while (index > vn->context[vn->context[0] - 1]) {
@@ -5968,23 +5968,23 @@ Boolean _toElement_L5(VTDNav_L5 *vn, navDir direction){
 									int depth =
 										(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 									/*
-                                     * if (depth < context[0]) { return FALSE; }
+                                     * if (depth < context[0]) { return VTD_FALSE; }
                                      * else
                                      */
 									if (depth == (vn->context[0])) {
 										vn->context[vn->context[0]] = index;
-										return TRUE;
+										return VTD_TRUE;
 									}
 								}
 								index--;
 							} // what condition
-							return FALSE;
+							return VTD_FALSE;
 						}
 				}
 
 			default :
 				throwException2(nav_exception,"illegal navigation options");
-				return FALSE;
+				return VTD_FALSE;
 		}
 }
 Boolean _toElement2_L5(VTDNav_L5 *vn, navDir direction, UCSChar *en){
@@ -6003,46 +6003,46 @@ Boolean _toElement2_L5(VTDNav_L5 *vn, navDir direction, UCSChar *en){
 				return _toElement_L5(vn, PARENT);
 
 			case FIRST_CHILD :
-				if (vn->atTerminal)return FALSE;
-				if (_toElement_L5(vn, FIRST_CHILD) == FALSE)
-					return FALSE;
+				if (vn->atTerminal)return VTD_FALSE;
+				if (_toElement_L5(vn, FIRST_CHILD) == VTD_FALSE)
+					return VTD_FALSE;
 				// check current element name
-				if (matchElement((VTDNav *)vn, en) == FALSE) {
-					if (_toElement2_L5(vn, NEXT_SIBLING, en) == TRUE)
-						return TRUE;
+				if (matchElement((VTDNav *)vn, en) == VTD_FALSE) {
+					if (_toElement2_L5(vn, NEXT_SIBLING, en) == VTD_TRUE)
+						return VTD_TRUE;
 					else {
 						//toParentElement();
 						//context[context[0]] = 0xffffffff;
 						vn->context[0]--;
-						return FALSE;
+						return VTD_FALSE;
 					}
 				} else
-					return TRUE;
+					return VTD_TRUE;
 
 			case LAST_CHILD :
-				if (vn->atTerminal)return FALSE;
-				if (_toElement_L5(vn,LAST_CHILD) == FALSE)
-					return FALSE;
-				if (matchElement((VTDNav *)vn, en) == FALSE) {
-					if (_toElement2_L5(vn,PREV_SIBLING, en) == TRUE)
-						return TRUE;
+				if (vn->atTerminal)return VTD_FALSE;
+				if (_toElement_L5(vn,LAST_CHILD) == VTD_FALSE)
+					return VTD_FALSE;
+				if (matchElement((VTDNav *)vn, en) == VTD_FALSE) {
+					if (_toElement2_L5(vn,PREV_SIBLING, en) == VTD_TRUE)
+						return VTD_TRUE;
 					else {
 						//context[context[0]] = 0xffffffff;
 						vn->context[0]--;
 						//toParentElement();
-						return FALSE;
+						return VTD_FALSE;
 					}
 				} else
-					return TRUE;
+					return VTD_TRUE;
 
 			case NEXT_SIBLING :
-				if (vn->atTerminal)return FALSE;
+				if (vn->atTerminal)return VTD_FALSE;
 				d = vn->context[0];
 				
 				switch(d)
 				{
 				  case -1:
-				  case 0: return FALSE;
+				  case 0: return VTD_FALSE;
 				  case 1: val = vn->l1index; break;
 				  case 2: val = vn->l2index; break;
 				  case 3: val = vn->l3index; break;
@@ -6054,7 +6054,7 @@ Boolean _toElement2_L5(VTDNav_L5 *vn, navDir direction, UCSChar *en){
 				
 				while (_toElement_L5(vn,NEXT_SIBLING)) {
 					if (matchElement((VTDNav *)vn,en)) {
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				switch(d)
@@ -6067,15 +6067,15 @@ Boolean _toElement2_L5(VTDNav_L5 *vn, navDir direction, UCSChar *en){
 				  	//default:
 				}
 				vn->context[d] = temp;
-				return FALSE;
+				return VTD_FALSE;
 
 			case PREV_SIBLING :
-				if (vn->atTerminal) return FALSE;
+				if (vn->atTerminal) return VTD_FALSE;
 				d = vn->context[0];
 				switch(d)
 				{
 				  case -1:
-				  case 0: return FALSE;
+				  case 0: return VTD_FALSE;
 				  case 1: val = vn->l1index; break;
 				  case 2: val = vn->l2index; break;
 				  case 3: val = vn->l3index; break;
@@ -6087,7 +6087,7 @@ Boolean _toElement2_L5(VTDNav_L5 *vn, navDir direction, UCSChar *en){
 				
 				while (_toElement_L5(vn,PREV_SIBLING)) {
 					if (matchElement((VTDNav *)vn,en)) {
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				switch(d)
@@ -6100,11 +6100,11 @@ Boolean _toElement2_L5(VTDNav_L5 *vn, navDir direction, UCSChar *en){
 				  	//default:
 				}
 				vn->context[d] = temp;
-				return FALSE;
+				return VTD_FALSE;
 
 			default :
 				throwException2( nav_exception,"illegal navigation options");
-				return FALSE;
+				return VTD_FALSE;
 		}
 }
 Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *ln){
@@ -6118,34 +6118,34 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
                      */
 					vn->context[0] = 0;
 				}
-				vn->atTerminal = FALSE;
+				vn->atTerminal = VTD_FALSE;
 				vn->l1index = vn->l2index = vn->l3index = -1;
-				return TRUE;
+				return VTD_TRUE;
 			case PARENT :
-				if (vn->atTerminal == TRUE){
-					vn->atTerminal = FALSE;
-					return TRUE;
+				if (vn->atTerminal == VTD_TRUE){
+					vn->atTerminal = VTD_FALSE;
+					return VTD_TRUE;
 				}
 				if (vn->context[0] > 0) {
 					//context[context[0]] = context[context[0] + 1] =
                     // 0xffffffff;
 					vn->context[vn->context[0]] = -1;
 					vn->context[0]--;
-					return TRUE;
+					return VTD_TRUE;
 				}else if (vn->context[0]==0){
 					vn->context[0]=-1; //to be compatible with XPath Data model
-					return TRUE;
+					return VTD_TRUE;
  				}
 				else {
-					return FALSE;
+					return VTD_FALSE;
 				}
 			case FIRST_CHILD :
 			case LAST_CHILD :
-				if (vn->atTerminal) return FALSE;
+				if (vn->atTerminal) return VTD_FALSE;
 				switch (vn->context[0]) {
 				    case -1:
 				    	vn->context[0] = 0;
-				    	return TRUE;
+				    	return VTD_TRUE;
 					case 0 :
 						if (vn->l1Buffer->size > 0) {
 							vn->context[0] = 1;
@@ -6155,13 +6155,13 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 									: (vn->l1Buffer->size - 1);
 							vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
 							//(int) (vtdToken >> 32);
-							return TRUE;
+							return VTD_TRUE;
 						} else
-							return FALSE;
+							return VTD_FALSE;
 					case 1 :
 						vn->l2lower = lower32At(vn->l1Buffer,vn->l1index);
 						if (vn->l2lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 2;
 						vn->l2upper = vn->l2Buffer->size - 1;
@@ -6178,12 +6178,12 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 						vn->l2index =
 							(direction == FIRST_CHILD) ? vn->l2lower : vn->l2upper;
 						vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 2 :
 						vn->l3lower = lower32At(vn->l2Buffer,vn->l2index);
 						if (vn->l3lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 3;
 						vn->l3upper = vn->_l3Buffer->size - 1;
@@ -6200,12 +6200,12 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 						vn->l3index =
 							(direction == FIRST_CHILD) ? vn->l3lower : vn->l3upper;
 						vn->context[3] = upper32At(vn->_l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 3 :
 						vn->l4lower = lower32At(vn->_l3Buffer,vn->l3index);
 						if (vn->l4lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 4;
 						vn->l4upper = vn->l4Buffer->size - 1;
@@ -6222,12 +6222,12 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 						vn->l4index =
 							(direction == FIRST_CHILD) ? vn->l4lower : vn->l4upper;
 						vn->context[4] = upper32At(vn->l4Buffer,vn->l4index);
-						return TRUE;
+						return VTD_TRUE;
 
 					case 4 :
 						vn->l5lower = lower32At(vn->l4Buffer,vn->l4index);
 						if (vn->l5lower == -1) {
-							return FALSE;
+							return VTD_FALSE;
 						}
 						vn->context[0] = 5;
 
@@ -6246,7 +6246,7 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 							(direction == FIRST_CHILD) ? vn->l5lower : vn->l5upper;
 						vn->context[5] = intAt(vn->l5Buffer,vn->l5index);
 
-						return TRUE;
+						return VTD_TRUE;
 
 					default :
 						if (direction == FIRST_CHILD) {
@@ -6263,17 +6263,17 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 									int depth =
 										(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 									if (depth <= vn->context[0]) {
-										return FALSE;
+										return VTD_FALSE;
 									} else if (depth == (vn->context[0] + 1)) {
 										vn->context[0] += 1;
 										vn->context[vn->context[0]] = index;
-										return TRUE;
+										return VTD_TRUE;
 									}
 								}
 
 								index++;
 							} // what condition
-							return FALSE;
+							return VTD_FALSE;
 						} else {
 							int index = vn->context[vn->context[0]] + 1;
 							int last_index = -1;
@@ -6297,95 +6297,95 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 								index++;
 							}
 							if (last_index == -1) {
-								return FALSE;
+								return VTD_FALSE;
 							} else {
 								vn->context[0] += 1;
 								vn->context[vn->context[0]] = last_index;
-								return TRUE;
+								return VTD_TRUE;
 							}
 						}
 				}
 
 			case NEXT_SIBLING :
 			case PREV_SIBLING :
-				if(vn->atTerminal)return FALSE;
+				if(vn->atTerminal)return VTD_FALSE;
 				switch (vn->context[0]) {
 					case -1:
 					case 0 :
-						return FALSE;
+						return VTD_FALSE;
 					case 1 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l1index + 1 >= vn->l1Buffer->size) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 
 							vn->l1index++; // global incremental
 						} else {
 							if (vn->l1index - 1 < 0) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l1index--; // global incremental
 						}
 						vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
-						return TRUE;
+						return VTD_TRUE;
 					case 2 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l2index + 1 > vn->l2upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l2index++;
 						} else {
 							if (vn->l2index - 1 < vn->l2lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l2index--;
 						}
 						vn->context[2] = upper32At(vn->l2Buffer, vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 3 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l3index + 1 > vn->l3upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l3index++;
 						} else {
 							if (vn->l3index - 1 < vn->l3lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l3index--;
 						}
 						vn->context[3] = upper32At(vn->_l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 						
 					case 4 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l4index + 1 > vn->l4upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l4index++;
 						} else {
 							if (vn->l4index - 1 < vn->l4lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l4index--;
 						}
 						vn->context[4] = upper32At(vn->l4Buffer,vn->l4index);
-						return TRUE;
+						return VTD_TRUE;
 					case 5 :
 						if (direction == NEXT_SIBLING) {
 							if (vn->l5index + 1 > vn->l5upper) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l5index++;
 						} else {
 							if (vn->l5index - 1 < vn->l5lower) {
-								return FALSE;
+								return VTD_FALSE;
 							}
 							vn->l5index--;
 						}
 						vn->context[5] = intAt(vn->l5Buffer,vn->l5index);
-						return TRUE;
+						return VTD_TRUE;
 					default :
 						//int index = context[context[0]] + 1;
 
@@ -6402,15 +6402,15 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 									int depth =
 										(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 									if (depth < vn->context[0]) {
-										return FALSE;
+										return VTD_FALSE;
 									} else if (depth == (vn->context[0])) {
 										vn->context[vn->context[0]] = index;
-										return TRUE;
+										return VTD_TRUE;
 									}
 								}
 								index++;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						} else {
 							int index = vn->context[vn->context[0]] - 1;
 							while (index > vn->context[vn->context[0] - 1]) {
@@ -6424,23 +6424,23 @@ Boolean _toElementNS_L5(VTDNav_L5 *vn, navDir direction, UCSChar *URL, UCSChar *
 									int depth =
 										(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 									/*
-                                     * if (depth < context[0]) { return FALSE; }
+                                     * if (depth < context[0]) { return VTD_FALSE; }
                                      * else
                                      */
 									if (depth == (vn->context[0])) {
 										vn->context[vn->context[0]] = index;
-										return TRUE;
+										return VTD_TRUE;
 									}
 								}
 								index--;
 							} // what condition
-							return FALSE;
+							return VTD_FALSE;
 						}
 				}
 
 			default :
 				throwException2( nav_exception,"illegal navigation options");
-				return FALSE;
+				return VTD_FALSE;
 		}
 }
 
@@ -6693,7 +6693,7 @@ Boolean _writeIndex_VTDNav_L5(VTDNav_L5 *vn, FILE *f){
 	return _writeIndex_L5(1, 
                 vn->encoding, 
                 vn->ns, 
-                TRUE, 
+                VTD_TRUE, 
 				vn->nestingLevel-1, 
                 3, 
                 vn->rootIndex, 
@@ -6710,12 +6710,12 @@ Boolean _writeIndex_VTDNav_L5(VTDNav_L5 *vn, FILE *f){
 }
 Boolean _writeIndex2_VTDNav_L5(VTDNav_L5 *vn, char *fileName){
 	FILE *f = NULL;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	f = fopen(fileName,"wb");
 	
 	if (f==NULL){
 		throwException2(invalid_argument,"fileName not valid");
-		return FALSE;
+		return VTD_FALSE;
 	}
 	b = _writeIndex_VTDNav_L5(vn,f);
 	fclose(f);
@@ -6723,18 +6723,18 @@ Boolean _writeIndex2_VTDNav_L5(VTDNav_L5 *vn, char *fileName){
 }
 Boolean _writeSeparateIndex_VTDNav_L5(VTDNav_L5 *vn, char *VTDIndexFile){
 	FILE *f = NULL;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	f = fopen(VTDIndexFile,"wb");
 	
 	if (f==NULL){
 		throwException2(invalid_argument,"fileName not valid");
-		//return FALSE;
+		//return VTD_FALSE;
 	}
 
 	b=_writeSeparateIndex_L5( (Byte)2, 
                 vn->encoding, 
                 vn->ns, 
-                TRUE, 
+                VTD_TRUE, 
 				vn->nestingLevel-1, 
                 3, 
                 vn->rootIndex, 
@@ -6836,27 +6836,27 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 				if (vn->l1index!=-1){
 					vn->context[0]=1;
 					vn->context[1]=upper32At(vn->l1Buffer,vn->l1index);
-					vn->atTerminal=FALSE;
-					return TRUE;
+					vn->atTerminal=VTD_FALSE;
+					return VTD_TRUE;
 				}else
-					return FALSE;
+					return VTD_FALSE;
 			case 1:
 				if (vn->l2index!=-1){
 					vn->context[0]=2;
 					vn->context[2]=upper32At(vn->l2Buffer,vn->l2index);
-					vn->atTerminal=FALSE;
-					return TRUE;
+					vn->atTerminal=VTD_FALSE;
+					return VTD_TRUE;
 				}else
-					return FALSE;
+					return VTD_FALSE;
 				
 			case 2:
 				if (vn->l3index!=-1){
 					vn->context[0]=3;
 					vn->context[3]=intAt(vn->l3Buffer,vn->l3index);
-					vn->atTerminal=FALSE;
-					return TRUE;
+					vn->atTerminal=VTD_FALSE;
+					return VTD_TRUE;
 				}else
-					return FALSE;
+					return VTD_FALSE;
 			default:{
 				int index = vn->LN + 1;
 				int size = vn->vtdBuffer->size;
@@ -6870,15 +6870,15 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 						int depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < vn->context[0]) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == (vn->context[0])) {
 							vn->context[vn->context[0]] = index;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					}
 					index++;
 				}
-				return FALSE;}
+				return VTD_FALSE;}
 				
 			}
 		case PREV_SIBLING:
@@ -6888,28 +6888,28 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 					vn->l1index--;
 					vn->context[0]=1;
 					vn->context[1]=upper32At(vn->l1Buffer,vn->l1index);
-					vn->atTerminal=FALSE;
-					return TRUE;					
+					vn->atTerminal=VTD_FALSE;
+					return VTD_TRUE;					
 				}else
-					return FALSE;
+					return VTD_FALSE;
 			case 1:
 				if (vn->l2index!=-1 && vn->l2index>vn->l2lower){
 					vn->l2index--;
 					vn->context[0]=2;
 					vn->context[2]=upper32At(vn->l2Buffer,vn->l2index);
-					vn->atTerminal=FALSE;
-					return TRUE;					
+					vn->atTerminal=VTD_FALSE;
+					return VTD_TRUE;					
 				}else
-					return FALSE;
+					return VTD_FALSE;
 			case 2:
 				if (vn->l2index!=-1 && vn->l3index>vn->l3lower){
 					vn->l3index--;
 					vn->context[0]=3;
 					vn->context[3]=intAt(vn->l3Buffer,vn->l3index);
-					vn->atTerminal=FALSE;
-					return TRUE;					
+					vn->atTerminal=VTD_FALSE;
+					return VTD_TRUE;					
 				}else
-					return FALSE;
+					return VTD_FALSE;
 				
 			default:{
 				int index = vn->LN -1;
@@ -6924,21 +6924,21 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 						int depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						/*
-                         * if (depth < context[0]) { return FALSE; }
+                         * if (depth < context[0]) { return VTD_FALSE; }
                          * else
                          */
 						if (depth == (vn->context[0])) {
 							vn->context[vn->context[0]] = index;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					}
 					index--;
 				} // what condition
-				return FALSE;
+				return VTD_FALSE;
 					}
 			}
 		}
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 
@@ -6962,8 +6962,8 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 					vn->context[depth] = index;
 				if (depth < vn->maxLCDepthPlusOne)
 					resolveLC(vn);
-				vn->atTerminal = FALSE;
-				return TRUE;	
+				vn->atTerminal = VTD_FALSE;
+				return VTD_TRUE;	
 				
 			case TOKEN_CHARACTER_DATA:
 			case TOKEN_CDATA_VAL:
@@ -6973,13 +6973,13 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 				
 				vn->context[0]=depth;
 				vn->LN = index;
-				vn->atTerminal = TRUE;
+				vn->atTerminal = VTD_TRUE;
 				sync(vn,depth,index);
-				return TRUE;
+				return VTD_TRUE;
 			}
 			index++;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 	}
 
 	Boolean iterate_preceding_node(VTDNav *vn,int a[], int endIndex){
@@ -7005,15 +7005,15 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 						vn->context[depth] = index;
 					if (depth < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
-					vn->atTerminal = FALSE;
-					return TRUE;	
+					vn->atTerminal = VTD_FALSE;
+					return VTD_TRUE;	
 				}else{
 					if (depth > 0)
 						vn->context[depth] = index;
 					if (depth < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
 					index++;
-					vn->atTerminal = FALSE;
+					vn->atTerminal = VTD_FALSE;
 					continue;
 				}
 			
@@ -7025,13 +7025,13 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 				
 				vn->context[0]=depth;
 				vn->LN = index;
-				vn->atTerminal = TRUE;
+				vn->atTerminal = VTD_TRUE;
 				sync(vn,depth,index);
-				return TRUE;
+				return VTD_TRUE;
 			}
 			index++;
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 	}
 
 
@@ -7048,29 +7048,29 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 				 */
 				vn->context[0] = 0;
 			}
-			vn->atTerminal = FALSE;
+			vn->atTerminal = VTD_FALSE;
 			//l1index = l2index = l3index = -1;
-			return TRUE;
+			return VTD_TRUE;
 		case PARENT:
-			if (vn->atTerminal == TRUE){
-				vn->atTerminal = FALSE;
-				return TRUE;
+			if (vn->atTerminal == VTD_TRUE){
+				vn->atTerminal = VTD_FALSE;
+				return VTD_TRUE;
 			}
 			if (vn->context[0] > 0) {
 				//context[context[0]] = context[context[0] + 1] =
                 // 0xffffffff;
 				vn->context[vn->context[0]] = -1;
 				vn->context[0]--;
-				return TRUE;
+				return VTD_TRUE;
 			}else if (vn->context[0]==0){
 				vn->context[0]=-1; //to be compatible with XPath Data model
-				return TRUE;
+				return VTD_TRUE;
 				}
 			else {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		case FIRST_CHILD:
-			if(vn->atTerminal)return FALSE;
+			if(vn->atTerminal)return VTD_FALSE;
 			switch (vn->context[0]) {
 			case -1:
 				//starting with root element
@@ -7089,12 +7089,12 @@ Boolean nodeToElement(VTDNav *vn,int direction){
 loop1:
 				index++; // points to
 				if (index!=vn->rootIndex){
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
 				}else{
 					vn->context[0]=0;
 				}
-				return TRUE;
+				return VTD_TRUE;
 			case 0:
 				if (vn->l1Buffer->size!=0){
 					index = upper32At(vn->l1Buffer,0)-1;
@@ -7120,12 +7120,12 @@ loop2:
 					if(index == upper32At(vn->l1Buffer,0)){
 						vn->context[0]=1;
 						vn->context[1]= upper32At(vn->l1Buffer,0);
-						vn->atTerminal = FALSE;				
+						vn->atTerminal = VTD_FALSE;				
 					}else {
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->LN = index;						
 					}
-					return TRUE;
+					return VTD_TRUE;
 					
 				}else{					
 					//get to the first non-attr node after the starting tag
@@ -7139,15 +7139,15 @@ loop2:
 							break;
 						default:
 							if (getTokenDepth(vn,index)==0){
-								vn->atTerminal = TRUE;
+								vn->atTerminal = VTD_TRUE;
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 								
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}
 								
 			case 1: 
@@ -7177,15 +7177,15 @@ loop2:
 							break;
 						default:
 							vn->l2index = vn->l2lower;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->LN = index;
-							return TRUE;															
+							return VTD_TRUE;															
 						}
 					}
 					vn->l2index = vn->l2lower;
 					vn->context[0] = 2;
 					vn->context[2] = index;
-					return TRUE;				
+					return VTD_TRUE;				
 				}else{
 					index = vn->context[1]+1;
 					while(index<vn->vtdSize){
@@ -7197,15 +7197,15 @@ loop2:
 							break;
 						default:
 							if (getTokenDepth(vn,index)==1 && getTokenType(vn,index)!=TOKEN_STARTING_TAG){
-								vn->atTerminal = TRUE;
+								vn->atTerminal = VTD_TRUE;
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 								
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}
 				
 			case 2:
@@ -7235,15 +7235,15 @@ loop2:
 							break;
 						default:
 							vn->l3index = vn->l3lower;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->LN = index;
-							return TRUE;															
+							return VTD_TRUE;															
 						}
 					}
 					vn->l3index = vn->l3lower;
 					vn->context[0] = 3;
 					vn->context[3] = index;
-					return TRUE;				
+					return VTD_TRUE;				
 				}else{
 					index = vn->context[2]+1;
 					while(index<vn->vtdSize){
@@ -7255,15 +7255,15 @@ loop2:
 							break;
 						default:
 							if (getTokenDepth(vn,index)==2 && getTokenType(vn,index)!=TOKEN_STARTING_TAG){
-								vn->atTerminal = TRUE;
+								vn->atTerminal = VTD_TRUE;
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 								
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}				
 			default:				
 				index = vn->context[vn->context[0]] + 1;
@@ -7276,11 +7276,11 @@ loop2:
 						depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth <= vn->context[0]){
-							return FALSE;
+							return VTD_FALSE;
 						}else if (depth == (vn->context[0] + 1)) {
 							vn->context[0] += 1;
 							vn->context[vn->context[0]] = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else
 							throwException2(nav_exception,"impossible condition");
 						
@@ -7292,32 +7292,32 @@ loop2:
 						depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < vn->context[0]){
-							return FALSE;
+							return VTD_FALSE;
 						}else if (depth == (vn->context[0])) {
 							//System.out.println("inside to Node next sibling");
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else
 							throwException2(nav_exception,"impossible condition");
 					case TOKEN_PI_NAME:
 						depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < vn->context[0]){
-							return FALSE;
+							return VTD_FALSE;
 						}else if (depth == (vn->context[0])) {
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else
 							throwException2(nav_exception,"impossible condition");
  					}
 					//index++;
 				} // what condition
-				return FALSE;
+				return VTD_FALSE;
 			}
 		case LAST_CHILD:
-			if(vn->atTerminal)return FALSE;
+			if(vn->atTerminal)return VTD_FALSE;
 			return toNode_LastChild(vn);
 			
 		case NEXT_SIBLING:
@@ -7341,18 +7341,18 @@ loop2:
 						depth = getTokenDepth(vn,index);
 						if (depth == -1){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=0;
-							return TRUE;
+							return VTD_TRUE;
 								// depth has to be zero
 						}						
 					}else
-						return FALSE;
+						return VTD_FALSE;
 					
 				}else{
-					return FALSE;
+					return VTD_FALSE;
 				}
 				//break;
 			case 0:
@@ -7360,7 +7360,7 @@ loop2:
 					index = vn->LN;
 					tokenType = getTokenType(vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					//index++;
 					if (vn->l1Buffer->size!=0){
 						if (index <upper32At( vn->l1Buffer,vn->l1index)){
@@ -7369,19 +7369,19 @@ loop2:
 								index++;
 							if (index <= upper32At(vn->l1Buffer,vn->l1index)){
 								if (index ==upper32At( vn->l1Buffer,vn->l1index)){
-									vn->atTerminal = FALSE;
+									vn->atTerminal = VTD_FALSE;
 									vn->context[0]=1;
 									vn->context[1]=index;
-									return TRUE;
+									return VTD_TRUE;
 								}
 								depth = getTokenDepth(vn,index);
 								if (depth!=0)
-									return FALSE;
+									return VTD_FALSE;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else{
-								return FALSE;
+								return VTD_FALSE;
 							}
 						}else if ( vn->l1index < vn->l1Buffer->size -1){ // whether l1index is the last entry in l1 buffer
 							vn->l1index++;
@@ -7389,19 +7389,19 @@ loop2:
 								index++;
 							if (index <= upper32At(vn->l1Buffer,vn->l1index)){
 								if (index == upper32At(vn->l1Buffer,vn->l1index)){
-									vn->atTerminal = FALSE;
+									vn->atTerminal = VTD_FALSE;
 									vn->context[0]=1;
 									vn->context[1]=index;
-									return TRUE;
+									return VTD_TRUE;
 								}
 								depth = getTokenDepth(vn,index);
 								if (depth!=0)
-									return FALSE;
+									return VTD_FALSE;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else{
-								return FALSE;
+								return VTD_FALSE;
 							}
 						}else{
 							index++;
@@ -7410,12 +7410,12 @@ loop2:
 							if (index < vn->vtdSize){
 								depth = getTokenDepth(vn,index);
 								if (depth!=0)
-									return FALSE;
+									return VTD_FALSE;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else{
-								return FALSE;
+								return VTD_FALSE;
 							}
 						}						
 					}else{
@@ -7425,12 +7425,12 @@ loop2:
 						if (index < vn->vtdSize){
 							depth = getTokenDepth(vn,index);
 							if (depth!=0)
-								return FALSE;
+								return VTD_FALSE;
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 					
@@ -7447,12 +7447,12 @@ loop2:
 					}			
 					index++;
 					if (index>=vn->vtdSize )
-						return FALSE;
+						return VTD_FALSE;
 					else{
 						vn->context[0]=-1;
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					}
 				}
 				//break;
@@ -7460,7 +7460,7 @@ loop2:
 				if(vn->atTerminal){
 					tokenType=getTokenType(vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					if (lower32At(vn->l1Buffer,vn->l1index) != -1) {
 						if (vn->LN < upper32At(vn->l2Buffer,vn->l2upper)) {
 							tmp = upper32At(vn->l2Buffer,vn->l2index);
@@ -7470,12 +7470,12 @@ loop2:
 
 							if (index < tmp) {
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							} else {
 								vn->context[0] = 2;
 								vn->context[2] = tmp;
-								vn->atTerminal = FALSE;
-								return TRUE;
+								vn->atTerminal = VTD_FALSE;
+								return VTD_TRUE;
 							}
 						} else {
 							index = vn->LN + 1;
@@ -7485,12 +7485,12 @@ loop2:
 								depth = getTokenDepth(vn,index);
 								if (depth==1 && getTokenType(vn,index)!= TOKEN_STARTING_TAG){
 									vn->LN = index;
-									vn->atTerminal = TRUE;
-									return TRUE;
+									vn->atTerminal = VTD_TRUE;
+									return VTD_TRUE;
 								}
-								return FALSE;
+								return VTD_FALSE;
 							} else
-								return FALSE;
+								return VTD_FALSE;
 						}						
 					}else{
 						index= vn->LN+1;
@@ -7500,12 +7500,12 @@ loop2:
 							depth = getTokenDepth(vn,index);
 							if (depth==1 && getTokenType(vn,index)!= TOKEN_STARTING_TAG){
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}					
 				}else{
@@ -7518,15 +7518,15 @@ loop2:
 							index--;
 						}
 						if (lastEntry==index){
-							vn->atTerminal=FALSE;
+							vn->atTerminal=VTD_FALSE;
 							vn->context[0]=1;
 							vn->context[1]=index+1;
-							return TRUE;
+							return VTD_TRUE;
 						} else {
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=0;
 							vn->LN = index+1;
-							return TRUE;							
+							return VTD_TRUE;							
 						}
 					}else{
 						index = vn->vtdSize-1;
@@ -7538,19 +7538,19 @@ loop2:
 							if (getTokenDepth(vn,index)==0){
 								vn->context[0]=0;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 						}
 						index++;
 						if (getTokenDepth(vn,index)==0){
 							vn->context[0]=0;
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}
@@ -7559,7 +7559,7 @@ loop2:
 				if(vn->atTerminal){
 					tokenType=getTokenType(vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					if (lower32At(vn->l2Buffer,vn->l2index) != -1) {
 						if (vn->LN <intAt( vn->l3Buffer,vn->l3upper)) {
 							tmp =intAt(vn->l3Buffer,vn->l3index);
@@ -7569,12 +7569,12 @@ loop2:
 
 							if (index < tmp) {
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							} else {
 								vn->context[0] = 3;
 								vn->context[3] = tmp;
-								vn->atTerminal = FALSE;
-								return TRUE;
+								vn->atTerminal = VTD_FALSE;
+								return VTD_TRUE;
 							}
 						} else {
 							index = vn->LN + 1;
@@ -7584,11 +7584,11 @@ loop2:
 								depth = getTokenDepth(vn,index);
 								if (depth==2 && getTokenType(vn,index)!=TOKEN_STARTING_TAG){									
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								}
-								return FALSE;
+								return VTD_FALSE;
 							} 
-							return FALSE;
+							return VTD_FALSE;
 						}						
 					}else{
 						index= vn->LN+1;
@@ -7598,12 +7598,12 @@ loop2:
 							depth = getTokenDepth(vn,index);
 							if (depth==2 && getTokenType(vn,index)!= TOKEN_STARTING_TAG){
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}					
 				}else{
@@ -7634,12 +7634,12 @@ loop22:
 						if (index == lastEntry){
 							vn->context[0]=2;
 							vn->context[2] = index+1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						vn->context[0]=1;
 						vn->LN = index+1;
-						vn->atTerminal = TRUE;
-						return TRUE;						
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;						
 					}else{
 						lastEntry = index = vn->vtdSize-1;
 						if (vn->l1index!=vn->l1Buffer->size-1){
@@ -7657,9 +7657,9 @@ loop22:
 						
 						if (( /*lastEntry!=index &&*/ getTokenDepth(vn,index)==1)){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
 						if (/*getTokenDepth(index+1)==1 
@@ -7667,12 +7667,12 @@ loop22:
 								&&index !=tmp+1*/
 							lastEntry!=index && getTokenDepth(vn,index+1)==1){ //index has moved							
 							vn->LN = index+1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
-						return FALSE;
+						return VTD_FALSE;
 					}
 					
 				}
@@ -7711,12 +7711,12 @@ loop222:
 						if (index == lastEntry){
 							vn->context[0]=3;
 							vn->context[3] = index+1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						vn->context[0]=2;
 						vn->LN = index+1;
-						vn->atTerminal = TRUE;
-						return TRUE;						
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;						
 					}else{
 						lastEntry = index = vn->vtdSize-1;
 						
@@ -7739,19 +7739,19 @@ loop222:
 						}
 						if ((/*lastEntry==index &&*/ getTokenDepth(vn,index)==2)){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=2;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
 						if (lastEntry!=index && getTokenDepth(vn,index+1)==2){
 							vn->LN = index+1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=2;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
-						return FALSE;
+						return VTD_FALSE;
 					}
 					
 				}
@@ -7760,7 +7760,7 @@ loop222:
 				if (vn->atTerminal){
 					tokenType=getTokenType(vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					index = vn->LN+1;
 					tmp = vn->context[0]+1;
 				}
@@ -7775,12 +7775,12 @@ loop222:
 					switch (tokenType) {
 					case TOKEN_STARTING_TAG:						
 						if (depth < tmp) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == tmp) {
 							vn->context[0]=tmp;
 							vn->context[vn->context[0]] = index;
-							vn->atTerminal = FALSE;
-							return TRUE;
+							vn->atTerminal = VTD_FALSE;
+							return VTD_TRUE;
 						}else 
 							index++;
 						break;
@@ -7793,24 +7793,24 @@ loop222:
 					case TOKEN_CDATA_VAL:
 						//depth = (int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < tmp-1) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == tmp-1) {
 							vn->LN = index;
 							vn->context[0]= tmp-1;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else
 							index++;
 						break;
 					case TOKEN_PI_NAME:
 						//depth = (int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < tmp-1) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == tmp-1) {
 							vn->LN = index;
 							vn->context[0]= tmp-1;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else
 							index += 2;
 						break;
@@ -7819,14 +7819,14 @@ loop222:
 					}
 					
 				}
-				return FALSE;
+				return VTD_FALSE;
 			}		
 		case PREV_SIBLING:
 			return toNode_PrevSibling(vn);
 		default :
 			throwException2( nav_exception,"illegal navigation options");
 		}	
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 	Boolean _toNode_L5(VTDNav_L5 *vn, navDir dir){
@@ -7842,29 +7842,29 @@ loop222:
 				 */
 				vn->context[0] = 0;
 			}
-			vn->atTerminal = FALSE;
+			vn->atTerminal = VTD_FALSE;
 			//l1index = l2index = l3index = l2lower=l2upper=l3lower=l3upper=l4lower=l4upper=l5lower=l5upper=-1;
-			return TRUE;
+			return VTD_TRUE;
 		case PARENT:
-			if (vn->atTerminal == TRUE){
-				vn->atTerminal = FALSE;
-				return TRUE;
+			if (vn->atTerminal == VTD_TRUE){
+				vn->atTerminal = VTD_FALSE;
+				return VTD_TRUE;
 			}
 			if (vn->context[0] > 0) {
 				//context[context[0]] = context[context[0] + 1] =
                 // 0xffffffff;
 				vn->context[vn->context[0]] = -1;
 				vn->context[0]--;
-				return TRUE;
+				return VTD_TRUE;
 			}else if (vn->context[0]==0){
 				vn->context[0]=-1; //to be compatible with XPath Data model
-				return TRUE;
+				return VTD_TRUE;
 				}
 			else {
-				return FALSE;
+				return VTD_FALSE;
 			}
 		case FIRST_CHILD:
-			if(vn->atTerminal)return FALSE;
+			if(vn->atTerminal)return VTD_FALSE;
 			switch (vn->context[0]) {
 			case -1:
 				//starting with root element
@@ -7883,12 +7883,12 @@ loop222:
 loop11:
 				index++; // points to
 				if (index!=vn->rootIndex){
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
 				}else{
 					vn->context[0]=0;
 				}
-				return TRUE;
+				return VTD_TRUE;
 			case 0:
 				if (vn->l1Buffer->size!=0){
 					index = upper32At(vn->l1Buffer,0)-1;
@@ -7914,12 +7914,12 @@ loop11:
 					if(index == upper32At(vn->l1Buffer,0)){
 						vn->context[0]=1;
 						vn->context[1]=upper32At(vn->l1Buffer,0);
-						vn->atTerminal = FALSE;				
+						vn->atTerminal = VTD_FALSE;				
 					}else {
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->LN = index;						
 					}
-					return TRUE;
+					return VTD_TRUE;
 					
 				}else{					
 					//get to the first non-attr node after the starting tag
@@ -7933,15 +7933,15 @@ loop11:
 							break;
 						default:
 							if (getTokenDepth((VTDNav *)vn,index)==0){
-								vn->atTerminal = TRUE;
+								vn->atTerminal = VTD_TRUE;
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 								
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}
 								
 			case 1: 
@@ -7970,15 +7970,15 @@ loop11:
 							break;
 						default:
 							vn->l2index = vn->l2lower;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->LN = index;
-							return TRUE;															
+							return VTD_TRUE;															
 						}
 					}
 					vn->l2index = vn->l2lower;
 					vn->context[0] = 2;
 					vn->context[2] = index;
-					return TRUE;				
+					return VTD_TRUE;				
 				}else{
 					index = vn->context[1]+1;
 					while(index<vn->vtdSize){
@@ -7990,15 +7990,15 @@ loop11:
 							break;
 						default:
 							if (getTokenDepth((VTDNav *)vn,index)==1 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){
-								vn->atTerminal = TRUE;
+								vn->atTerminal = VTD_TRUE;
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 								
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}
 				
 			case 2:
@@ -8027,15 +8027,15 @@ loop11:
 							break;
 						default:
 							vn->l3index = vn->l3lower;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->LN = index;
-							return TRUE;															
+							return VTD_TRUE;															
 						}
 					}
 					vn->l3index = vn->l3lower;
 					vn->context[0] = 3;
 					vn->context[3] = index;
-					return TRUE;				
+					return VTD_TRUE;				
 				}else{
 					index = vn->context[2]+1;
 					while(index<vn->vtdSize){
@@ -8047,15 +8047,15 @@ loop11:
 							break;
 						default:
 							if (getTokenDepth((VTDNav *)vn,index)==2 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){
-								vn->atTerminal = TRUE;
+								vn->atTerminal = VTD_TRUE;
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 								
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}		
 			case 3:
 				if (lower32At(vn->_l3Buffer,vn->l3index)!=-1){
@@ -8083,15 +8083,15 @@ loop11:
 						break;
 					default:
 						vn->l4index = vn->l4lower;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->LN = index;
-						return TRUE;															
+						return VTD_TRUE;															
 					}
 				}
 				vn->l4index = vn->l4lower;
 				vn->context[0] = 4;
 				vn->context[4] = index;
-				return TRUE;				
+				return VTD_TRUE;				
 			}else{
 				index = vn->context[3]+1;
 				while(index<vn->vtdSize){
@@ -8103,15 +8103,15 @@ loop11:
 						break;
 					default:
 						if (getTokenDepth((VTDNav *)vn,index)==3 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 							
 					}
 				}
-				return FALSE;
+				return VTD_FALSE;
 			}		
 			case 4:
 				if (lower32At(vn->l4Buffer,vn->l4index)!=-1){
@@ -8139,15 +8139,15 @@ loop11:
 						break;
 					default:
 						vn->l5index = vn->l5lower;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->LN = index;
-						return TRUE;															
+						return VTD_TRUE;															
 					}
 				}
 				vn->l5index = vn->l5lower;
 				vn->context[0] = 5;
 				vn->context[5] = index;
-				return TRUE;				
+				return VTD_TRUE;				
 			}else{
 				index = vn->context[4]+1;
 				while(index<vn->vtdSize){
@@ -8159,15 +8159,15 @@ loop11:
 						break;
 					default:
 						if (getTokenDepth((VTDNav *)vn,index)==4 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 							
 					}
 				}
-				return FALSE;
+				return VTD_FALSE;
 			}		
 				
 			default:				
@@ -8181,11 +8181,11 @@ loop11:
 						depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth <= vn->context[0]){
-							return FALSE;
+							return VTD_FALSE;
 						}else if (depth == (vn->context[0] + 1)) {
 							vn->context[0] += 1;
 							vn->context[vn->context[0]] = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else
 							throwException2(nav_exception,"impossible condition");
 					case TOKEN_ATTR_NAME:
@@ -8196,31 +8196,31 @@ loop11:
 						depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < vn->context[0]){
-							return FALSE;
+							return VTD_FALSE;
 						}else if (depth == (vn->context[0])) {
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else 
 							index++;
 					case TOKEN_PI_NAME:
 						depth =
 							(int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < vn->context[0]){
-							return FALSE;
+							return VTD_FALSE;
 						}else if (depth == (vn->context[0])) {
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else 
 							index+=2;
  					}
 					//index++;
 				} // what condition
-				return FALSE;
+				return VTD_FALSE;
 			}
 		case LAST_CHILD:
-			if(vn->atTerminal)return FALSE;
+			if(vn->atTerminal)return VTD_FALSE;
 			return toNode_LastChild_L5((VTDNav_L5 *)vn);
 			
 		case NEXT_SIBLING:
@@ -8244,18 +8244,18 @@ loop11:
 						depth = getTokenDepth((VTDNav *)vn,index);
 						if (depth == -1){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=0;
-							return TRUE;
+							return VTD_TRUE;
 								// depth has to be zero
 						}						
 					}else
-						return FALSE;
+						return VTD_FALSE;
 					
 				}else{
-					return FALSE;
+					return VTD_FALSE;
 				}
 				//break;
 			case 0:
@@ -8263,7 +8263,7 @@ loop11:
 					index = vn->LN;
 					tokenType=getTokenType((VTDNav *)vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					//index++;
 					if (vn->l1Buffer->size!=0){
 						if (index < upper32At(vn->l1Buffer,vn->l1index)){
@@ -8272,19 +8272,19 @@ loop11:
 								index++;
 							if (index <= upper32At(vn->l1Buffer,vn->l1index)){
 								if (index == upper32At(vn->l1Buffer,vn->l1index)){
-									vn->atTerminal = FALSE;
+									vn->atTerminal = VTD_FALSE;
 									vn->context[0]=1;
 									vn->context[1]=index;
-									return TRUE;
+									return VTD_TRUE;
 								}
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth!=0)
-									return FALSE;
+									return VTD_FALSE;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else{
-								return FALSE;
+								return VTD_FALSE;
 							}
 						}else if ( vn->l1index < vn->l1Buffer->size -1){ // whether lindex is the last entry is l1 buffer
 							vn->l1index++;
@@ -8292,19 +8292,19 @@ loop11:
 								index++;
 							if (index <=upper32At( vn->l1Buffer,vn->l1index)){
 								if (index == upper32At(vn->l1Buffer,vn->l1index)){
-									vn->atTerminal = FALSE;
+									vn->atTerminal = VTD_FALSE;
 									vn->context[0]=1;
 									vn->context[1]=index;
-									return TRUE;
+									return VTD_TRUE;
 								}
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth!=0)
-									return FALSE;
+									return VTD_FALSE;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else{
-								return FALSE;
+								return VTD_FALSE;
 							}
 						}else{
 							index++;
@@ -8313,12 +8313,12 @@ loop11:
 							if (index < vn->vtdSize){
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth!=0)
-									return FALSE;
+									return VTD_FALSE;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else{
-								return FALSE;
+								return VTD_FALSE;
 							}
 						}						
 					}else{
@@ -8328,12 +8328,12 @@ loop11:
 						if (index < vn->vtdSize){
 							depth = getTokenDepth((VTDNav *)vn,index);
 							if (depth!=0)
-								return FALSE;
+								return VTD_FALSE;
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 					
@@ -8350,12 +8350,12 @@ loop11:
 					}			
 					index++;
 					if (index>=vn->vtdSize )
-						return FALSE;
+						return VTD_FALSE;
 					else{
 						vn->context[0]=-1;
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					}
 				}
 				//break;
@@ -8363,7 +8363,7 @@ loop11:
 				if(vn->atTerminal){
 					tokenType=getTokenType((VTDNav *)vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					if (lower32At(vn->l1Buffer,vn->l1index) != -1) {
 						if (vn->LN < upper32At(vn->l2Buffer,vn->l2upper)) {
 							tmp = upper32At(vn->l2Buffer,vn->l2index);
@@ -8373,12 +8373,12 @@ loop11:
 
 							if (index < tmp) {
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							} else {
 								vn->context[0] = 2;
 								vn->context[2] = tmp;
-								vn->atTerminal = FALSE;
-								return TRUE;
+								vn->atTerminal = VTD_FALSE;
+								return VTD_TRUE;
 							}
 						} else {
 							index = vn->LN + 1;
@@ -8388,12 +8388,12 @@ loop11:
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth==1 && getTokenType((VTDNav *)vn,index)!= TOKEN_STARTING_TAG){
 									vn->LN = index;
-									vn->atTerminal = TRUE;
-									return TRUE;
+									vn->atTerminal = VTD_TRUE;
+									return VTD_TRUE;
 								}
-								return FALSE;
+								return VTD_FALSE;
 							} else
-								return FALSE;
+								return VTD_FALSE;
 						}						
 					}else{
 						index= vn->LN+1;
@@ -8403,12 +8403,12 @@ loop11:
 							depth = getTokenDepth((VTDNav *)vn,index);
 							if (depth==1 && getTokenType((VTDNav *)vn,index)!= TOKEN_STARTING_TAG){
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}					
 				}else{
@@ -8421,15 +8421,15 @@ loop11:
 							index--;
 						}
 						if (lastEntry==index){
-							vn->atTerminal=FALSE;
+							vn->atTerminal=VTD_FALSE;
 							vn->context[0]=1;
 							vn->context[1]=index+1;
-							return TRUE;
+							return VTD_TRUE;
 						} else {
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=0;
 							vn->LN = index+1;
-							return TRUE;							
+							return VTD_TRUE;							
 						}
 					}else{
 						index = vn->vtdSize-1;
@@ -8441,19 +8441,19 @@ loop11:
 							if (getTokenDepth((VTDNav *)vn,index)==0){
 								vn->context[0]=0;
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}else
-								return FALSE;
+								return VTD_FALSE;
 						}
 						index++;
 						if (getTokenDepth((VTDNav *)vn,index)==0){
 							vn->context[0]=0;
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}
@@ -8462,7 +8462,7 @@ loop11:
 				if(vn->atTerminal){
 					tokenType=getTokenType((VTDNav *)vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					if (lower32At(vn->l2Buffer,vn->l2index) != -1) {
 						if (vn->LN < upper32At(vn->_l3Buffer,vn->l3upper)) {
 							tmp = upper32At(vn->_l3Buffer,vn->l3index);
@@ -8472,12 +8472,12 @@ loop11:
 
 							if (index < tmp) {
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							} else {
 								vn->context[0] = 3;
 								vn->context[3] = tmp;
-								vn->atTerminal = FALSE;
-								return TRUE;
+								vn->atTerminal = VTD_FALSE;
+								return VTD_TRUE;
 							}
 						} else {
 							index = vn->LN + 1;
@@ -8487,11 +8487,11 @@ loop11:
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth==2 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){									
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								}
-								return FALSE;
+								return VTD_FALSE;
 							} 
-							return FALSE;
+							return VTD_FALSE;
 						}						
 					}else{
 						index= vn->LN+1;
@@ -8501,12 +8501,12 @@ loop11:
 							depth = getTokenDepth((VTDNav *)vn,index);
 							if (depth==2 && getTokenType((VTDNav *)vn,index)!= TOKEN_STARTING_TAG){
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}					
 				}else{
@@ -8537,12 +8537,12 @@ loop11:
 						if (index == lastEntry){
 							vn->context[0]=2;
 							vn->context[2] = index+1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						vn->context[0]=1;
 						vn->LN = index+1;
-						vn->atTerminal = TRUE;
-						return TRUE;						
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;						
 					}else{
 						lastEntry = index = vn->vtdSize-1;
 						if (vn->l1index!=vn->l1Buffer->size-1){
@@ -8559,19 +8559,19 @@ loop11:
 						}
 						if ((/*lastEntry>=index &&*/ getTokenDepth((VTDNav *)vn,index)==1)){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
 						if (lastEntry!=index && getTokenDepth((VTDNav *)vn,index+1)==1 ){
 							vn->LN = index+1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
-						return FALSE;
+						return VTD_FALSE;
 					}
 					
 				}
@@ -8580,7 +8580,7 @@ loop11:
 				if(vn->atTerminal){
 					tokenType=getTokenType((VTDNav *)vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					if (lower32At(vn->_l3Buffer,vn->l3index) != -1) {
 						if (vn->LN < upper32At(vn->l4Buffer,vn->l4upper)) {
 							tmp = upper32At(vn->l4Buffer,vn->l4index);
@@ -8589,12 +8589,12 @@ loop11:
 								index++;
 							if (index < tmp) {
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							} else {
 								vn->context[0] = 4;
 								vn->context[4] = tmp;
-								vn->atTerminal = FALSE;
-								return TRUE;
+								vn->atTerminal = VTD_FALSE;
+								return VTD_TRUE;
 							}
 						} else {
 							index = vn->LN + 1;
@@ -8604,11 +8604,11 @@ loop11:
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth==3 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){									
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								}
-								return FALSE;
+								return VTD_FALSE;
 							} 
-							return FALSE;
+							return VTD_FALSE;
 						}						
 					}else{
 						index= vn->LN+1;
@@ -8618,12 +8618,12 @@ loop11:
 							depth = getTokenDepth((VTDNav *)vn,index);
 							if (depth==3 && getTokenType((VTDNav *)vn,index)!= TOKEN_STARTING_TAG){
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}					
 				}else{
@@ -8655,12 +8655,12 @@ loop22:
 						if (index == lastEntry){
 							vn->context[0]=3;
 							vn->context[3] = index+1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						vn->context[0]=2;
 						vn->LN = index+1;
-						vn->atTerminal = TRUE;
-						return TRUE;						
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;						
 					}else{
 						lastEntry = index = vn->vtdSize-1;
 						
@@ -8683,25 +8683,25 @@ loop22:
 						}
 						if ((/*lastEntry==index &&*/ getTokenDepth((VTDNav *)vn,index)==2)){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=2;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
 						if (lastEntry!=index && getTokenDepth((VTDNav *)vn,index+1)==2 ){
 							vn->LN = index+1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=2;
-							return TRUE;
+							return VTD_TRUE;
 						}						
-						return FALSE;
+						return VTD_FALSE;
 					}					
 				}
 			case 4:				
 				if(vn->atTerminal){
 					tokenType=getTokenType((VTDNav *)vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					if (lower32At(vn->l4Buffer,vn->l4index) != -1) {
 						if (vn->LN < intAt(vn->l5Buffer,vn->l5upper)) {
 							tmp = intAt(vn->l5Buffer,vn->l5index);
@@ -8710,12 +8710,12 @@ loop22:
 								index++;
 							if (index < tmp) {
 								vn->LN = index;
-								return TRUE;
+								return VTD_TRUE;
 							} else {
 								vn->context[0] = 5;
 								vn->context[5] = tmp;
-								vn->atTerminal = FALSE;
-								return TRUE;
+								vn->atTerminal = VTD_FALSE;
+								return VTD_TRUE;
 							}
 						} else {
 							index = vn->LN + 1;
@@ -8725,11 +8725,11 @@ loop22:
 								depth = getTokenDepth((VTDNav *)vn,index);
 								if (depth==4 && getTokenType((VTDNav *)vn,index)!=TOKEN_STARTING_TAG){									
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								}
-								return FALSE;
+								return VTD_FALSE;
 							} 
-							return FALSE;
+							return VTD_FALSE;
 						}						
 					}else{
 						index= vn->LN+1;
@@ -8739,12 +8739,12 @@ loop22:
 							depth = getTokenDepth((VTDNav *)vn,index);
 							if (depth==4 && getTokenType((VTDNav *)vn,index)!= TOKEN_STARTING_TAG){
 								vn->LN = index;
-								vn->atTerminal = TRUE;
-								return TRUE;
+								vn->atTerminal = VTD_TRUE;
+								return VTD_TRUE;
 							}
-							return FALSE;
+							return VTD_FALSE;
 						}else{
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}					
 				}else{
@@ -8776,12 +8776,12 @@ loop23:
 						if (index == lastEntry){
 							vn->context[0] = 4;
 							vn->context[4] = index+1;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						vn->context[0]=3;
 						vn->LN = index+1;
-						vn->atTerminal = TRUE;
-						return TRUE;						
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;						
 					}else{						
 						lastEntry = index = vn->vtdSize-1;
 						
@@ -8808,18 +8808,18 @@ loop23:
 						}
 						if ((/*lastEntry==index &&*/ getTokenDepth((VTDNav *)vn,index)==3)){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=3;
-							return TRUE;
+							return VTD_TRUE;
 						}
 						
 						if (lastEntry!=index && getTokenDepth((VTDNav *)vn,index+1)==3){
 							vn->LN = index+1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=3;
-							return TRUE;
+							return VTD_TRUE;
 						}						
-						return FALSE;
+						return VTD_FALSE;
 					}					
 				}
 			
@@ -8853,12 +8853,12 @@ loop24:
 					if (index == lastEntry){
 						vn->context[0]= 5;
 						vn->context[5] = index+1;
-						return TRUE;
+						return VTD_TRUE;
 					}
 					vn->context[0]=4;
 					vn->LN = index+1;
-					vn->atTerminal = TRUE;
-					return TRUE;						
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;						
 				}else{
 					lastEntry = index = vn->vtdSize-1;
 					
@@ -8888,19 +8888,19 @@ loop24:
 					}
 					if ((/*lastEntry==index &&*/ getTokenDepth((VTDNav *)vn,index)==4)){
 						vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->context[0]=4;
-						return TRUE;
+						return VTD_TRUE;
 					}
 					
 					if (lastEntry!=index && getTokenDepth((VTDNav *)vn,index+1)==4){
 						vn->LN = index+1;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->context[0]=4;
-						return TRUE;
+						return VTD_TRUE;
 					}
 					
-					return FALSE;
+					return VTD_FALSE;
 				}
 				
 			}
@@ -8909,7 +8909,7 @@ loop24:
 				if (vn->atTerminal){
 					tokenType=getTokenType((VTDNav *)vn,vn->LN);
 					if (tokenType==TOKEN_ATTR_NAME)
-						return FALSE;
+						return VTD_FALSE;
 					index = vn->LN+1;
 					tmp = vn->context[0]+1;
 				}
@@ -8924,12 +8924,12 @@ loop24:
 					switch (tokenType) {
 					case TOKEN_STARTING_TAG:						
 						if (depth < tmp) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == tmp) {
 							vn->context[0]=tmp;
 							vn->context[vn->context[0]] = index;
-							vn->atTerminal = FALSE;
-							return TRUE;
+							vn->atTerminal = VTD_FALSE;
+							return VTD_TRUE;
 						}else 
 							index++;
 						break;
@@ -8942,24 +8942,24 @@ loop24:
 					case TOKEN_CDATA_VAL:
 						//depth = (int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < tmp-1) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == (tmp-1)) {
 							vn->context[0]=tmp-1;
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else
 							index++;
 						break;
 					case TOKEN_PI_NAME:
 						//depth = (int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 						if (depth < tmp-1) {
-							return FALSE;
+							return VTD_FALSE;
 						} else if (depth == tmp-1) {
 							vn->context[0]=tmp-1;
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						} else
 							index += 2;
 						break;
@@ -8968,14 +8968,14 @@ loop24:
 					}
 					
 				}
-				return FALSE;
+				return VTD_FALSE;
 			}		
 		case PREV_SIBLING:
 			return toNode_PrevSibling_L5(vn);
 		default :
 			throwException2(nav_exception,"illegal navigation options");
 		}	
-		return FALSE;
+		return VTD_FALSE;
 	}
 
 	Boolean toNode_LastChild_L5(VTDNav_L5 *vn){
@@ -8990,16 +8990,16 @@ loop24:
 				switch (tokenType) {
 					case TOKEN_COMMENT:
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;							
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;							
 					case TOKEN_PI_VAL:
 						vn->LN = index -1;
-						vn->atTerminal = TRUE;
-						return TRUE;													
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;													
 				}	
 			}
 			vn->context[0]=0;
-			return TRUE;
+			return VTD_TRUE;
 			
 		case 0:
 			if (vn->l1Buffer->size!=0){
@@ -9017,28 +9017,28 @@ loop24:
 						case TOKEN_COMMENT:
 						case TOKEN_CDATA_VAL:
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->l1index = vn->l1Buffer->size -1;
-							return TRUE;
+							return VTD_TRUE;
 						case TOKEN_PI_VAL:
 							vn->LN = index -1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->l1index = vn->l1Buffer->size -1;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						} 	
 					}else {
 						vn->l1index = vn->l1Buffer->size -1;
 						vn->context[0]= 1;
 						vn->context[1]= lastEntry;
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				vn->l1index = vn->l1Buffer->size -1;
 				vn->context[0]= 1;
 				vn->context[1]= lastEntry;
-				return TRUE;
+				return VTD_TRUE;
 			}else{
 				index = vn->vtdSize - 1;
 				while(index>vn->rootIndex){
@@ -9053,17 +9053,17 @@ loop24:
 					case TOKEN_COMMENT:
 					case TOKEN_CDATA_VAL:
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					case TOKEN_PI_VAL:
 						vn->LN = index-1;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					default:
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}
-				return FALSE;
+				return VTD_FALSE;
 			}
 			
 		case 1:
@@ -9097,15 +9097,15 @@ loop24:
 							vn->LN = index-1;
 						else
 							vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						//context[0]=1;
-						return TRUE;
+						return VTD_TRUE;
 					}else
 						break;							
 				}
 				vn->context[0]=2;
 				vn->context[2]=tmp;
-				return TRUE;
+				return VTD_TRUE;
 				
 				
 			}else{
@@ -9148,10 +9148,10 @@ loop24:
 					}
 loop2:
 					vn->LN = lastEntry;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;					
+					return VTD_FALSE;					
 			}
 			
 		case 2:		
@@ -9190,15 +9190,15 @@ loop2:
 							vn->LN = index-1;
 						else
 							vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						//context[0]=1;
-						return TRUE;
+						return VTD_TRUE;
 					}else
 						break;							
 				}
 				vn->context[0]=3;
 				vn->context[3]=tmp;
-				return TRUE;					
+				return VTD_TRUE;					
 			}else{
 				index = vn->context[2]+1;
 				 while(index<vn->vtdSize){
@@ -9239,10 +9239,10 @@ loop2:
 					}
 loop22:
 					vn->LN = lastEntry;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;					
+					return VTD_FALSE;					
 			}	
 			
 		case 3:
@@ -9286,15 +9286,15 @@ loop22:
 							vn->LN = index - 1;
 						else
 							vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						// context[0]=1;
-						return TRUE;
+						return VTD_TRUE;
 					} else
 						break;
 				}
 				vn->context[0] = 4;
 				vn->context[4] = tmp;
-				return TRUE;
+				return VTD_TRUE;
 			} else {
 				index = vn->context[3] + 1;
 				 while (index < vn->vtdSize) {
@@ -9337,10 +9337,10 @@ loop11:
 					}
 loop222: 
 					vn->LN = lastEntry;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				} else
-					return FALSE;
+					return VTD_FALSE;
 			}
 		case 4: 
 			if (lower32At(vn->l4Buffer,vn->l4index)!=-1){
@@ -9387,15 +9387,15 @@ loop222:
 							vn->LN = index-1;
 						else
 							vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						//context[0]=1;
-						return TRUE;
+						return VTD_TRUE;
 					}else
 						break;							
 				}
 				vn->context[0]=5;
 				vn->context[5]=tmp;
-				return TRUE;					
+				return VTD_TRUE;					
 			}else{
 				index = vn->context[4]+1;
 				 while(index<vn->vtdSize){
@@ -9438,15 +9438,15 @@ loop222:
 					}
 loop33:
 					vn->LN = lastEntry;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;					
+					return VTD_FALSE;					
 			}	
 			
 		default:
 			index = vn->context[vn->context[0]] + 1;
-			lastEntry  = -1;vn-> atTerminal = FALSE;
+			lastEntry  = -1;vn-> atTerminal = VTD_FALSE;
 			while (index < vn->vtdBuffer->size) {
 				Long temp = longAt(vn->vtdBuffer,index);
 				tokenType =
@@ -9462,12 +9462,12 @@ loop33:
 								vn->context[0]+=1;
 								vn->context[vn->context[0]] = lastEntry;
 							}
-							return TRUE;									
+							return VTD_TRUE;									
 						} else
-							return FALSE;
+							return VTD_FALSE;
 					}else if (depth == (vn->context[0] + 1)) {
 						lastEntry = index;
-						vn->atTerminal= FALSE;
+						vn->atTerminal= VTD_FALSE;
 					}
 					index++;
 					break;
@@ -9485,12 +9485,12 @@ loop33:
 								vn->context[0]++;
 								vn->context[vn->context[0]]=lastEntry;									
 							}
-							return TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else if (depth == (vn->context[0])) {
 						lastEntry = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 					}
 					index++;
 					break;
@@ -9504,12 +9504,12 @@ loop33:
 								vn->context[0]++;
 								vn->context[vn->context[0]]=lastEntry;									
 							}
-							return TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else if (depth == (vn->context[0])) {
 						lastEntry = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 					}
 					index+=2;
 					break;
@@ -9524,9 +9524,9 @@ loop33:
 					vn->context[0]++;
 					vn->context[vn->context[0]]=lastEntry;									
 				}
-				return TRUE;
+				return VTD_TRUE;
 			}else
-				return FALSE;
+				return VTD_FALSE;
 		}
 	}
 
@@ -9542,16 +9542,16 @@ loop33:
 				switch (tokenType) {
 					case TOKEN_COMMENT:
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;							
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;							
 					case TOKEN_PI_VAL:
 						vn->LN = index -1;
-						vn->atTerminal = TRUE;
-						return TRUE;													
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;													
 				}	
 			}
 			vn->context[0]=0;
-			return TRUE;
+			return VTD_TRUE;
 			
 		case 0:
 			if (vn->l1Buffer->size!=0){
@@ -9569,28 +9569,28 @@ loop33:
 						case TOKEN_COMMENT:
 						case TOKEN_CDATA_VAL:
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->l1index = vn->l1Buffer->size -1;
-							return TRUE;
+							return VTD_TRUE;
 						case TOKEN_PI_VAL:
 							vn->LN = index -1;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->l1index = vn->l1Buffer->size -1;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						} 	
 					}else {
 						vn->l1index = vn->l1Buffer->size -1;
 						vn->context[0]= 1;
 						vn->context[1]= lastEntry;
-						return TRUE;
+						return VTD_TRUE;
 					}
 				}
 				vn->l1index = vn->l1Buffer->size -1;
 				vn->context[0]= 1;
 				vn->context[1]= lastEntry;
-				return TRUE;
+				return VTD_TRUE;
 			}else{
 				index = vn->vtdSize - 1;
 				while(index>vn->rootIndex){
@@ -9605,17 +9605,17 @@ loop33:
 					case TOKEN_COMMENT:
 					case TOKEN_CDATA_VAL:
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					case TOKEN_PI_VAL:
 						vn->LN = index-1;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					default:
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}
-				return FALSE;
+				return VTD_FALSE;
 			}
 			
 		case 1:
@@ -9649,15 +9649,15 @@ loop33:
 							vn->LN = index-1;
 						else
 							vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						//context[0]=1;
-						return TRUE;
+						return VTD_TRUE;
 					}else
 						break;							
 				}
 				vn->context[0]=2;
 				vn->context[2]=tmp;
-				return TRUE;
+				return VTD_TRUE;
 				
 				
 			}else{
@@ -9700,10 +9700,10 @@ loop33:
 					}
 				loop2:
 					vn->LN = lastEntry;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;					
+					return VTD_FALSE;					
 			}
 			
 		case 2:		
@@ -9742,15 +9742,15 @@ loop33:
 							vn->LN = index-1;
 						else
 							vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						//context[0]=1;
-						return TRUE;
+						return VTD_TRUE;
 					}else
 						break;							
 				}
 				vn->context[0]=3;
 				vn->context[3]=tmp;
-				return TRUE;					
+				return VTD_TRUE;					
 			}else{
 				index = vn->context[2]+1;
 				 while(index<vn->vtdSize){
@@ -9792,14 +9792,14 @@ loop33:
 
 					loop22:
 					vn->LN = lastEntry;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;					
+					return VTD_FALSE;					
 			}				
 		default:
 			index = vn->context[vn->context[0]] + 1;
-			lastEntry  = -1; vn->atTerminal = FALSE;
+			lastEntry  = -1; vn->atTerminal = VTD_FALSE;
 			while (index < vn->vtdBuffer->size) {
 				Long temp = longAt(vn->vtdBuffer,index);
 				tokenType =
@@ -9814,14 +9814,14 @@ loop33:
 							}else{
 								vn->context[0]+=1;
 								vn->context[vn->context[0]] = lastEntry;
-								vn->atTerminal = FALSE;
+								vn->atTerminal = VTD_FALSE;
 							}
-							return TRUE;									
+							return VTD_TRUE;									
 						} else
-							return FALSE;
+							return VTD_FALSE;
 					}else if (depth == (vn->context[0] + 1)) {
 						lastEntry = index;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 					}
 					index++;
 					break;
@@ -9839,12 +9839,12 @@ loop33:
 								vn->context[0]++;
 								vn->context[vn->context[0]]=lastEntry;									
 							}
-							return TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else if (depth == (vn->context[0])) {
 						lastEntry = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 					}
 					index++;
 					break;
@@ -9858,12 +9858,12 @@ loop33:
 								vn->context[0]++;
 								vn->context[vn->context[0]]=lastEntry;									
 							}
-							return TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else if (depth == (vn->context[0])) {
 						lastEntry = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 					}
 					index+=2;
 					break;
@@ -9878,9 +9878,9 @@ loop33:
 					vn->context[0]++;
 					vn->context[vn->context[0]]=lastEntry;									
 				}
-				return TRUE;
+				return VTD_TRUE;
 			}else
-				return FALSE;
+				return VTD_FALSE;
 		}
 	
 	}
@@ -9902,20 +9902,20 @@ loop33:
 							index--;
 						case TOKEN_COMMENT:
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}else{
 						vn->context[0] = 0;
-						vn->atTerminal = FALSE;
-						return TRUE;
+						vn->atTerminal = VTD_FALSE;
+						return VTD_TRUE;
 					}
 				}else{
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}else{
-				return FALSE;
+				return VTD_FALSE;
 			}
 		
 		case 0:
@@ -9933,21 +9933,21 @@ loop33:
 								case TOKEN_COMMENT:
 								case TOKEN_CDATA_VAL:
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								case TOKEN_PI_VAL:
 									vn->LN = index -1;
-									return TRUE;
+									return VTD_TRUE;
 								}
 							}								
 							if (vn->l1index==0)
-								return FALSE;
+								return VTD_FALSE;
 							vn->l1index--;
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=1;
 							vn->context[1]= upper32At(vn->l1Buffer,vn->l1index);
-							return TRUE;
+							return VTD_TRUE;
 						}else 
-							return FALSE;
+							return VTD_FALSE;
 					} else {
 						index = vn->LN -1;
 						if (index>upper32At(vn->l1Buffer,vn->l1index)){
@@ -9959,17 +9959,17 @@ loop33:
 								case TOKEN_COMMENT:
 								case TOKEN_CDATA_VAL:
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								case TOKEN_PI_VAL:
 									vn->LN = index -1;
-									return TRUE;
+									return VTD_TRUE;
 								}
 							}										
 						}
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=1;
 						vn->context[1]= upper32At(vn->l1Buffer,vn->l1index);
-						return TRUE;
+						return VTD_TRUE;
 					}						
 				}else{
 					index =vn-> LN-1;
@@ -9983,14 +9983,14 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=0;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
-					return FALSE;
+					return VTD_FALSE;
 				}
 				
 			}else{
@@ -10002,14 +10002,14 @@ loop33:
 						index--;
 					case TOKEN_COMMENT:
 						vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->context[0]=-1;
-						return TRUE;
+						return VTD_TRUE;
 					default:
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}else{
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			//break;
@@ -10024,19 +10024,19 @@ loop33:
 						}
 						if (getTokenDepth(vn,index)==1){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=2;
 							vn->context[2]=tmp;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					} else if (vn->l2index!=vn->l2lower){
 						vn->l2index--;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=2;
 						vn->context[2]=upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 					} else {
 						index = vn->LN-1;
 						tokenType = getTokenType(vn,index);
@@ -10048,11 +10048,11 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=1;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}else{
@@ -10063,12 +10063,12 @@ loop33:
 						tokenType = getTokenType(vn,index);
 						if (tokenType!= TOKEN_ATTR_VAL){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else{
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}					
 			}else{
@@ -10080,17 +10080,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=0;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l1index != 0){
 						vn->l1index--;
 						vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}													
 			}
 			//break;
@@ -10105,19 +10105,19 @@ loop33:
 						}
 						if (getTokenDepth(vn,index)==2){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=3;
 							vn->context[3]=tmp;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					} else if (vn->l3index!=vn->l3lower){
 						vn->l3index--;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=3;
 						vn->context[3]=intAt(vn->l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 					} else {
 						index = vn->LN-1;
 						tokenType = getTokenType(vn,index);
@@ -10129,11 +10129,11 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=2;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}else{
@@ -10144,12 +10144,12 @@ loop33:
 						tokenType = getTokenType(vn,index);
 						if (tokenType!= TOKEN_ATTR_VAL){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else{
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}	
 			}else{
@@ -10161,17 +10161,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=1;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l2index != vn->l2lower){
 						vn->l2index--;
 						vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}		
 			}				
 			//break;
@@ -10185,17 +10185,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=2;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l3index != vn->l3lower){
 						vn->l3index--;
 						vn->context[3] = intAt(vn->l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}		
 			}
 			//break;
@@ -10216,12 +10216,12 @@ loop33:
 				case TOKEN_STARTING_TAG:
 					
 					/*if (depth < tmp) {
-						return FALSE;
+						return VTD_FALSE;
 					} else*/ if (depth == tmp) {
 						vn->context[0] = depth;
 						vn->context[vn->context[0]] = index;
-						vn->atTerminal = FALSE;
-						return TRUE;
+						vn->atTerminal = VTD_FALSE;
+						return VTD_TRUE;
 					}else 
 						index--;
 					break;
@@ -10234,25 +10234,25 @@ loop33:
 				case TOKEN_CDATA_VAL:
 					//depth = (int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 					/*if (depth < tmp-1) {
-						return FALSE;
+						return VTD_FALSE;
 					} else*/ if (depth == tmp-1) {
 						vn->context[0] = tmp-1;
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					} else
 						index--;
 					break;
 				case TOKEN_PI_VAL:
 					//depth = (int) ((MASK_TOKEN_DEPTH & temp) >> 52);
 					/*if (depth < context[0]) {
-						return FALSE;
+						return VTD_FALSE;
 					} else*/
 					if (depth == (tmp-1)) {
 						vn->context[0] = tmp-1;
 						vn->LN = index-1;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					} else
 						index -= 2;
 					break;
@@ -10261,7 +10261,7 @@ loop33:
 				}
 				
 			}
-			return FALSE;
+			return VTD_FALSE;
 		}		
 	}
 
@@ -10282,20 +10282,20 @@ loop33:
 							index--;
 						case TOKEN_COMMENT:
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}else{
 						vn->context[0] = 0;
-						vn->atTerminal = FALSE;
-						return TRUE;
+						vn->atTerminal = VTD_FALSE;
+						return VTD_TRUE;
 					}
 				}else{
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}else{
-				return FALSE;
+				return VTD_FALSE;
 			}
 		
 		case 0:
@@ -10313,21 +10313,21 @@ loop33:
 								case TOKEN_COMMENT:
 								case TOKEN_CDATA_VAL:
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								case TOKEN_PI_VAL:
 									vn->LN = index -1;
-									return TRUE;
+									return VTD_TRUE;
 								}
 							}								
 							if (vn->l1index==0)
-								return FALSE;
+								return VTD_FALSE;
 							vn->l1index--;
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=1;
 							vn->context[1]= upper32At(vn->l1Buffer,vn->l1index);
-							return TRUE;
+							return VTD_TRUE;
 						}else 
-							return FALSE;
+							return VTD_FALSE;
 					} else {
 						index =vn-> LN -1;
 						if (index>upper32At(vn->l1Buffer,vn->l1index)){
@@ -10339,17 +10339,17 @@ loop33:
 								case TOKEN_COMMENT:
 								case TOKEN_CDATA_VAL:
 									vn->LN = index;
-									return TRUE;
+									return VTD_TRUE;
 								case TOKEN_PI_VAL:
 									vn->LN = index -1;
-									return TRUE;
+									return VTD_TRUE;
 								}
 							}										
 						}
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=1;
 						vn->context[1]= upper32At(vn->l1Buffer,vn->l1index);
-						return TRUE;
+						return VTD_TRUE;
 					}						
 				}else{
 					index = vn->LN-1;
@@ -10363,15 +10363,15 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=0;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}
-				return FALSE;
+				return VTD_FALSE;
 				
 			}else{
 				index = vn->rootIndex-1;
@@ -10382,14 +10382,14 @@ loop33:
 						index--;
 					case TOKEN_COMMENT:
 						vn->LN = index;
-						vn->atTerminal = TRUE;
+						vn->atTerminal = VTD_TRUE;
 						vn->context[0]=-1;
-						return TRUE;
+						return VTD_TRUE;
 					default:
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}else{
-					return FALSE;
+					return VTD_FALSE;
 				}
 			}
 			//break;
@@ -10404,19 +10404,19 @@ loop33:
 						}
 						if (getTokenDepth((VTDNav *)vn,index)==1){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=2;
 							vn->context[2]=tmp;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					} else if (vn->l2index!=vn->l2lower){
 						vn->l2index--;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=2;
 						vn->context[2]=upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 					} else {
 						index = vn->LN-1;
 						tokenType = getTokenType((VTDNav *)vn,index);
@@ -10428,11 +10428,11 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=1;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}else{
@@ -10443,12 +10443,12 @@ loop33:
 						tokenType = getTokenType((VTDNav *)vn,index);
 						if (tokenType!= TOKEN_ATTR_VAL){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else{
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}					
 			}else{
@@ -10460,17 +10460,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=0;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l1index != 0){
 						vn->l1index--;
 						vn->context[1] = upper32At(vn->l1Buffer,vn->l1index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}													
 			}
 			//break;
@@ -10485,19 +10485,19 @@ loop33:
 						}
 						if (getTokenDepth((VTDNav *)vn,index)==2){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=3;
 							vn->context[3]=tmp;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					} else if (vn->l3index!=vn->l3lower){
 						vn->l3index--;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=3;
 						vn->context[3]=upper32At(vn->_l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 					} else {
 						index = vn->LN-1;
 						tokenType = getTokenType((VTDNav *)vn,index);
@@ -10509,11 +10509,11 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=2;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}else{
@@ -10524,12 +10524,12 @@ loop33:
 						tokenType = getTokenType((VTDNav *)vn,index);
 						if (tokenType!= TOKEN_ATTR_VAL){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else{
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}	
 			}else{
@@ -10541,17 +10541,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=1;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l2index != vn->l2lower){
 						vn->l2index--;
 						vn->context[2] = upper32At(vn->l2Buffer,vn->l2index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}		
 			}				
 			//break;
@@ -10566,19 +10566,19 @@ loop33:
 						}
 						if (getTokenDepth((VTDNav *)vn,index)==3){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=4;
 							vn->context[4]=tmp;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					} else if (vn->l4index!=vn->l4lower){
 						vn->l4index--;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=4;
 						vn->context[4]=upper32At(vn->l4Buffer,vn->l4index);
-						return TRUE;
+						return VTD_TRUE;
 					} else {
 						index = vn->LN-1;
 						tokenType = getTokenType((VTDNav *)vn,index);
@@ -10590,11 +10590,11 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=3;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}else{
@@ -10605,12 +10605,12 @@ loop33:
 						tokenType = getTokenType((VTDNav *)vn,index);
 						if (tokenType!= TOKEN_ATTR_VAL){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else{
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}	
 			}else{
@@ -10622,17 +10622,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=2;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l3index != vn->l3lower){
 						vn->l3index--;
 						vn->context[3] = upper32At(vn->_l3Buffer,vn->l3index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}		
 			}				
 		case 4: 			
@@ -10646,19 +10646,19 @@ loop33:
 						}
 						if (getTokenDepth((VTDNav *)vn,index)==4){
 							vn->LN = index;
-							return TRUE;
+							return VTD_TRUE;
 						}else{
-							vn->atTerminal = FALSE;
+							vn->atTerminal = VTD_FALSE;
 							vn->context[0]=5;
 							vn->context[5]=tmp;
-							return TRUE;
+							return VTD_TRUE;
 						}
 					} else if (vn->l5index!=vn->l5lower){
 						vn->l5index--;
-						vn->atTerminal = FALSE;
+						vn->atTerminal = VTD_FALSE;
 						vn->context[0]=5;
 						vn->context[5]=intAt(vn->l5Buffer,vn->l5index);
-						return TRUE;
+						return VTD_TRUE;
 					} else {
 						index = vn->LN-1;
 						tokenType = getTokenType((VTDNav *)vn,index);
@@ -10670,11 +10670,11 @@ loop33:
 						case TOKEN_CDATA_VAL:
 						
 							vn->LN = index;
-							vn->atTerminal = TRUE;
+							vn->atTerminal = VTD_TRUE;
 							vn->context[0]=4;
-							return TRUE;
+							return VTD_TRUE;
 						default:
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}else{
@@ -10685,12 +10685,12 @@ loop33:
 						tokenType = getTokenType((VTDNav *)vn,index);
 						if (tokenType!= TOKEN_ATTR_VAL){
 							vn->LN = index;
-							vn->atTerminal = TRUE;
-							return TRUE;
+							vn->atTerminal = VTD_TRUE;
+							return VTD_TRUE;
 						}else
-							return FALSE;
+							return VTD_FALSE;
 					}else{
-						return FALSE;
+						return VTD_FALSE;
 					}
 				}	
 			}else{
@@ -10702,17 +10702,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=3;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l4index != vn->l4lower){
 						vn->l4index--;
 						vn->context[4] = upper32At(vn->l4Buffer,vn->l4index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}		
 			}				
 		case 5: 
@@ -10725,17 +10725,17 @@ loop33:
 					if (tokenType==TOKEN_PI_VAL)
 						index--;
 					vn->context[0]=4;
-					vn->atTerminal = TRUE;
+					vn->atTerminal = VTD_TRUE;
 					vn->LN = index;
-					return TRUE;
+					return VTD_TRUE;
 				}else{
 					// no more prev sibling element
 					if (vn->l5index != vn->l5lower){
 						vn->l5index--;
 						vn->context[5] = intAt(vn->l5Buffer,vn->l5index);
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return FALSE;
+						return VTD_FALSE;
 				}		
 			}
 		default:
@@ -10756,8 +10756,8 @@ loop33:
 					if (depth == tmp) {
 						vn->context[0] = tmp;
 						vn->context[vn->context[0]] = index;
-						vn->atTerminal = FALSE;
-						return TRUE;
+						vn->atTerminal = VTD_FALSE;
+						return VTD_TRUE;
 					}else 
 						index--;
 					break;
@@ -10771,8 +10771,8 @@ loop33:
 					if (depth == tmp-1) {
 						vn->context[0]=tmp-1;
 						vn->LN = index;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					} else
 						index--;
 					break;
@@ -10780,8 +10780,8 @@ loop33:
 					if (depth == (tmp-1)) {
 						vn->context[0] = tmp-1;
 						vn->LN = index-1;
-						vn->atTerminal = TRUE;
-						return TRUE;
+						vn->atTerminal = VTD_TRUE;
+						return VTD_TRUE;
 					} else
 						index -= 2;
 					break;
@@ -10790,7 +10790,7 @@ loop33:
 				}
 				
 			}
-			return FALSE;
+			return VTD_FALSE;
 		}		
 	}
 
@@ -11090,35 +11090,35 @@ loop33:
 	 	if (vn->atTerminal){
 			// check l1 index, l2 index, l2lower, l2upper, l3 index, l3 lower, l3 upper
 			if (getTokenDepth(vn,vn->LN)!=vn->context[0])
-				return FALSE;
+				return VTD_FALSE;
 			switch(vn->context[0]){
-				case -1: return TRUE;
+				case -1: return VTD_TRUE;
 				case 0: 
 					//if (getTokenDepth(LN)!=0)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1Buffer->size!=0){
 						if (vn->l1index>=vn->l1Buffer->size || vn->l1index<0)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l1index != vn->l1Buffer->size-1){
 							
 							if (upper32At(vn->l1Buffer,vn->l1index)<vn->LN)
-								return FALSE;								
+								return VTD_FALSE;								
 						}						
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return TRUE;
+						return VTD_TRUE;
 					
 			case 1:
 				if (vn->LN>vn->context[1]){
 					//if (getTokenDepth(LN) != 1)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-						return FALSE;
+						return VTD_FALSE;
 					//int i1, i2; // l2lower, l2upper and l2index
 					i1 = lower32At(vn->l1Buffer,vn->l1index);
 					if (i1 != -1) {
 						if (i1 != vn->l2lower)
-							return FALSE;
+							return VTD_FALSE;
 						tmp = vn->l1index + 1;
 						i2 = vn->l2Buffer->size - 1;
 						while (tmp < vn->l1Buffer->size) {
@@ -11129,32 +11129,32 @@ loop33:
 								tmp++;
 						}
 						if (vn->l2upper != i2)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l2index > vn->l2upper || vn->l2index <vn-> l2lower)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l2index != vn->l2upper) {
 							if (upper32At(vn->l2Buffer,vn->l2index) < vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						} 
 						if (vn->l2index!=vn->l2lower){
 							if (upper32At(vn->l2Buffer,vn->l2index-1)>vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						}
 					}
-					return TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;
+					return VTD_FALSE;
 			case 2:  
 				if (vn->LN>vn->context[2] && vn->context[2]> vn->context[1]){
 					//if (getTokenDepth(LN) != 2)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-						return FALSE;
+						return VTD_FALSE;
 					
 					i1 = lower32At(vn->l1Buffer,vn->l1index);
-					if(i1==-1)return FALSE;
+					if(i1==-1)return VTD_FALSE;
 					if (i1!=vn->l2lower)
-						return FALSE;
+						return VTD_FALSE;
 					tmp = vn->l1index+1;
 					i2 = vn->l2Buffer->size-1;
 					while(tmp<vn->l1Buffer->size){
@@ -11165,16 +11165,16 @@ loop33:
 							tmp++;
 					}
 					if(vn->context[2]!=upper32At(vn->l2Buffer,vn->l2index)){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					if (vn->l2index>vn->l2upper || vn->l2index < vn->l2lower){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					//l3 
 					i1 = lower32At(vn->l2Buffer,vn->l2index);
 					if (i1!=-1){
 						if (vn->l3lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						i2 = vn->l3Buffer->size-1;
 						tmp = vn->l2index+1;
 						
@@ -11187,38 +11187,38 @@ loop33:
 						}
 						
 						if (vn->l3lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l3upper!=i2)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l3index<i1 || vn->l3index>i2)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l3index != vn->l3upper) {
 							if (intAt(vn->l3Buffer,vn->l3index) < vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						} 		
 						if (vn->l3index!=vn->l3lower){
 							if (intAt(vn->l3Buffer,vn->l3index-1)>vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						}
 					}
-					return TRUE;
+					return VTD_TRUE;
 				}else 
-					return FALSE;
+					return VTD_FALSE;
 				
 			default:  
 				//if (getTokenDepth(LN) != 2)
-				//	return FALSE;
+				//	return VTD_FALSE;
 				if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-					return FALSE;
+					return VTD_FALSE;
 				//int i1,i2, i3; //l2lower, l2upper and l2index
 				i1 = lower32At(vn->l1Buffer,vn->l1index);
 				
-				if (i1==-1)return FALSE;
+				if (i1==-1)return VTD_FALSE;
 				if (i1!=vn->l2lower)
-					return FALSE;
+					return VTD_FALSE;
 				tmp = vn->l1index+1;
 				i2 = vn->l2Buffer->size-1;
 				while(tmp<vn->l1Buffer->size){
@@ -11229,17 +11229,17 @@ loop33:
 						tmp++;
 				}
 				if(vn->context[2]!=upper32At(vn->l2Buffer,vn->l2index)){
-					return FALSE;
+					return VTD_FALSE;
 				}
 				if (vn->l2index>vn->l2upper || vn->l2index < vn->l2lower){
-					return FALSE;
+					return VTD_FALSE;
 				}
 				//l3 
 				i1 = lower32At(vn->l2Buffer,vn->l2index);
 				if (i1==-1)
-					return FALSE;
+					return VTD_FALSE;
 				if (i1!=vn->l3lower)
-					return FALSE;
+					return VTD_FALSE;
 				i2 = vn->l3Buffer->size-1;
 				tmp = vn->l2index+1;
 				
@@ -11252,31 +11252,31 @@ loop33:
 				}
 					
 				if (vn->l3lower!=i1)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l3upper!=i2)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l3index<i1 || vn->l3index>i2)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->context[vn->context[0]]>vn->LN)
-					return FALSE;
+					return VTD_FALSE;
 				
 				if (vn->context[0]==3){
 					if (vn->l3index!=vn->l3upper){
 						if(intAt(vn->l3Buffer,vn->l3index)>vn->LN)
-							return FALSE;
+							return VTD_FALSE;
 					}
 					if (vn->l3index+1 <= vn->l3Buffer->size-1){
 						if (intAt(vn->l3Buffer,vn->l3index+1)<vn->LN){
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}
 							
 			}
-			return TRUE;
+			return VTD_TRUE;
 				
 			
 		}else {
@@ -11288,7 +11288,7 @@ loop33:
 			case 3:
 			case 4:
 			case 5:
-				default:return TRUE;
+				default:return VTD_TRUE;
 			}
 			
 		}
@@ -11300,30 +11300,30 @@ loop33:
 		 	if (vn->atTerminal){
 			// check l1 index, l2 index, l2lower, l2upper, l3 index, l3 lower, l3 upper
 			if (getTokenDepth((VTDNav *)vn,vn->LN)!=vn->context[0])
-				return FALSE;
+				return VTD_FALSE;
 			switch(vn->context[0]){
-				case -1: return TRUE;
+				case -1: return VTD_TRUE;
 				case 0: 
 					//if (getTokenDepth(LN)!=0)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1Buffer->size!=0){
 						if (vn->l1index>=vn->l1Buffer->size || vn->l1index<0)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l1index != vn->l1Buffer->size-1){
 							
 							if (upper32At(vn->l1Buffer,vn->l1index)<vn->LN)
-								return FALSE;								
+								return VTD_FALSE;								
 						}						
-						return TRUE;
+						return VTD_TRUE;
 					}else
-						return TRUE;
+						return VTD_TRUE;
 					
 			case 1:
 				if (vn->LN>vn->context[1]){
 					//if (getTokenDepth(LN) != 1)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-						return FALSE;
+						return VTD_FALSE;
 					//int i1, i2, i3; // l2lower, l2upper and l2index
 					i1 = lower32At(vn->l1Buffer,vn->l1index);
 					if (i1 != -1) {
@@ -11338,30 +11338,30 @@ loop33:
 								tmp++;
 						}
 						if (i1 != vn->l2lower)
-							return FALSE;						
+							return VTD_FALSE;						
 						if (vn->l2upper != i2)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l2index > vn->l2upper || vn->l2index < vn->l2lower)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l2index != vn->l2upper) {
 							if (upper32At(vn->l2Buffer,vn->l2index) < vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						} 
 					}
-					return TRUE;
+					return VTD_TRUE;
 				}else
-					return FALSE;
+					return VTD_FALSE;
 			case 2:  
 				if (vn->LN>vn->context[2] && vn->context[2]> vn->context[1]){
 					//if (getTokenDepth(LN) != 2)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-						return FALSE;
+						return VTD_FALSE;
 					//int i1,i2, i3; //l2lower, l2upper and l2index
 					i1 = lower32At(vn->l1Buffer,vn->l1index);
-					if(i1==-1)return FALSE;
+					if(i1==-1)return VTD_FALSE;
 					if (i1!=vn->l2lower)
-						return FALSE;
+						return VTD_FALSE;
 					tmp = vn->l1index+1;
 					i2 = vn->l2Buffer->size-1;
 					while(tmp<vn->l1Buffer->size){
@@ -11372,16 +11372,16 @@ loop33:
 							tmp++;
 					}
 					if(vn->context[2]!=upper32At(vn->l2Buffer,vn->l2index)){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					if (vn->l2index>vn->l2upper || vn->l2index < vn->l2lower){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					//l3 
 					i1 = lower32At(vn->l2Buffer,vn->l2index);
 					if (i1!=-1){
 						if (vn->l3lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						i2 = vn->_l3Buffer->size-1;
 						tmp = vn->l2index+1;
 						
@@ -11394,33 +11394,33 @@ loop33:
 						}
 						
 						if (vn->l3lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l3upper!=i2)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l3index > vn->l3upper || vn->l3index < vn->l3lower)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l3index != vn->l3upper) {
 							if (upper32At(vn->_l3Buffer,vn->l3index) < vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						} 
 					}
-					return TRUE;
+					return VTD_TRUE;
 				}else 
-					return FALSE;
+					return VTD_FALSE;
 				
 			case 3:
 				if (vn->LN>vn->context[3] && vn->context[3]> vn->context[2] &&vn-> context[2]> vn->context[1]){
 					//if (getTokenDepth(LN) != 2)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-						return FALSE;
+						return VTD_FALSE;
 					//int i1,i2, i3; //l2lower, l2upper and l2index
 					i1 = lower32At(vn->l1Buffer, vn->l1index);
-					if(i1==-1)return FALSE;
+					if(i1==-1)return VTD_FALSE;
 					if (i1!=vn->l2lower)
-						return FALSE;
+						return VTD_FALSE;
 					tmp = vn->l1index+1;
 					i2 = vn->l2Buffer->size-1;
 					while(tmp<vn->l1Buffer->size){
@@ -11431,16 +11431,16 @@ loop33:
 							tmp++;
 					}
 					if(vn->context[2]!=upper32At(vn->l2Buffer,vn->l2index)){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					if (vn->l2index>vn->l2upper || vn->l2index < vn->l2lower){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					//l3 
 					i1 = lower32At(vn->l2Buffer,vn->l2index);
-					if (i1==-1){return FALSE;}
+					if (i1==-1){return VTD_FALSE;}
 					if (vn->l3lower!=i1)
-						return FALSE;
+						return VTD_FALSE;
 					i2 = vn->_l3Buffer->size-1;
 					tmp = vn->l2index+1;
 						
@@ -11453,22 +11453,22 @@ loop33:
 					}
 						
 					if (vn->l3lower!=i1)
-						return FALSE;
+						return VTD_FALSE;
 						
 					if (vn->l3upper!=i2)
-						return FALSE;
+						return VTD_FALSE;
 						
 					if (vn->l3index > vn->l3upper || vn->l3index < vn->l3lower)
-							return FALSE;
+							return VTD_FALSE;
 					/*if (l3index != l3upper) {
 						if (l3Buffer.upper32At(l3index) < LN)
-							return FALSE;
+							return VTD_FALSE;
 					} */
 					//l4
 					i1 = lower32At(vn->_l3Buffer,vn->l3index);
 					if (i1!=-1){
 						if (vn->l4lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						i2 = vn->l4Buffer->size-1;
 						tmp = vn->l3index+1;
 						
@@ -11481,32 +11481,32 @@ loop33:
 						}
 						
 						if (vn->l4lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l4upper!=i2)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l4index > vn->l4upper || vn->l4index < vn->l4lower)
-							return FALSE;
+							return VTD_FALSE;
 						if (vn->l4index != vn->l4upper) {
 							if (upper32At(vn->l4Buffer,vn->l4index) < vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						} 
 					}
-					return TRUE;
+					return VTD_TRUE;
 				}else 
-					return FALSE;
+					return VTD_FALSE;
 			case 4:
 				if (vn->LN>vn->context[3] && vn->context[3]> vn->context[2] && vn->context[2]> vn->context[1]){
 					//if (getTokenDepth(LN) != 2)
-					//	return FALSE;
+					//	return VTD_FALSE;
 					if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-						return FALSE;
+						return VTD_FALSE;
 					//int i1,i2, i3; //l2lower, l2upper and l2index
 					i1 = lower32At(vn->l1Buffer,vn->l1index);
-					if(i1==-1)return FALSE;
+					if(i1==-1)return VTD_FALSE;
 					if (i1!=vn->l2lower)
-						return FALSE;
+						return VTD_FALSE;
 					tmp = vn->l1index+1;
 					i2 = vn->l2Buffer->size-1;
 					while(tmp<vn->l1Buffer->size){
@@ -11517,16 +11517,16 @@ loop33:
 							tmp++;
 					}
 					if(vn->context[2]!=upper32At(vn->l2Buffer,vn->l2index)){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					if (vn->l2index>vn->l2upper || vn->l2index < vn->l2lower){
-						return FALSE;
+						return VTD_FALSE;
 					}
 					//l3 
 					i1 = lower32At(vn->l2Buffer,vn->l2index);
-					if (i1==-1){return FALSE;}
+					if (i1==-1){return VTD_FALSE;}
 					if (vn->l3lower!=i1)
-						return FALSE;
+						return VTD_FALSE;
 					i2 = vn->_l3Buffer->size-1;
 					tmp = vn->l2index+1;
 						
@@ -11539,21 +11539,21 @@ loop33:
 					}
 						
 					if (vn->l3lower!=i1)
-						return FALSE;
+						return VTD_FALSE;
 						
 					if (vn->l3upper!=i2)
-						return FALSE;
+						return VTD_FALSE;
 						
 					if (vn->l3index > vn->l3upper || vn->l3index < vn->l3lower)
-							return FALSE;
+							return VTD_FALSE;
 					/*if (l3index != l3upper) {
 						if (l3Buffer.upper32At(l3index) < LN)
-							return FALSE;
+							return VTD_FALSE;
 					} */
 					i1 = lower32At(vn->_l3Buffer,vn->l3index);
-					if (i1==-1){ return FALSE;}
+					if (i1==-1){ return VTD_FALSE;}
 					if (vn->l4lower!=i1)
-						return FALSE;
+						return VTD_FALSE;
 					i2 = vn->l4Buffer->size-1;
 					tmp = vn->l3index+1;
 						
@@ -11566,20 +11566,20 @@ loop33:
 					}
 						
 					if (vn->l4lower!=i1)
-						return FALSE;
+						return VTD_FALSE;
 						
 					if (vn->l4upper!=i2)
-						return FALSE;
+						return VTD_FALSE;
 						
 					if (vn->l4index > vn->l4upper || vn->l4index < vn->l4lower)
-						return FALSE;
+						return VTD_FALSE;
 					/*if (l4index != l4upper) {
 						if (l4Buffer.upper32At(l4index) < LN)
-							return FALSE;
+							return VTD_FALSE;
 					}*/
 					i1=lower32At(vn->l4Buffer,vn->l4index);
 					if (i1!=-1){
-						if (i1!=vn->l5lower)return FALSE;
+						if (i1!=vn->l5lower)return VTD_FALSE;
 						i2 = vn->l5Buffer->size-1;
 						tmp = vn->l4index+1;
 						
@@ -11592,32 +11592,32 @@ loop33:
 						}
 						
 						if (vn->l5lower!=i1)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l5upper!=i2)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l5index<i1 ||vn-> l5index>i2)
-							return FALSE;
+							return VTD_FALSE;
 						
 						if (vn->l5index != vn->l5upper) {
 							if (intAt(vn->l5Buffer,vn->l5index) < vn->LN)
-								return FALSE;
+								return VTD_FALSE;
 						} 				
 					}
-					return TRUE;
+					return VTD_TRUE;
 				}else 
-					return FALSE;
+					return VTD_FALSE;
 				
 				
 			default:  
 				if (vn->l1index<0 || vn->l1index>vn->l1Buffer->size)
-					return FALSE;
+					return VTD_FALSE;
 				//int i1,i2,i3; //l2lower, l2upper and l2index
 				i1 = lower32At(vn->l1Buffer,vn->l1index);
-				if(i1==-1)return FALSE;
+				if(i1==-1)return VTD_FALSE;
 				if (i1!=vn->l2lower)
-					return FALSE;
+					return VTD_FALSE;
 				tmp = vn->l1index+1;
 				i2 = vn->l2Buffer->size-1;
 				while(tmp<vn->l1Buffer->size){
@@ -11628,16 +11628,16 @@ loop33:
 						tmp++;
 				}
 				if(vn->context[2]!=upper32At(vn->l2Buffer,vn->l2index)){
-					return FALSE;
+					return VTD_FALSE;
 				}
 				if (vn->l2index>vn->l2upper || vn->l2index < vn->l2lower){
-					return FALSE;
+					return VTD_FALSE;
 				}
 				//l3 
 				i1 = lower32At(vn->l2Buffer,vn->l2index);
-				if (i1==-1){return FALSE;}
+				if (i1==-1){return VTD_FALSE;}
 				if (vn->l3lower!=i1)
-					return FALSE;
+					return VTD_FALSE;
 				i2 = vn->_l3Buffer->size-1;
 				tmp = vn->l2index+1;
 					
@@ -11650,18 +11650,18 @@ loop33:
 				}
 					
 				if (vn->l3lower!=i1)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l3upper!=i2)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l3index >vn->l3upper || vn->l3index < vn->l3lower)
-						return FALSE;
+						return VTD_FALSE;
 				
 				i1 = lower32At(vn->_l3Buffer,vn->l3index);
-				if (i1==-1){ return FALSE;}
+				if (i1==-1){ return VTD_FALSE;}
 				if (vn->l4lower!=i1)
-					return FALSE;
+					return VTD_FALSE;
 				i2 = vn->l4Buffer->size-1;
 				tmp = vn->l3index+1;
 					
@@ -11674,20 +11674,20 @@ loop33:
 				}
 					
 				if (vn->l4lower!=i1)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l4upper!=i2)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l4index > vn->l4upper || vn->l4index < vn->l4lower)
-					return FALSE;
+					return VTD_FALSE;
 				/*if (l4index != l4upper) {
 					if (l4Buffer.upper32At(l4index) < LN)
-						return FALSE;
+						return VTD_FALSE;
 				}*/
 				i1=lower32At(vn->l4Buffer,vn->l4index);
 				
-				if (i1!=vn->l5lower)return FALSE;
+				if (i1!=vn->l5lower)return VTD_FALSE;
 				i2 = vn->l5Buffer->size-1;
 				tmp = vn->l4index+1;
 					
@@ -11700,29 +11700,29 @@ loop33:
 				}
 					
 				if (vn->l5lower!=i1)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l5upper!=i2)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->l5index<i1 || vn->l5index>i2)
-					return FALSE;
+					return VTD_FALSE;
 					
 				if (vn->context[vn->context[0]]>vn->LN)
-					return FALSE;
+					return VTD_FALSE;
 				
 				if (vn->context[0]==5){
 					if (vn->l5index!=vn->l5upper){
 						if(intAt(vn->l5Buffer,vn->l5index)>vn->LN)
-							return FALSE;
+							return VTD_FALSE;
 					}
 					if (vn->l5index+1 <= vn->l5Buffer->size-1){
 						if (intAt(vn->l5Buffer,vn->l5index+1)<vn->LN){
-							return FALSE;
+							return VTD_FALSE;
 						}
 					}
 				}
-				return TRUE;
+				return VTD_TRUE;
 			}
 		}else {
 			switch(vn->context[0]){
@@ -11733,7 +11733,7 @@ loop33:
 			case 3:
 			case 4:
 			case 5:
-				default:return TRUE;
+				default:return VTD_TRUE;
 			}
 			
 		}
@@ -11754,16 +11754,16 @@ loop33:
 			case TOKEN_STARTING_TAG:
 			case TOKEN_DOCUMENT:
 				depth = getTokenDepth(vn,index);
-				vn->atTerminal = FALSE;
+				vn->atTerminal = VTD_FALSE;
 				if (depth > dp) {
 					vn->context[0] = depth;
 					if (depth > 0)
 						vn->context[depth] = index;
 					if (dp < vn->maxLCDepthPlusOne)
 						resolveLC(vn);
-					return TRUE;					
+					return VTD_TRUE;					
 				} else {
-					return FALSE;
+					return VTD_FALSE;
 				}
 			case TOKEN_CHARACTER_DATA:
 			case TOKEN_COMMENT:
@@ -11775,15 +11775,15 @@ loop33:
 					sync(vn,depth,index);
 					vn->LN= index;
 					vn->context[0]= depth;
-					vn->atTerminal = TRUE;
-					return TRUE;
+					vn->atTerminal = VTD_TRUE;
+					return VTD_TRUE;
 				}
-				return FALSE;
+				return VTD_FALSE;
 			default:
 				index ++;
 			}			
 		}
-		return FALSE;	
+		return VTD_FALSE;	
 	}
 
 	void setCurrentNode(VTDNav *vn){
@@ -11973,7 +11973,7 @@ loop33:
 		int index = j + 1;
 		int depth, t=0;
 		int dp = getTokenDepth(vn,j);
-		Boolean r = FALSE;//default
+		Boolean r = VTD_FALSE;//default
 		//int size = vtdBuffer.size;
 		// store all text tokens underneath the current element node
 		while (index < vn->vtdSize) {
@@ -12103,7 +12103,7 @@ loop33:
 		int index = j + 1;
 		int depth, t=0, i=0,offset, endOffset,len,type,c;
 		Long l;
-		Boolean result=FALSE;
+		Boolean result=VTD_FALSE;
 		int dp = getTokenDepth(vn,j);
 		//int size = vtdBuffer.size;
 		// store all text tokens underneath the current element node
@@ -12146,7 +12146,7 @@ loop33:
 					l = getChar(vn,offset);
 				c = (int)l;
 				if (c==s[0]&& matchSubString(vn,offset,  index, s)){
-					result=TRUE;
+					result=VTD_TRUE;
 					goto loop;
 				}else
 					offset += (int)(l>>32);
@@ -12165,7 +12165,7 @@ loop33:
 		int depth,i=0, offset, endOffset, len,len2=wcslen(s),c;
 		Long l;
 		int dp = getTokenDepth(vn,j);
-		Boolean r = FALSE;//default
+		Boolean r = VTD_FALSE;//default
 		//int size = vtdBuffer.size;
 		// store all text tokens underneath the current element node
 		while (index < vn->vtdSize) {
@@ -12190,9 +12190,9 @@ loop33:
 		    			offset += (int)(l>>32);
 		    			i++;
 		    		}else if (i==len2)
-		    			return TRUE;
+		    			return VTD_TRUE;
 		    		else
-		    			return FALSE;
+		    			return VTD_FALSE;
 		    		
 		    	}
 		    	index++;
@@ -12209,9 +12209,9 @@ loop33:
 		    			offset += (int)(l>>32);
 		    			i++;
 		    		}else if (i==len2)
-		    			return TRUE;
+		    			return VTD_TRUE;
 		    		else
-		    			return FALSE;
+		    			return VTD_FALSE;
 		    		
 		    	}
 		    	index++;
@@ -12225,14 +12225,14 @@ loop33:
 			}			
 			index++;
 		}
-		return FALSE;
+		return VTD_FALSE;
 	}
 	
 	Boolean XPathStringVal_EndsWith(VTDNav *vn,int j, UCSChar *s){
 		int tokenType;
 		int index = j + 1,len=wcslen(s);
 		int depth, t=0, i=0,d=0, offset,endOffset,type;
-		Boolean b=FALSE;
+		Boolean b=VTD_FALSE;
 		Long l;
 		int dp = getTokenDepth(vn,j);
 		//int size = vtdBuffer.size;
@@ -12272,7 +12272,7 @@ loop33:
 			}
 		}
 		
-		if (i<-1)return FALSE;
+		if (i<-1)return VTD_FALSE;
 		type = getTokenType(vn,intAt(vn->fib,i));
 		offset = getTokenOffset(vn,intAt(vn->fib,i));
 		endOffset = offset+getTokenLength2(vn,intAt(vn->fib,i));
@@ -12292,7 +12292,7 @@ loop33:
 		int offset = os, endOffset=getTokenOffset(vn,intAt( vn->fib,index))+getTokenLength(vn,intAt(vn->fib,index)), 
 			type =getTokenType(vn,intAt(vn->fib,index)), c;Long l;
 		int i=0;int len=wcslen(s);
-		Boolean b=FALSE;
+		Boolean b=VTD_FALSE;
 		while(offset<endOffset){
 			if (type==TOKEN_CHARACTER_DATA)
 				l = getCharResolved(vn,offset);
@@ -12303,9 +12303,9 @@ loop33:
 				offset += (int)(l>>32);
 				i++;
 			}else if(i==len-1)
-				return TRUE;
+				return VTD_TRUE;
 			else
-				return FALSE;				
+				return VTD_FALSE;				
 		}
 		index++;
 		while(index<vn->fib->size){		
@@ -12322,15 +12322,15 @@ loop33:
 					offset += (int)(l>>32);
 					i++;
 				}else if(i==len)
-					return TRUE;
+					return VTD_TRUE;
 				else
-					return FALSE;				
+					return VTD_FALSE;				
 			}
 			index++;
 		}while(index<vn->fib->size);
 		if (i==len)
-			return TRUE;
-		return FALSE;
+			return VTD_TRUE;
+		return VTD_FALSE;
 	}
 
 
@@ -12338,7 +12338,7 @@ loop33:
 		int offset = os, endOffset= getTokenOffset(vn,intAt(vn->fib,index))+getTokenLength(vn,intAt(vn->fib,index)), 
 			type =getTokenType(vn,intAt(vn->fib,index)), c;Long l;
 		size_t i=0;
-		Boolean b=FALSE;
+		Boolean b=VTD_FALSE;
 		while(offset<endOffset){
 			if (type==TOKEN_CHARACTER_DATA)
 				l = getCharResolved(vn,offset);
@@ -12349,9 +12349,9 @@ loop33:
 				offset += (int)(l>>32);
 				i++;
 			}else if(i==wcslen(s))
-				return TRUE;
+				return VTD_TRUE;
 			else
-				return FALSE;				
+				return VTD_FALSE;				
 		}
 		index++;
 		while(index<vn->fib->size){		
@@ -12371,13 +12371,13 @@ loop33:
 					goto loop;
 				}
 				else
-					return FALSE;				
+					return VTD_FALSE;				
 			}
 			index++;
 		}while(index<vn->fib->size);
 		loop:if ( wcslen(s) ==i  &&index == vn->fib->size && endOffset == offset)
-			return TRUE;
-		return FALSE;
+			return VTD_TRUE;
+		return VTD_FALSE;
 	}
 	void dumpFragment(VTDNav *vn,Long l, char *fileName){
 	//long l = getElementFragment();
@@ -12480,9 +12480,9 @@ loop33:
 	double XPathStringVal2Double(VTDNav *vn,int j){
 		tokenType tokenType; double d1 = 0.0;
 		double d= d1/d1; 
-		Boolean minus=FALSE; 
-		Boolean exponent_seen=FALSE; 
-		Boolean minusE=FALSE;
+		Boolean minus=VTD_FALSE; 
+		Boolean exponent_seen=VTD_FALSE; 
+		Boolean minusE=VTD_FALSE;
 		int index = j + 1;
 		int depth,i=0, offset, endOffset, len,c;
 		Long l;
@@ -12524,7 +12524,7 @@ loop33:
 							break;
 						} else if (c == '-' || c == '+') {
 							if (c == '-')
-								minus = TRUE;
+								minus = VTD_TRUE;
 							state = 1;
 						} else if (isDigit(c)) {
 							left = left * 10 + (c - '0');
@@ -12541,7 +12541,7 @@ loop33:
 		    			} else if (c=='.'){
 		    				state = 2;
 		    			} else if (c=='e'|| c=='E'){
-		    				exponent_seen =  TRUE;
+		    				exponent_seen =  VTD_TRUE;
 		    				state =4;
 		    			}else 
 		    				return d1/d1;
@@ -12561,7 +12561,7 @@ loop33:
 		    				right = right*10+(c-'0');
 		    				scale = scale*10;
 		    			}else if (c=='e' ||c== 'E'){
-		    				exponent_seen=TRUE;
+		    				exponent_seen=VTD_TRUE;
 		    				state=4;
 		    			}else if (isWS(c)){
 		    				state = 6;
@@ -12575,7 +12575,7 @@ loop33:
 		    		case 4:
 		    			if (c=='-' || c=='+'){
 		    				if (c=='-'){
-		    					minusE= TRUE;
+		    					minusE= VTD_TRUE;
 		    				}
 		    				state =5;
 		    			}else if (isDigit(c)){
@@ -12625,9 +12625,9 @@ loop33:
 
 	Boolean isDigit(int c){
 		if (c>='0' && c<='9')
-			return TRUE;
+			return VTD_TRUE;
 		else 
-			return FALSE;
+			return VTD_FALSE;
 	}
 
 	int getNextChar(VTDNav *vn, vn_helper *h){
@@ -12699,7 +12699,7 @@ loop33:
 		int index = j + 1;
 		int depth, t=0, i=0,offset;
 		//Long l;
-		Boolean result=FALSE;
+		Boolean result=VTD_FALSE;
 		int dp = getTokenDepth(vn,j);
 		//int size = vtdBuffer.size;
 		// store all text tokens underneath the current element node

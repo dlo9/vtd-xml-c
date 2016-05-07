@@ -371,7 +371,7 @@ void removeContent(XMLModifier *xm, int offset, int len){
 			throwException2(modify_exception,
 				"Invalid offset or length for removeContent");
 	}
-	if (isUniqueIntHash(xm->deleteHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->deleteHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one deletion per offset value");
 	}
@@ -387,7 +387,7 @@ void removeContent(XMLModifier *xm, int offset, int len){
 }
 
 void insertBytesAt(XMLModifier *xm, int offset, Long lenPlusPointer){
-	if (isUniqueIntHash(xm->insertHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->insertHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one insertion per offset value");
 	}
@@ -396,7 +396,7 @@ void insertBytesAt(XMLModifier *xm, int offset, Long lenPlusPointer){
 }
 
 void insertBytesAt2(XMLModifier *xm, int offset, Long lenPlusPointer){
-	if (isUniqueIntHash(xm->insertHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->insertHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one insertion per offset value");
 	}
@@ -405,7 +405,7 @@ void insertBytesAt2(XMLModifier *xm, int offset, Long lenPlusPointer){
 }
 
 void insertBytesAt3(XMLModifier *xm, int offset, ElementFragmentNs* ef){
-	if (isUniqueIntHash(xm->insertHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->insertHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one insertion per offset value");
 	}
@@ -1464,7 +1464,7 @@ void insertEndingTag(XMLModifier *xm, Long l){
 		insertBytesAt2(xm,(int)l, (((Long)length<<1)<<32)|((int)xml+(offset<<1)));//xml, offset<<1, length<<1);
 }
 void insertBytesEnclosedAt(XMLModifier *xm,int offset, Long lenPlusPointer){
-	if (isUniqueIntHash(xm->insertHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->insertHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one insertion per offset value");
 	}
@@ -1472,7 +1472,7 @@ void insertBytesEnclosedAt(XMLModifier *xm,int offset, Long lenPlusPointer){
 	appendLong(xm->fob, lenPlusPointer);
 }
 void insertBytesEnclosedAt2(XMLModifier *xm,int offset, Long l){
-	if (isUniqueIntHash(xm->insertHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->insertHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one insertion per offset value");
 	}
@@ -1480,7 +1480,7 @@ void insertBytesEnclosedAt2(XMLModifier *xm,int offset, Long l){
 	appendLong(xm->fob, l);
 }
 void insertBytesEnclosedAt3(XMLModifier *xm, int offset, ElementFragmentNs *ef){
-	if (isUniqueIntHash(xm->insertHash,offset)==FALSE){
+	if (isUniqueIntHash(xm->insertHash,offset)==VTD_FALSE){
 		throwException2(modify_exception,
 			"There can be only one insertion per offset value");
 	}

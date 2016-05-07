@@ -55,7 +55,7 @@ unionExpr *createUnionExpr(expr *e){
 	une->current = une;
 	une->evalState = 0;
 	une->ih = NULL;
-	une->needReordering = TRUE;
+	une->needReordering = VTD_TRUE;
 	une->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	return une;
 
@@ -81,7 +81,7 @@ int	evalNodeSet_une (unionExpr *e,VTDNav *vn){
 	/*if (e->next == NULL) {
 	return e->fe->evalNodeSet(e->fe,vn);
 	} else {*/
-	while (TRUE) {
+	while (VTD_TRUE) {
 		switch (e->evalState) {
 				case 0:
 					if (e->ih == NULL ){
@@ -191,7 +191,7 @@ UCSChar* evalString_une  (unionExpr *une,VTDNav *vn){
 	exception ee;
 	int a=0x7ffffff,k=-1,size;
 	UCSChar *s = NULL;	
-	if (une->fe->isNodeSet(une->fe)==FALSE){   
+	if (une->fe->isNodeSet(une->fe)==VTD_FALSE){   
 		return une->fe->evalString(une->fe,vn);   
 	}	
 	//int a = -1;
@@ -238,9 +238,9 @@ UCSChar* evalString_une  (unionExpr *une,VTDNav *vn){
 }
 Boolean evalBoolean_une (unionExpr *e,VTDNav *vn){
 	exception ee;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	int size;
-	/*if (e->fe->isNodeSet(e->fe)==FALSE){
+	/*if (e->fe->isNodeSet(e->fe)==VTD_FALSE){
 	return e->fe->evalBoolean(e->fe,vn);
 	}else{*/
 	push2(vn);
@@ -260,16 +260,16 @@ Boolean evalBoolean_une (unionExpr *e,VTDNav *vn){
 	/*else if (e->fe->isNumerical(e->fe)){
            double dval = e->fe->evalNumber(e->fe,vn);
             if (dval == 0.0 || dval!=dval )
-    			return FALSE;
-    		return TRUE;
+    			return VTD_FALSE;
+    		return VTD_TRUE;
 	}else {
 		 UCSChar *s = e->fe->evalString(e->fe,vn);
 		 if (s==NULL || wcslen(s)==0){
 			 free(s);
-             return FALSE;
+             return VTD_FALSE;
 		 }
 		 free(s);
-         return TRUE;
+         return VTD_TRUE;
 	}*/
 
 }
@@ -290,12 +290,12 @@ Boolean requireContextSize_une(unionExpr *e){
 	unionExpr* tmp = e;
 
 	while (tmp != NULL) {
-		if (tmp->fe->requireContextSize(tmp->fe)== TRUE){
-			return TRUE;
+		if (tmp->fe->requireContextSize(tmp->fe)== VTD_TRUE){
+			return VTD_TRUE;
 		}            
 		tmp = tmp->next;
 	}        
-	return FALSE;
+	return VTD_FALSE;
 }
 void reset_une(unionExpr *e, VTDNav *vn){
 	unionExpr *tmp;
@@ -362,12 +362,12 @@ int adjust_une(unionExpr *une, int n){
 Boolean isFinal_une(unionExpr *une){
 	unionExpr *tmp = une;
 	while (tmp != NULL) {
-		if (tmp->fe->isFinal(tmp->fe)== FALSE){            	
-			return FALSE;
+		if (tmp->fe->isFinal(tmp->fe)== VTD_FALSE){            	
+			return VTD_FALSE;
 		}
 		tmp = tmp->next;
 	}        
-	return TRUE;
+	return VTD_TRUE;
 }
 
 void markCacheable_une(unionExpr *une){

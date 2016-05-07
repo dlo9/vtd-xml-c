@@ -49,7 +49,7 @@ cachedExpr *createCachedExpr(expr *e1){
 	ce->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
 	ce->e = e1;
 	ce->ens =  NULL;
-	ce->cached = FALSE;
+	ce->cached = VTD_FALSE;
 	ce->count = 0;
 	ce->vn1 = NULL;
 	ce->es = NULL;
@@ -78,7 +78,7 @@ int	evalNodeSet_ce (cachedExpr *ce,VTDNav *vn){
 				return -1;
 
 		}else{
-			ce->cached = TRUE;
+			ce->cached = VTD_TRUE;
 			
 			if (ce->ens==NULL){
 				ce->ens = createFastIntBuffer2(8);//page size 64
@@ -103,7 +103,7 @@ double	evalNumber_ce (cachedExpr *ce,VTDNav *vn){
 	if (ce->cached){
 		return ce->en;
 	}else{
-		ce->cached = TRUE;
+		ce->cached = VTD_TRUE;
 		ce->en = ce->e->evalNumber(ce->e,vn);
 		return ce->en;
 	}
@@ -113,7 +113,7 @@ UCSChar* evalString_ce  (cachedExpr *ce,VTDNav *vn){
 	if (ce->cached){
 		return ce->es;
 	}else{
-		ce->cached = TRUE;
+		ce->cached = VTD_TRUE;
 		ce->es = ce->e->evalString(ce->e,vn);
 		return ce->es;
 	}	

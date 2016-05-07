@@ -58,7 +58,7 @@ pathExpr *createPathExpr(expr *f, locationPathExpr *l){
 	pe->markCacheable2 = (markCacheable2_)&markCacheable2_pe;
 	pe->clearCache=(clearCache_)&clearCache_pe;
 	pe->getFuncOpCode = (getFuncOpCode_)&getFuncOpCode;
-	pe->needReordering = TRUE;
+	pe->needReordering = VTD_TRUE;
 	pe->fe = f;
 	pe->lpe= l;
 	pe->evalState = 0;
@@ -77,7 +77,7 @@ void freePathExpr(pathExpr *pe){
 
 int	evalNodeSet_pe (pathExpr *pe,VTDNav *vn){
 	int a;
-	while (TRUE) {
+	while (VTD_TRUE) {
 		switch (pe->evalState) {
 		case 0: /*this state is teh initial state;*/
 			a = pe->fe->evalNodeSet(pe->fe,vn);
@@ -222,7 +222,7 @@ UCSChar* evalString_pe  (pathExpr *pe,VTDNav *vn){
 }
 Boolean evalBoolean_pe (pathExpr *pe,VTDNav *vn){
 	exception e;
-	Boolean b = FALSE;
+	Boolean b = VTD_FALSE;
 	int size;
 	push2(vn);
 	/* record teh stack size*/
@@ -239,23 +239,23 @@ Boolean evalBoolean_pe (pathExpr *pe,VTDNav *vn){
 }
 
 Boolean isBoolean_pe (pathExpr *pe){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNumerical_pe (pathExpr *pe){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isString_pe (pathExpr *pe){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 Boolean isNodeSet_pe (pathExpr *pe){
-	return TRUE;
+	return VTD_TRUE;
 }
 
 Boolean requireContextSize_pe(pathExpr *pe){
-	return FALSE;
+	return VTD_FALSE;
 }
 
 

@@ -37,7 +37,7 @@ unsigned char CHARS[1<<16];// = unsigned Byte[1<<16];
 
 char Character[1<<8]; // = 
 
-Boolean isReady;// = FALSE;
+Boolean isReady;// = VTD_FALSE;
 
 Boolean isCharacterReady;
 
